@@ -1,6 +1,7 @@
 <template>
   <v-app>
     <navbar></navbar>
+    <!-- <app-header></app-header> -->
     <!-- <v-app-bar
       app
       color="primary"
@@ -45,15 +46,18 @@
 </template>
 
 <script>
+import './assets/css/main.scss';
 import HelloWorld from './components/HelloWorld';
 import navbar from './components/layout/navbar.vue';
+// import appHeader from './components/layout/header.vue';
 
 export default {
   name: 'App',
 
   components: {
     HelloWorld,
-    navbar,
+    // appHeader,
+    navbar
   },
 
   data: () => ({

@@ -1,36 +1,80 @@
 <template>
-  <div>
-    <div class="row">
-      <div class="col-12">
-        <v-app-bar app color="primary" dark>
-          <div class="d-flex align-center">
-            <h2>Makeup</h2>
-          </div>
+  <v-app>
+    <v-card color="grey lighten-4" flat tile>
+      <v-toolbar dense app class="black white--text px-5">
+        <v-app-bar-nav-icon class="white--text" @click="drawer = !drawer"></v-app-bar-nav-icon>
 
-          <v-spacer></v-spacer>
+        <v-toolbar-title class="titulo">Title</v-toolbar-title>
 
-          <v-btn
-            href="https://github.com/vuetifyjs/vuetify/releases/latest"
-            target="_blank"
-            text
-          >
-            <span class="mr-2">Latest Release</span>
-            <v-icon>mdi-open-in-new</v-icon>
-          </v-btn>
-        </v-app-bar>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-12">
-        <div class="barraDourada">aaa</div>
-      </div>
-    </div>
-  </div>
+        <v-spacer></v-spacer>
+
+        <v-btn icon class="white--text">
+          <v-icon>mdi-magnify</v-icon>
+        </v-btn>
+        <v-btn icon class="white--text" >
+          <v-icon>mdi-account-circle</v-icon>
+        </v-btn>
+      </v-toolbar>
+
+      <v-navigation-drawer app v-model="drawer" class="black" temporary>
+        <v-layout mt-4 column align-center>
+          <v-flex>
+            <v-avatar>
+              <v-img src="https://randomuser.me/api/portraits/women/85.jpg"></v-img>
+            </v-avatar>
+          </v-flex>
+          <v-flex>
+            <p class="white--text mt-3 headline">Joana</p>
+          </v-flex>
+        </v-layout>
+        <!-- <v-list-item>
+          <v-list-item-content>
+            <v-list-item-title class="text-h6 white--text">
+              Application
+            </v-list-item-title>
+            <v-list-item-subtitle class="white--text">
+              subtext
+            </v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item> -->
+
+        <v-divider></v-divider>
+
+        <v-list dense nav>
+          <v-list-item v-for="item in items" :key="item.title" link>
+            <v-list-item-icon>
+              <v-icon class="white--text">{{ item.icon }}</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-content>
+              <v-list-item-title class="white--text">{{
+                item.title
+              }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-navigation-drawer>
+    </v-card>
+  </v-app>
 </template>
-<style scoped>
-.barraDourada {
-  width: 100%;
-  height: 3rem;
-  background-image: linear-gradient(to left , #ab8632 ,#dba322, #b68e26);
+
+<script>
+export default {
+  data() {
+    return {
+      drawer: false,
+      items: [
+        { title: "Dashboard", icon: "mdi-view-dashboard" },
+        { title: "Photos", icon: "mdi-image" },
+        { title: "About", icon: "mdi-help-box" },
+      ],
+      right: null,
+    };
+  },
+};
+</script>
+<style>
+.titulo {
+  color: #fdb931;
 }
 </style>
