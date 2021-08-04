@@ -1,5 +1,5 @@
 const red = Object.freeze({
-    base: '#F44336',
+    base: '#fb6e51',
     lighten5: '#ffebee',
     lighten4: '#ffcdd2',
     lighten3: '#ef9a9a',

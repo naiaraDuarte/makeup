@@ -1,6 +1,7 @@
 <template>
   <v-app>
-    <v-app-bar
+    <navbar></navbar>
+    <!-- <v-app-bar
       app
       color="primary"
       dark
@@ -35,7 +36,7 @@
         <span class="mr-2">Latest Release</span>
         <v-icon>mdi-open-in-new</v-icon>
       </v-btn>
-    </v-app-bar>
+    </v-app-bar> -->
 
     <v-main>
       <HelloWorld/>
@@ -45,12 +46,14 @@
 
 <script>
 import HelloWorld from './components/HelloWorld';
+import navbar from './components/layout/navbar.vue';
 
 export default {
   name: 'App',
 
   components: {
     HelloWorld,
+    navbar,
   },
 
   data: () => ({
