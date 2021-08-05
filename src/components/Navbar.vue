@@ -1,12 +1,9 @@
 <template>
   <nav>
 
-    <v-toolbar flat app>
+    <v-toolbar flat app class="black">
       <v-toolbar-side-icon @click="drawer = !drawer" class="grey--text"></v-toolbar-side-icon>
-      <v-toolbar-title class="text-uppercase grey--text">
-        <span class="font-weight-light">Todo</span>
-        <span>Ninja</span>
-      </v-toolbar-title>
+     <img class="mr-3" :src="require('../assets/logocortado.png')" height="40"/>
       <v-spacer></v-spacer>
 
       <!-- dropdown menu -->
