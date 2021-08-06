@@ -45,27 +45,29 @@
         >
           <v-list-item link>
             <v-list-item-icon>
-              <v-icon class="white--text">mdi-folder</v-icon>
+              <v-icon class="title">mdi-folder</v-icon>
             </v-list-item-icon>
             <v-list-item-title class="white--text">My Files</v-list-item-title>
           </v-list-item>
           <v-list-item link>
             <v-list-item-icon>
-              <v-icon class="white--text">mdi-account-multiple</v-icon>
+              <v-icon class="title">mdi-account-multiple</v-icon>
             </v-list-item-icon>
             <v-list-item-title class="white--text">Shared with me</v-list-item-title>
           </v-list-item>
           <v-list-item link>
             <v-list-item-icon>
-              <v-icon class="white--text">mdi-star</v-icon>
+              <v-icon class="title">mdi-star</v-icon>
             </v-list-item-icon>
             <v-list-item-title class="white--text">Starred</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-navigation-drawer>
-    <v-app-bar app clipped-left dark color="black">
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title>Application</v-toolbar-title>
+    <v-app-bar app clipped-left dark class="navbar" color="black"> <img
+        class="ml-5 pl-5"
+        :src="require('../../assets/images/logocortado.png')"
+        height="43"
+      />
     </v-app-bar>
     </v-card>
 </template>
@@ -85,8 +87,16 @@ export default {
   },
 };
 </script>
+
 <style>
-.titulo {
-  color: #fdb931;
+.title {
+  color: #deb887 !important;
+  font-size: 25px !important;
+  font-family: "Allura", cursive !important;
+}
+.navbar {
+  /* color: #444240; */
+  color: #b38b57;
+  background-image: linear-gradient(to bottom, black, black, black,black,black,black,#deb887);
 }
 </style>
