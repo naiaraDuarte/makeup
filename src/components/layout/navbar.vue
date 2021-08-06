@@ -1,12 +1,10 @@
 <template>
-    <v-card color="grey lighten-4" flat tile>
+<div>
+  <v-card color="grey lighten-4" flat tile>
       <!-- <v-toolbar dense app class="black white--text px-5">
         <v-app-bar-nav-icon class="white--text" @click="drawer = !drawer"></v-app-bar-nav-icon>
-
         <v-toolbar-title class="titulo">Title</v-toolbar-title>
-
         <v-spacer></v-spacer>
-
         <v-btn icon class="white--text">
           <v-icon>mdi-magnify</v-icon>
         </v-btn>
@@ -17,7 +15,7 @@
 
     
       <v-navigation-drawer app v-model="drawer" class="black"
-        permanent
+        permanent flat prepend
         expand-on-hover clipped hide-overlay :style="{ top: $vuetify.application.top + 'px', zIndex: 6 }"
       >
         <v-list>
@@ -70,6 +68,8 @@
       />
     </v-app-bar>
     </v-card>
+</div>
+    
 </template>
 
 <script>
@@ -85,6 +85,8 @@ export default {
       right: null,
     };
   },
+  components: {
+  }
 };
 </script>
 

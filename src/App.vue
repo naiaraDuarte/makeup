@@ -1,25 +1,24 @@
 <template>
   <v-app>
     <navbar></navbar>
-   <v-container fluid style="padding-top: 60px">
-      <router-view />
-    </v-container>
+    <v-content>
+      <v-container>
+        <router-view />
+      </v-container>
+    </v-content>
   </v-app>
 </template>
 
 <script>
-import './assets/css/main.scss';
-import navbar from './components/layout/navbar.vue';
+import "./assets/css/main.scss";
+import navbar from "./components/layout/navbar.vue";
 // import appHeader from './components/layout/header.vue';
-
 export default {
-  name: 'App',
-
+  name: "App",
   components: {
     // appHeader,
-    navbar
+    navbar,
   },
-
   data: () => ({
     //
   }),

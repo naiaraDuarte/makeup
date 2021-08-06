@@ -1,22 +1,25 @@
 <template>
-  <v-app class="background">
-    <navbar/>
-    <h3>Aquioiii</h3>
-  </v-app>
+  <div>
+    <h3>Produtos</h3>
+    <v-btn elevation="8" v-if="componente === 'cadastro'" @click="componente = 'visualizacao'">Visualização</v-btn>
+    <v-btn elevation="8" v-if="componente === 'visualizacao'" @click="componente = 'cadastro'">Cadastro</v-btn>
+    <component :is="componente" />
+  </div>
 </template>
 
 <script>
-import navbar from '../components/layout/navbar.vue';
+import cadastro from "../components/pages/produtos/cadastro.vue";
+import visualizacao from "../components/pages/produtos/visualizacao.vue";
 
 export default {
-  name: 'App',
-
   components: {
-    navbar
+    cadastro,
+    visualizacao
+
   },
 
   data: () => ({
-    //
+    componente: "cadastro",
   }),
 };
 </script>
