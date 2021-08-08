@@ -80,8 +80,8 @@
                       type="file"
                     />
                     <v-row v-if="image">
-                      <v-col>
-                        <v-icon>mdi-close</v-icon>
+                      <v-col class="text-right">
+                        <v-btn icon @click="image = null"><v-icon>mdi-close</v-icon></v-btn>
                       </v-col>
                     </v-row>
                     <v-card elevation="0" @click="$refs.inputUpload.click()">
@@ -209,12 +209,12 @@ export default {
   },
   methods: {
     PreviewImage() {
-        var oFReader = new FileReader();
-        oFReader.readAsDataURL(document.getElementById("uploadImage").files[0]);
+      var oFReader = new FileReader();
+      oFReader.readAsDataURL(document.getElementById("uploadImage").files[0]);
 
-        oFReader.onload = function (oFREvent) {
-            document.getElementById("uploadPreview").src = oFREvent.target.result;
-        };
+      oFReader.onload = function (oFREvent) {
+        document.getElementById("uploadPreview").src = oFREvent.target.result;
+      };
     },
     trocaValores() {
       if (this.faseCadastro == 0) {
@@ -228,15 +228,8 @@ export default {
       //   ? (this.faseCadastro = 1)
       //   : (this.faseCadastro = 0);
     },
-    valor(e){
+    valor(e) {
       console.log(e);
-    },
-    openFile() {
-      console.log(this.$refs.inputUpload);
-      this.$refs.inputUpload.onClick();
-      // var input = document.getElementById("inputFile");
-      // console.log(input);
-      // (document.getElementById("inputFile")).click();
     },
   },
 };
