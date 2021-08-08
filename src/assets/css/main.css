@@ -26,4 +26,17 @@
   -webkit-box-shadow: 0 0 15px #ddd;
           box-shadow: 0 0 15px #ddd;
 }
+
+.btnSubmit .v-btn__content {
+  color: #b38b57;
+}
+
+.btnFilter {
+  background-color: white !important;
+  border: 1px solid #b38b57 !important;
+}
+
+.btnFilter .v-btn__content {
+  color: #b38b57;
+}
 /*# sourceMappingURL=main.css.map */

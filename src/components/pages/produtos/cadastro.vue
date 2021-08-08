@@ -2,7 +2,8 @@
   <div class="frame mt-5">
     <v-container fluid>
       <v-row>
-        <v-col lg="12" md="12" sm="12" cols="12">
+        <v-col lg="12" md="12" sm="12" cols="12" class="px-0 py-0">
+          <v-progress-linear :value="valorBarra"></v-progress-linear>
           <v-card elevation="0" v-if="faseCadastro == 0">
             <h2 class="cor-letra text-center mt-5 pt-5">
               Vamos lá, me informe os dados do produto...
@@ -216,10 +217,16 @@ export default {
       precoProduto: "",
       marcaProduto: "",
       image: null,
+      valorBarra: 50,
     };
   },
   activated() {
     this.trocaValores();
+  },
+  watch: {
+    faseCadastro(newVal){
+      newVal == 0 ? this.valorBarra = 50 : this.valorBarra = 100;
+    }
   },
   computed: {
     url() {
@@ -275,8 +282,3 @@ export default {
   },
 };
 </script>
-<style>
-.btnSubmit .v-btn__content {
-  color: #b38b57;
-}
-</style>

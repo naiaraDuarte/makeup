@@ -15,3 +15,18 @@
 .frame {
   box-shadow: 0 0 15px #ddd;
 }
+
+.btnSubmit .v-btn__content {
+  color: #b38b57;
+}
+
+.btnFilter {
+  background-color: white !important;
+  border: 1px solid #b38b57 !important;
+  &:hover {
+    // background-color: black !important;
+  }
+  .v-btn__content {
+    color: #b38b57;
+  }
+}
