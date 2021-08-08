@@ -21,4 +21,9 @@
   color: #616161;
   font-weight: 100;
 }
+
+.frame {
+  -webkit-box-shadow: 0 0 15px #ddd;
+          box-shadow: 0 0 15px #ddd;
+}
 /*# sourceMappingURL=main.css.map */

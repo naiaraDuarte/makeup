@@ -12,7 +12,7 @@
           color="black"
           class="nameBtn"
           @click="trocaDeValores()"
-          >{{ componente }}</v-btn
+          >{{ txtDoBotao }}</v-btn
         >
       </v-col>
     </v-row>
@@ -22,21 +22,29 @@
 </template>
 
 <script>
-import Cadastrar from "../components/pages/produtos/cadastro.vue";
+import adicionarProduto from "../components/pages/produtos/cadastro.vue";
 import Visualizar from "../components/pages/produtos/visualizacao.vue";
 
 export default {
   components: {
-    Cadastrar,
+    adicionarProduto,
     Visualizar,
   },
 
   data: () => ({
-    componente: "Cadastrar",
+    componente: "adicionarProduto",
+    txtDoBotao: "Visualizar"
   }),
   methods: {
     trocaDeValores() {
-      this.componente == "Cadastrar" ? this.componente = "Visualizar" : this.componente = "Cadastrar" ;
+      if (this.componente == "adicionarProduto") {
+        this.componente = "Visualizar";
+        this.txtDoBotao = "Adicionar";
+      }else{
+        this.componente = "adicionarProduto";
+        this.txtDoBotao = "Visualizar";
+      }
+      // this.componente == "Cadastrar" ? this.componente = "Visualizar" : this.componente = "Cadastrar" ;
     },
   },
 };

@@ -293,7 +293,8 @@ const grey = Object.freeze({
 const shades = Object.freeze({
     black: '#000000',
     white: '#ffffff',
-    transparent: 'transparent'
+    transparent: 'transparent',
+    corAuxiliar: '#b38b57'
 });
 export default Object.freeze({
     red,
