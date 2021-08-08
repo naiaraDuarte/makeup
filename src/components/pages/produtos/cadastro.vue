@@ -39,6 +39,7 @@
                 <!-- Colocar um auto complete -->
                 <v-text-field
                   :counter="10"
+                  v-model="marcaProduto"
                   label="Digite a marca do produto"
                   required
                 ></v-text-field>
@@ -81,7 +82,9 @@
                     />
                     <v-row v-if="image">
                       <v-col class="text-right">
-                        <v-btn icon @click="image = null"><v-icon>mdi-close</v-icon></v-btn>
+                        <v-btn icon @click="image = null"
+                          ><v-icon>mdi-close</v-icon></v-btn
+                        >
                       </v-col>
                     </v-row>
                     <v-card elevation="0" @click="$refs.inputUpload.click()">
@@ -156,16 +159,37 @@
           </v-card>
         </v-col>
       </v-row>
-      <v-row class="text-right">
-        <v-col lg="10"></v-col>
-        <v-col lg="2" class="text-left pb-5 mb-5">
-          <v-btn
-            elevation="3"
-            color="white"
-            class="btnSubmit"
-            @click="trocaValores()"
-            >{{ txtDoBotao }}</v-btn
-          >
+      <v-row class="text-right mx-1 mb-3">
+        <v-col lg="9"></v-col>
+        <v-col lg="3">
+          <v-row class="text-right">
+            <v-col class="pl-5 text-center">
+              <v-btn
+                elevation="1"
+                class="mr-3"
+                icon
+                @click="faseCadastro = 0"
+                :disabled="faseCadastro == 0"
+                ><v-icon>mdi-chevron-left</v-icon></v-btn
+              >
+              <v-btn
+                elevation="1"
+                icon
+                @click="faseCadastro = 1"
+                :disabled="faseCadastro == 1"
+                ><v-icon>mdi-chevron-right</v-icon></v-btn
+              >
+            </v-col>
+            <v-col class="text-left" v-if="validacaoDePreenchimento">
+              <v-btn
+                elevation="3"
+                color="white"
+                class="btnSubmit"
+                @click="salvar()"
+                >Salvar</v-btn
+              >
+            </v-col>
+          </v-row>
         </v-col>
       </v-row>
     </v-container>
@@ -178,7 +202,7 @@ export default {
   data() {
     return {
       txtDoBotao: "Continuar",
-      faseCadastro: 1,
+      faseCadastro: 0,
       codProduto: "",
       nomeProduto: "",
       descProduto: "",
@@ -190,7 +214,7 @@ export default {
       quantidadeProduto: "",
       mgLucroProduto: "",
       precoProduto: "",
-      // url: "@/assets/images/img-default.jpg",
+      marcaProduto: "",
       image: null,
     };
   },
@@ -199,12 +223,31 @@ export default {
   },
   computed: {
     url() {
-      if (!this.image) {
-        console.log("Caiiu aqui");
-        return "../../../assets/images/img-default.jpg";
+      if (this.image) {
+        console.log(URL.createObjectURL(this.image));
+        return URL.createObjectURL(this.image);
       }
-      console.log(URL.createObjectURL(this.image));
-      return URL.createObjectURL(this.image);
+      return null;
+    },
+    validacaoDePreenchimento() {
+      //validação provisória
+      if (
+        this.codProduto != "" &&
+        this.nomeProduto != "" &&
+        this.descProduto != "" &&
+        this.categoriaProduto != "" &&
+        this.tipoProduto != "" &&
+        this.pesoProduto != "" &&
+        this.alturaProduto != "" &&
+        this.comprimentoProduto != "" &&
+        this.quantidadeProduto != "" &&
+        this.mgLucroProduto != "" &&
+        this.precoProduto != "" &&
+        this.marcaProduto != ""
+      ) {
+        return true;
+      }
+      return false;
     },
   },
   methods: {
@@ -216,6 +259,7 @@ export default {
         document.getElementById("uploadPreview").src = oFREvent.target.result;
       };
     },
+    salvar() {},
     trocaValores() {
       if (this.faseCadastro == 0) {
         this.txtDoBotao = "Finalizar";
@@ -224,9 +268,6 @@ export default {
         this.txtDoBotao = "Continuar";
         this.faseCadastro = 0;
       }
-      // this.faseCadastro == 0
-      //   ? (this.faseCadastro = 1)
-      //   : (this.faseCadastro = 0);
     },
     valor(e) {
       console.log(e);
