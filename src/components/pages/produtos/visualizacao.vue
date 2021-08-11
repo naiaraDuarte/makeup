@@ -3,7 +3,7 @@
     <div class="mt-5 pt-5">
       <v-row>
         <v-col lg="2" class="px-2" v-for="(item, i) in 10" :key="i">
-          <v-card>
+          <v-card elevation="0">
             <v-img v-if="i%2 == 0"
               src="../../../assets/images/baseRuby.jpeg"
               class="w-100"

@@ -89,16 +89,3 @@ export default {
   }
 };
 </script>
-
-<style>
-.title {
-  color: #deb887 !important;
-  font-size: 25px !important;
-  font-family: "Allura", cursive !important;
-}
-.navbar {
-  /* color: #444240; */
-  color: #b38b57;
-  background-image: linear-gradient(to bottom, black, black, black,black,black,black,#deb887);
-}
-</style>

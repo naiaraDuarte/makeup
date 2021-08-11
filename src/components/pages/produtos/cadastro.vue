@@ -220,6 +220,12 @@ export default {
       valorBarra: 50,
     };
   },
+  created(){
+
+  },
+  mounted(){
+
+  },
   activated() {
     this.trocaValores();
   },

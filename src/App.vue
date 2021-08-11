@@ -1,6 +1,7 @@
 <template>
   <v-app>
-    <navbar></navbar>
+    <!-- <navbar></navbar> -->
+    <app-header></app-header>
     <v-content>
       <v-container>
         <router-view />
@@ -11,13 +12,13 @@
 
 <script>
 import "./assets/css/main.scss";
-import navbar from "./components/layout/navbar.vue";
-// import appHeader from './components/layout/header.vue';
+// import navbar from "./components/layout/navbar.vue";
+import appHeader from './components/layout/header.vue';
 export default {
   name: "App",
   components: {
-    // appHeader,
-    navbar,
+    appHeader,
+    // navbar,
   },
   data: () => ({
     //
