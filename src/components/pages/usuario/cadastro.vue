@@ -14,8 +14,7 @@ dados de acesso - email e senha
       <h2 class="cor-letra text-center mt-5 pt-5">
         Para fazer seu cadastro preciso saber de algumas informações suas...
       </h2>
-      <v-row
-        class="mx-3 my-3 centralizaInputs">
+      <v-row class="mx-3 my-3 centralizaInputs">
         <v-col lg="3">
           <v-row>
             <v-col>
@@ -97,6 +96,7 @@ dados de acesso - email e senha
     <v-card elevation="0" v-if="faseCadastro == 1">
       <h2 class="cor-letra text-center mt-5 pt-5">
         Para fazer seu cadastro preciso saber de algumas informações suas...
+        {{ forca }}
       </h2>
       <v-row class="mx-3 my-3 centralizaInputs">
         <v-col lg="3">
@@ -173,7 +173,7 @@ dados de acesso - email e senha
               </v-menu>
             </v-col>
             <v-col lg="6" class="p-0">
-              <p>Sexo:</p>
+              <!-- <span>Sexo:</span> -->
               <v-radio-group v-model="sexoCliente" row>
                 <v-radio label="Masculino" value="masculino"></v-radio>
                 <v-radio label="Feminino" value="feminino"></v-radio>
@@ -182,7 +182,7 @@ dados de acesso - email e senha
             </v-col>
           </v-row>
           <v-row class="mx-4">
-            <v-col lg="6" class="p-0">
+            <v-col lg="6">
               <v-text-field
                 v-model="emailCliente"
                 :counter="30"
@@ -190,12 +190,26 @@ dados de acesso - email e senha
                 required
               ></v-text-field>
             </v-col>
+          </v-row>
+          <v-row class="mx-4">
             <v-col lg="6" class="p-0">
               <v-text-field
                 v-model="senhaCliente"
+                ref="corDoInput"
+                @keyup="verificacaoSenhaForte()"
+                :rules="rules"
                 :counter="30"
                 type="password"
                 label="Digite sua senha"
+                required
+              ></v-text-field>
+            </v-col>
+            <v-col lg="6" class="p-0">
+              <v-text-field
+                v-model="confirmacaoSenhaCliente"
+                :counter="30"
+                type="password"
+                label="Confirme sua senha"
                 required
               ></v-text-field>
             </v-col>
@@ -319,11 +333,13 @@ export default {
       bairroCliente: "",
       cidadeCliente: "",
       ufCliente: "",
+      confirmacaoSenhaCliente: "",
       image: null,
       valorBarra: 50,
       activePicker: null,
       date: null,
       menu: false,
+      forca: 0,
     };
   },
   watch: {
@@ -333,8 +349,38 @@ export default {
     menu(val) {
       val && setTimeout(() => (this.activePicker = "YEAR"));
     },
+    // forca(newVal) {
+    //   if (newVal < 30) {
+    //     this.frase = "Senha fraca";
+    //   } else if (newVal >= 30 && newVal < 50) {
+    //     this.frase = "Senha média";
+    //   } else if (newVal >= 50 && newVal < 70) {
+    //     this.frase = "Senha forte";
+    //   } else {
+    //     this.frase = "Senha excelente";
+    //   }
+    // },
   },
   computed: {
+    rules() {
+      let rules = [];
+
+      if (this.forca < 30) {
+           rules.push("Senha fraca");
+          //  this.$refs.corDoInput.color = "green";
+      } else if (this.forca >= 30 && this.forca < 50) {
+           rules.push("Senha média");
+      } else if (this.forca >= 50 && this.forca < 70) {
+           rules.push("Senha forte");
+      } else {
+           rules.push("Senha excelente");
+      }
+
+      console.log("rules", rules);
+     
+
+      return rules;
+    },
     url() {
       if (this.image) {
         console.log(URL.createObjectURL(this.image));
@@ -356,7 +402,8 @@ export default {
         this.numeroCliente != "" &&
         this.bairroCliente != "" &&
         this.cidadeCliente != "" &&
-        this.ufCliente != ""
+        this.ufCliente != "" &&
+        this.confirmacaoSenhaCliente != ""
       ) {
         return true;
       }
@@ -383,6 +430,34 @@ export default {
       }
     },
     salvar() {},
+    verificacaoSenhaForte() {
+      this.forca = 0;
+      console.log(this.senhaCliente);
+      if (this.senhaCliente.length >= 4 && this.senhaCliente.length <= 7) {
+        this.forca += 10;
+      } else if (this.senhaCliente.length > 7) {
+        this.forca += 20;
+      }
+
+      if (this.senhaCliente.length >= 5 && this.senhaCliente.match(/[a-z]+/)) {
+        this.forca += 10;
+      }
+
+      if (this.senhaCliente.length >= 6 && this.senhaCliente.match(/[A-Z]+/)) {
+        this.forca += 20;
+      }
+
+      if (
+        this.senhaCliente.length >= 7 &&
+        this.senhaCliente.match(/[@#$%&;*]/)
+      ) {
+        this.forca += 25;
+      }
+
+      if (this.senhaCliente.match(/([1-9]+)\1{1,}/)) {
+        this.forca += 25;
+      }
+    },
   },
 };
 </script>

@@ -5,8 +5,7 @@
         <v-btn
           @click="componente = 'login'"
           :class="[
-            componente == 'login' ? 'ativado' : 'desativado',
-            errorClass,
+            componente == 'login' ? 'ativado' : 'desativado'
           ]"
           target="_blank"
           text
@@ -16,8 +15,7 @@
         <v-btn
           @click="componente = 'cadastro'"
           :class="[
-            componente == 'cadastro' ? 'ativado' : 'desativado',
-            errorClass,
+            componente == 'cadastro' ? 'ativado' : 'desativado'
           ]"
           target="_blank"
           text
@@ -27,8 +25,7 @@
       </v-col>
     </v-row>
     <v-card :class="[
-            componente == 'cadastro' ? 'cadastro' : 'login',
-            errorClass,
+            componente == 'cadastro' ? 'cadastro' : 'login'
           ]">
       <keep-alive>
         <component :is="componente"></component>
