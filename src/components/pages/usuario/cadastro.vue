@@ -14,10 +14,11 @@ dados de acesso - email e senha
       <h2 class="cor-letra text-center mt-5 pt-5">
         Para fazer seu cadastro preciso saber de algumas informações suas...
       </h2>
-      <v-row class="mt-5 mx-3 my-3">
+      <v-row
+        class="mx-3 my-3 centralizaInputs">
         <v-col lg="3">
           <v-row>
-            <v-col class="mt-5 pt-5">
+            <v-col>
               <input
                 v-show="false"
                 ref="inputUpload"
@@ -53,7 +54,7 @@ dados de acesso - email e senha
           </v-row>
         </v-col>
         <v-col lg="9">
-          <v-row class="mt-5 mx-4 pt-5">
+          <v-row class="mx-4">
             <v-col lg="6" class="p-0">
               <v-text-field
                 v-model="nomeCliente"
@@ -71,6 +72,71 @@ dados de acesso - email e senha
               ></v-text-field>
             </v-col>
           </v-row>
+          <v-row class="mx-4">
+            <v-col lg="6" class="p-0">
+              <v-text-field
+                v-model="telefoneCliente"
+                :counter="10"
+                label="Digite seu telefone"
+                required
+              ></v-text-field>
+            </v-col>
+            <v-col lg="6" class="p-0">
+              <!-- Colocar um auto complete -->
+              <v-text-field
+                v-model="cpfCliente"
+                :counter="10"
+                label="Digite seu CPF"
+                required
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+    </v-card>
+    <v-card elevation="0" v-if="faseCadastro == 1">
+      <h2 class="cor-letra text-center mt-5 pt-5">
+        Para fazer seu cadastro preciso saber de algumas informações suas...
+      </h2>
+      <v-row class="mx-3 my-3 centralizaInputs">
+        <v-col lg="3">
+          <v-row>
+            <v-col>
+              <input
+                v-show="false"
+                ref="inputUpload"
+                @change="image = $event.target.files[0]"
+                accept="image/*"
+                type="file"
+              />
+              <v-row v-if="image">
+                <v-col class="text-right">
+                  <v-btn icon @click="image = null"
+                    ><v-icon>mdi-close</v-icon></v-btn
+                  >
+                </v-col>
+              </v-row>
+              <v-card
+                class="image white"
+                color="white"
+                elevation="0"
+                @click="$refs.inputUpload.click()"
+              >
+                <v-img v-if="image" :src="url"></v-img>
+                <v-img
+                  v-if="!image"
+                  src="../../../assets/images/img-default.jpg"
+                ></v-img>
+              </v-card>
+            </v-col>
+            <v-col lg="12" class="text-center">
+              <h4 class="cor-letra">
+                Queremos te conhecer, faça upload de uma foto
+              </h4>
+            </v-col>
+          </v-row>
+        </v-col>
+        <v-col lg="9">
           <v-row class="mx-4">
             <v-col lg="6" class="p-0">
               <v-menu
@@ -107,25 +173,6 @@ dados de acesso - email e senha
               </v-menu>
             </v-col>
             <v-col lg="6" class="p-0">
-              <!-- Colocar um auto complete -->
-              <v-text-field
-                v-model="cpfCliente"
-                :counter="10"
-                label="Digite seu CPF"
-                required
-              ></v-text-field>
-            </v-col>
-          </v-row>
-          <v-row class="mx-4">
-            <v-col lg="6" class="p-0">
-              <v-text-field
-                v-model="telefoneCliente"
-                :counter="10"
-                label="Digite seu telefone"
-                required
-              ></v-text-field>
-            </v-col>
-            <v-col lg="6" class="p-0">
               <p>Sexo:</p>
               <v-radio-group v-model="sexoCliente" row>
                 <v-radio label="Masculino" value="masculino"></v-radio>
@@ -147,6 +194,7 @@ dados de acesso - email e senha
               <v-text-field
                 v-model="senhaCliente"
                 :counter="30"
+                type="password"
                 label="Digite sua senha"
                 required
               ></v-text-field>
@@ -155,7 +203,7 @@ dados de acesso - email e senha
         </v-col>
       </v-row>
     </v-card>
-    <v-card elevation="0" v-else>
+    <v-card elevation="0" v-if="faseCadastro == 2">
       <h2 class="cor-letra text-center mt-5 pt-5">
         Agora preciso que você me informe um endereço...
       </h2>
@@ -222,15 +270,15 @@ dados de acesso - email e senha
               elevation="1"
               class="mr-3"
               icon
-              @click="faseCadastro = 0"
+              @click="mudaFase('voltar')"
               :disabled="faseCadastro == 0"
               ><v-icon>mdi-chevron-left</v-icon></v-btn
             >
             <v-btn
               elevation="1"
               icon
-              @click="faseCadastro = 1"
-              :disabled="faseCadastro == 1"
+              @click="mudaFase('ir')"
+              :disabled="faseCadastro == 2"
               ><v-icon>mdi-chevron-right</v-icon></v-btn
             >
           </v-col>
@@ -308,7 +356,7 @@ export default {
         this.numeroCliente != "" &&
         this.bairroCliente != "" &&
         this.cidadeCliente != "" &&
-        this.ufCliente != ""  
+        this.ufCliente != ""
       ) {
         return true;
       }
@@ -327,6 +375,13 @@ export default {
         document.getElementById("uploadPreview").src = oFREvent.target.result;
       };
     },
+    mudaFase(acao) {
+      if (acao == "voltar") {
+        this.faseCadastro--;
+      } else {
+        this.faseCadastro++;
+      }
+    },
     salvar() {},
   },
 };
@@ -338,6 +393,11 @@ export default {
 .image {
   border-radius: 50%;
   color: white;
+}
+.centralizaInputs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 /* .theme--light.v-card {
   color: white;
