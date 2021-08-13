@@ -198,6 +198,7 @@ dados de acesso - email e senha
                 ref="corDoInput"
                 @keyup="verificacaoSenhaForte()"
                 :rules="rules"
+                color="blue"
                 :counter="30"
                 type="password"
                 label="Digite sua senha"
@@ -367,7 +368,7 @@ export default {
 
       if (this.forca < 30) {
            rules.push("Senha fraca");
-          //  this.$refs.corDoInput.color = "green";
+           console.log("aaaaaa", this.$refs.corDoInput)
       } else if (this.forca >= 30 && this.forca < 50) {
            rules.push("Senha média");
       } else if (this.forca >= 50 && this.forca < 70) {
@@ -377,8 +378,6 @@ export default {
       }
 
       console.log("rules", rules);
-     
-
       return rules;
     },
     url() {
@@ -429,7 +428,11 @@ export default {
         this.faseCadastro++;
       }
     },
-    salvar() {},
+    salvar() {
+      this.$store.state.cadastro = true;
+      this.$store.state.nome = this.apelidoCliente;
+      this.$router.push(`/`);
+    },
     verificacaoSenhaForte() {
       this.forca = 0;
       console.log(this.senhaCliente);

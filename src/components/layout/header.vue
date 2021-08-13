@@ -22,8 +22,11 @@
           </v-row>
         </v-col>
         <v-col lg="2">
-          <v-row class="w-100" style="max-width: 100%">
-            <v-col lg="6" class="text-center">
+          <v-row
+            class="w-100"
+            style="max-width: 100%"
+          >
+            <v-col lg="6" class="text-center"  v-if="!$store.state.cadastro">
               <p class="mb-0">Bem vindo :)</p>
               <v-btn
                 class="white--text btnLink"
@@ -34,12 +37,32 @@
                 <span>Entre ou cadastre-se</span>
               </v-btn>
             </v-col>
+            <v-col lg="12" class="text-center" v-if="$store.state.cadastro">
+              <p class="mb-0">Bem vindo {{ $store.state.nome }}</p>
+               <v-btn
+                class="white--text btnLink"
+                @click="$router.push(`/usuario`)"
+                target="_blank"
+                text
+              >
+                <span>Minha conta</span>
+              </v-btn>
+            </v-col>
+
           </v-row>
         </v-col>
       </v-row>
     </v-app-bar>
   </div>
 </template>
+<script>
+export default {
+  data() {
+    return {};
+  },
+  watch: {},
+};
+</script>
 <style scoped>
 .barraDourada {
   width: 100%;
@@ -52,11 +75,11 @@
   font-family: "PT Sans", sans-serif !important;
 }
 
-.v-btn:not(.v-btn--round).v-size--default{
+.v-btn:not(.v-btn--round).v-size--default {
   padding: 0;
 }
 .v-btn.v-size--default {
-    font-size: 0.999rem;
+  font-size: 0.999rem;
 }
 @media (min-width: 1264px) {
   .col-lg-6 {
