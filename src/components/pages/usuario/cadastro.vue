@@ -75,6 +75,7 @@ dados de acesso - email e senha
             <v-col lg="6" class="p-0">
               <v-text-field
                 v-model="telefoneCliente"
+                v-mask="['(##) ####-####', '(##) #####-####']"
                 :counter="10"
                 label="Digite seu telefone"
                 required
@@ -85,6 +86,7 @@ dados de acesso - email e senha
               <v-text-field
                 v-model="cpfCliente"
                 :counter="10"
+                v-mask="['###.###.###-##']"
                 label="Digite seu CPF"
                 required
               ></v-text-field>
@@ -96,7 +98,6 @@ dados de acesso - email e senha
     <v-card elevation="0" v-if="faseCadastro == 1">
       <h2 class="cor-letra text-center mt-5 pt-5">
         Para fazer seu cadastro preciso saber de algumas informações suas...
-        {{ forca }}
       </h2>
       <v-row class="mx-3 my-3 centraliza">
         <v-col lg="3">
@@ -149,9 +150,11 @@ dados de acesso - email e senha
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
-                    v-model="date"
-                    label="Birthday date"
+                    v-model="formataDataNasc"
+                    label="Digite sua data de nascimento"
                     prepend-icon="mdi-calendar"
+                    v-mask="['##/##/####']"
+                    placeholder="DD/MM/AAAA"
                     readonly
                     v-bind="attrs"
                     v-on="on"
@@ -235,6 +238,7 @@ dados de acesso - email e senha
           <v-text-field
             v-model="cepCliente"
             :counter="10"
+            v-mask="['#####-###']"
             label="Digite seu CEP"
             required
           ></v-text-field>
@@ -252,6 +256,7 @@ dados de acesso - email e senha
             v-model="numeroCliente"
             :counter="10"
             label="Digite o N°"
+            v-mask="['######']"
             required
           ></v-text-field>
         </v-col>
@@ -322,8 +327,20 @@ dados de acesso - email e senha
 
 
 <script>
+import { validationMixin } from "vuelidate";
+import {
+  required,
+  // email,
+  minLength,
+  maxLength,
+  // and,
+} from "vuelidate/lib/validators";
 export default {
+  mixins: [validationMixin],
   components: {},
+  validations: {
+    street: { required, minLength: minLength(4), maxLength: maxLength(50) },
+  },
   data() {
     return {
       txtDoBotao: "Continuar",
@@ -347,7 +364,7 @@ export default {
       image: null,
       valorBarra: 50,
       activePicker: null,
-      date: null,
+      date: "",
       menu: false,
       forca: 0,
     };
@@ -372,18 +389,21 @@ export default {
     // },
   },
   computed: {
+    formataDataNasc() {
+      return this.$moment(this.date, "YYYY-MM-DD").format("DD/MM/YYYY");
+    },
     rules() {
       let rules = [];
 
       if (this.forca < 30) {
-           rules.push("Senha fraca");
-          //  console.log("aaaaaa", this.$refs.corDoInput)
+        rules.push("Senha fraca");
+        //  console.log("aaaaaa", this.$refs.corDoInput)
       } else if (this.forca >= 30 && this.forca < 50) {
-           rules.push("Senha média");
+        rules.push("Senha média");
       } else if (this.forca >= 50 && this.forca < 70) {
-           rules.push("Senha forte");
+        rules.push("Senha forte");
       } else {
-           rules.push("Senha excelente");
+        rules.push("Senha excelente");
       }
       return rules;
     },
