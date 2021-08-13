@@ -39,7 +39,7 @@
             tile
           >
             <v-list flat>
-              <!-- <v-subheader>REPORTS</v-subheader> -->
+              <!-- <v-subheader>REPORTS</v-subheader> --> 
               <v-list-item-group v-model="selectedItem" color="primary">
                 <v-list-item v-for="(item, i) in items" :key="i">
                   <v-list-item-icon>

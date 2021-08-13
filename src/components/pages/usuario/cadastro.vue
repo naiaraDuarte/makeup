@@ -225,6 +225,14 @@ dados de acesso - email e senha
       <v-row class="mt-5 mx-4 pt-5">
         <v-col lg="4">
           <v-text-field
+            v-model="nomeEnderecoCliente"
+            :counter="10"
+            label="Digite um nome para seu endereço"
+            required
+          ></v-text-field>
+        </v-col>
+        <v-col lg="2">
+          <v-text-field
             v-model="cepCliente"
             :counter="10"
             label="Digite seu CEP"
@@ -239,11 +247,11 @@ dados de acesso - email e senha
             required
           ></v-text-field>
         </v-col>
-        <v-col lg="4">
+        <v-col lg="2">
           <v-text-field
             v-model="numeroCliente"
             :counter="10"
-            label="Digite o numero da sua residência"
+            label="Digite o N°"
             required
           ></v-text-field>
         </v-col>
@@ -334,6 +342,7 @@ export default {
       bairroCliente: "",
       cidadeCliente: "",
       ufCliente: "",
+      nomeEnderecoCliente: "",
       confirmacaoSenhaCliente: "",
       image: null,
       valorBarra: 50,
@@ -399,6 +408,7 @@ export default {
         this.bairroCliente != "" &&
         this.cidadeCliente != "" &&
         this.ufCliente != "" &&
+        this.nomeEnderecoCliente != "" &&
         this.confirmacaoSenhaCliente != ""
       ) {
         return true;
