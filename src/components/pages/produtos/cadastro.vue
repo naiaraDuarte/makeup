@@ -237,7 +237,6 @@ export default {
   computed: {
     url() {
       if (this.image) {
-        console.log(URL.createObjectURL(this.image));
         return URL.createObjectURL(this.image);
       }
       return null;
@@ -281,9 +280,6 @@ export default {
         this.txtDoBotao = "Continuar";
         this.faseCadastro = 0;
       }
-    },
-    valor(e) {
-      console.log(e);
     },
   },
 };

@@ -14,7 +14,7 @@ dados de acesso - email e senha
       <h2 class="cor-letra text-center mt-5 pt-5">
         Para fazer seu cadastro preciso saber de algumas informações suas...
       </h2>
-      <v-row class="mx-3 my-3 centralizaInputs">
+      <v-row class="mx-3 my-3 centraliza">
         <v-col lg="3">
           <v-row>
             <v-col>
@@ -98,7 +98,7 @@ dados de acesso - email e senha
         Para fazer seu cadastro preciso saber de algumas informações suas...
         {{ forca }}
       </h2>
-      <v-row class="mx-3 my-3 centralizaInputs">
+      <v-row class="mx-3 my-3 centraliza">
         <v-col lg="3">
           <v-row>
             <v-col>
@@ -368,7 +368,7 @@ export default {
 
       if (this.forca < 30) {
            rules.push("Senha fraca");
-           console.log("aaaaaa", this.$refs.corDoInput)
+          //  console.log("aaaaaa", this.$refs.corDoInput)
       } else if (this.forca >= 30 && this.forca < 50) {
            rules.push("Senha média");
       } else if (this.forca >= 50 && this.forca < 70) {
@@ -376,13 +376,10 @@ export default {
       } else {
            rules.push("Senha excelente");
       }
-
-      console.log("rules", rules);
       return rules;
     },
     url() {
       if (this.image) {
-        console.log(URL.createObjectURL(this.image));
         return URL.createObjectURL(this.image);
       }
       return null;
@@ -435,7 +432,6 @@ export default {
     },
     verificacaoSenhaForte() {
       this.forca = 0;
-      console.log(this.senhaCliente);
       if (this.senhaCliente.length >= 4 && this.senhaCliente.length <= 7) {
         this.forca += 10;
       } else if (this.senhaCliente.length > 7) {
@@ -472,11 +468,11 @@ export default {
   border-radius: 50%;
   color: white;
 }
-.centralizaInputs {
+/* .centraliza {
   display: flex;
   justify-content: center;
   align-items: center;
-}
+} */
 /* .theme--light.v-card {
   color: white;
 } */
