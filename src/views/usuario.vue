@@ -110,7 +110,7 @@ export default {
   /* box-shadow: 0 0 1em #b38b57 !important; */
 }
 .login {
-  border: 2px solid #b38b57;
+  border: 1px solid #b38b57;
   /* box-shadow: 0 0 1em #b38b57 !important;  */
 }
 </style>

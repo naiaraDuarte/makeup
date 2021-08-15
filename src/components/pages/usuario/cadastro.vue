@@ -189,7 +189,6 @@ dados de acesso - email e senha
             <v-col lg="6">
               <v-text-field
                 v-model="emailCliente"
-                :counter="30"
                 label="Digite seu email"
                 required
               ></v-text-field>
@@ -236,6 +235,14 @@ dados de acesso - email e senha
           ><v-icon left> mdi-plus </v-icon> add endereço</v-btn
         >
       </h2>
+
+      
+
+      <!-- <v-row v-if="mensagem != ''">
+        <v-col lg="12">
+          <p style="color: red">{{ mensagem }}</p>
+        </v-col>
+      </v-row> -->
       <v-row class="mt-5 mx-4 pt-5">
         <v-col lg="6">
           <v-text-field
@@ -390,7 +397,17 @@ dados de acesso - email e senha
         </v-row>
       </v-col>
     </v-row>
+    <v-snackbar v-model="snackbar" :color="snackbarColor">
+       <h4 style="font-weight: 100">{{ mensagem }}</h4> 
+
+        <template v-slot:action="{ attrs }">
+          <v-btn text icon v-bind="attrs" @click="snackbar = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </template>
+      </v-snackbar>
   </v-container>
+  
 </template>
 
 
@@ -438,6 +455,9 @@ export default {
       date: "",
       menu: false,
       forca: 0,
+      mensagem: "",
+      snackbar: false,
+      snackbarColor: "",
       rules: {
         required: (value) => !!value || "Required.",
         min: (v) => v.length >= 8 || "Min 8 characters",
@@ -483,17 +503,6 @@ export default {
     menu(val) {
       val && setTimeout(() => (this.activePicker = "YEAR"));
     },
-    // forca(newVal) {
-    //   if (newVal < 30) {
-    //     this.frase = "Senha fraca";
-    //   } else if (newVal >= 30 && newVal < 50) {
-    //     this.frase = "Senha média";
-    //   } else if (newVal >= 50 && newVal < 70) {
-    //     this.frase = "Senha forte";
-    //   } else {
-    //     this.frase = "Senha excelente";
-    //   }
-    // },
   },
   computed: {
     formataDataNasc() {
@@ -548,6 +557,19 @@ export default {
         this.confirmacaoSenhaCliente != ""
       ) {
         return true;
+      } else if (
+        this.nomeCliente != "" &&
+        this.cpfCliente != "" &&
+        this.apelidoCliente != "" &&
+        this.telefoneCliente != "" &&
+        this.sexoCliente != "" &&
+        this.emailCliente != "" &&
+        this.senhaCliente != "" &&
+        this.$store.state.enderecos.length > 0 &&
+        this.forca >= 70 &&
+        this.confirmacaoSenhaCliente != ""
+      ) {
+        return true;
       }
       return false;
     },
@@ -555,6 +577,14 @@ export default {
   methods: {
     ...mapMutations(["addEnderecos"]),
     addEndereco() {
+      if (this.cepCliente == "" && this.nomeEnderecoCliente == "") {
+        this.snackbarColor = "#b38b57";
+        this.mensagem =
+          "Ao menos o nome do endereço ou CEP devem ser preenchidos antes de adicioná-los";
+        this.snackbar = true;
+        return false;
+      }
+      this.mensagem = "";
       this.addEnderecos({
         tipoEnderecoCliente: this.tipoEnderecoCliente,
         nomeEnderecoCliente: this.nomeEnderecoCliente,
