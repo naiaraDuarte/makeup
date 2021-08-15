@@ -232,7 +232,7 @@ dados de acesso - email e senha
     <v-card elevation="0" v-if="faseCadastro == 2">
       <h2 class="cor-letra text-center mt-5 pt-5">
         Agora preciso que você me informe um endereço...
-        <v-btn elevation="0" text class="btnSubmit" @click="salvarEndereco()"
+        <v-btn elevation="0" text class="btnSubmit" @click="addEndereco()"
           ><v-icon left> mdi-plus </v-icon> add endereço</v-btn
         >
       </h2>
@@ -314,6 +314,54 @@ dados de acesso - email e senha
           ></v-text-field> -->
         </v-col>
       </v-row>
+      <v-row class="mt-5 mx-3 my-3" v-if="this.$store.state.enderecos">
+        <v-col lg="12">
+          <v-expansion-panels accordion>
+            <v-expansion-panel
+              v-for="(item, i) in this.$store.state.enderecos"
+              :key="i"
+            >
+              <v-expansion-panel-header @click="getEndereco(i)">
+                <v-row>
+                  <v-col lg="4">
+                    <p>{{ item.nomeEnderecoCliente }}</p>
+                  </v-col>
+                  <v-col lg="4">
+                    <p>{{ item.tipoEnderecoCliente }}</p>
+                  </v-col>
+                  <v-col lg="4">
+                    <p>{{ item.cepCliente }}</p>
+                  </v-col>
+                </v-row>
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <!-- logradouroCliente: this.logradouroCliente,
+        numeroCliente: this.numeroCliente,
+        bairroCliente: this.bairroCliente,
+        cidadeCliente: this.cidadeCliente,
+        ufCliente: this.ufCliente, -->
+                <v-row>
+                  <v-col lg="4">
+                    <p>{{ item.logradouroCliente }}</p>
+                  </v-col>
+                  <v-col lg="1">
+                    <p>N° {{ item.numeroCliente }}</p>
+                  </v-col>
+                  <v-col lg="3">
+                    <p>{{ item.bairroCliente }}</p>
+                  </v-col>
+                  <v-col lg="3">
+                    <p>{{ item.cidadeCliente }}</p>
+                  </v-col>
+                  <v-col lg="1">
+                    <p>{{ item.ufCliente }}</p>
+                  </v-col>
+                </v-row>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
+        </v-col>
+      </v-row>
     </v-card>
     <v-row class="text-right mx-1 mb-3">
       <v-col lg="9"></v-col>
@@ -354,6 +402,7 @@ dados de acesso - email e senha
 
 <script>
 import { validationMixin } from "vuelidate";
+import { mapMutations } from "vuex";
 import {
   required,
   // email,
@@ -372,6 +421,7 @@ export default {
       show3: false,
       txtDoBotao: "Continuar",
       faseCadastro: 0,
+      codEnderecoCliente: 0,
       codCliente: "",
       nomeCliente: "",
       cpfCliente: "",
@@ -509,6 +559,31 @@ export default {
     },
   },
   methods: {
+    ...mapMutations(["addEnderecos"]),
+    addEndereco() {
+      this.addEnderecos({
+        cod: this.codEnderecoCliente,
+        tipoEnderecoCliente: this.tipoEnderecoCliente,
+        nomeEnderecoCliente: this.nomeEnderecoCliente,
+        cepCliente: this.cepCliente,
+        logradouroCliente: this.logradouroCliente,
+        numeroCliente: this.numeroCliente,
+        bairroCliente: this.bairroCliente,
+        cidadeCliente: this.cidadeCliente,
+        ufCliente: this.ufCliente,
+      });
+    },
+    getEndereco(id){
+      let endereco = this.$store.state.enderecos[id];
+      this.cepCliente = endereco.cepCliente;
+      this.logradouroCliente = endereco.logradouroCliente;
+      this.numeroCliente = endereco.numeroCliente;
+      this.bairroCliente = endereco.bairroCliente;
+      this.cidadeCliente = endereco.cidadeCliente;
+      this.ufCliente = endereco.ufCliente;
+      this.nomeEnderecoCliente = endereco.nomeEnderecoCliente;
+      this.tipoEnderecoCliente = endereco.tipoEnderecoCliente;
+    },
     save(date) {
       this.$refs.menu.save(date);
     },
@@ -538,9 +613,7 @@ export default {
           this.ufCliente = res.data.uf;
         });
     },
-    salvarEndereco(){
 
-    },
     salvar() {
       this.$store.state.cadastro = true;
       this.$store.state.nome = this.apelidoCliente;
