@@ -236,8 +236,6 @@ dados de acesso - email e senha
         >
       </h2>
 
-      
-
       <!-- <v-row v-if="mensagem != ''">
         <v-col lg="12">
           <p style="color: red">{{ mensagem }}</p>
@@ -323,20 +321,24 @@ dados de acesso - email e senha
               :key="i"
             >
               <v-expansion-panel-header>
-                <v-row>
+                <v-row class="centraliza">
                   <v-col lg="4">
                     <p>{{ item.nomeEnderecoCliente }}</p>
                   </v-col>
                   <v-col lg="3">
                     <p>{{ item.tipoEnderecoCliente }}</p>
                   </v-col>
-                  <v-col lg="4">
+                  <v-col lg="3">
                     <p>{{ item.cepCliente }}</p>
                   </v-col>
                   <v-col lg="1">
                     <v-btn elevation="0" icon @click="getEndereco(i)"
                       ><v-icon>mdi-pencil-outline</v-icon></v-btn
                     >
+                  </v-col>
+                  <v-col lg="1">
+                    <v-icon v-if="item.status == false" color="error">mdi-alert-circle</v-icon>
+                     <v-icon v-if="item.status == true" color="teal" >mdi-check</v-icon>
                   </v-col>
                 </v-row>
               </v-expansion-panel-header>
@@ -398,16 +400,15 @@ dados de acesso - email e senha
       </v-col>
     </v-row>
     <v-snackbar v-model="snackbar" :color="snackbarColor">
-       <h4 style="font-weight: 100">{{ mensagem }}</h4> 
+      <h4 style="font-weight: 100">{{ mensagem }}</h4>
 
-        <template v-slot:action="{ attrs }">
-          <v-btn text icon v-bind="attrs" @click="snackbar = false">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </template>
-      </v-snackbar>
+      <template v-slot:action="{ attrs }">
+        <v-btn text icon v-bind="attrs" @click="snackbar = false">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-container>
-  
 </template>
 
 
@@ -585,7 +586,9 @@ export default {
         return false;
       }
       this.mensagem = "";
+      let status = this.verificaPreenchimento();
       this.addEnderecos({
+        status: status,
         tipoEnderecoCliente: this.tipoEnderecoCliente,
         nomeEnderecoCliente: this.nomeEnderecoCliente,
         cepCliente: this.cepCliente,
@@ -598,8 +601,10 @@ export default {
     },
     ...mapMutations(["editarEnderecos"]),
     editarEndereco(id) {
+      let status = this.verificaPreenchimento();
       this.editarEnderecos({
         cod: id,
+        status: status,
         tipoEnderecoCliente: this.tipoEnderecoCliente,
         nomeEnderecoCliente: this.nomeEnderecoCliente,
         cepCliente: this.cepCliente,
@@ -617,6 +622,23 @@ export default {
       this.limparEndereco();
       this.idEnderecoCliente = null;
     },
+    verificaPreenchimento(){
+
+      //Parei aqui, proximo passo é validar os campos e ver se está tudo certo
+      if (
+        this.cepCliente != "" &&
+        this.logradouroCliente != "" &&
+        this.numeroCliente != "" &&
+        this.bairroCliente != "" &&
+        this.cidadeCliente != "" &&
+        this.ufCliente != "" &&
+        this.nomeEnderecoCliente != "" &&
+        this.tipoEnderecoCliente != ""
+      ) {
+        return true;
+      }
+      return false;
+    },  
     limparEndereco() {
       this.cepCliente = "";
       this.logradouroCliente = "";
@@ -667,7 +689,6 @@ export default {
           this.ufCliente = res.data.uf;
         });
     },
-
     salvar() {
       this.$store.state.cadastro = true;
       this.$store.state.nome = this.apelidoCliente;
