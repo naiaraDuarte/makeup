@@ -172,6 +172,7 @@ dados de acesso - email e senha
                   "
                   min="1950-01-01"
                   @change="save"
+                  locale="pt-br"
                 ></v-date-picker>
               </v-menu>
             </v-col>
@@ -197,23 +198,30 @@ dados de acesso - email e senha
           <v-row class="mx-4">
             <v-col lg="6" class="p-0">
               <v-text-field
+                :append-icon="show3 ? 'mdi-eye' : 'mdi-eye-off'"
                 v-model="senhaCliente"
                 ref="corDoInput"
+                :type="show3 ? 'text' : 'password'"
                 @keyup="verificacaoSenhaForte()"
-                :rules="rules"
+                :rules="rulesSenha"
                 color="blue"
                 :counter="30"
-                type="password"
                 label="Digite sua senha"
+                class="input-group--focused"
+                @click:append="show3 = !show3"
                 required
               ></v-text-field>
             </v-col>
             <v-col lg="6" class="p-0">
               <v-text-field
+                :append-icon="show3 ? 'mdi-eye' : 'mdi-eye-off'"
                 v-model="confirmacaoSenhaCliente"
+                :type="show3 ? 'text' : 'password'"
                 :counter="30"
-                type="password"
+                :rules="rulesConfirmacaoSenha"
                 label="Confirme sua senha"
+                class="input-group--focused"
+                @click:append="show3 = !show3"
                 required
               ></v-text-field>
             </v-col>
@@ -224,9 +232,12 @@ dados de acesso - email e senha
     <v-card elevation="0" v-if="faseCadastro == 2">
       <h2 class="cor-letra text-center mt-5 pt-5">
         Agora preciso que você me informe um endereço...
+        <v-btn elevation="0" text class="btnSubmit" @click="salvarEndereco()"
+          ><v-icon left> mdi-plus </v-icon> add endereço</v-btn
+        >
       </h2>
       <v-row class="mt-5 mx-4 pt-5">
-        <v-col lg="4">
+        <v-col lg="6">
           <v-text-field
             v-model="nomeEnderecoCliente"
             :counter="10"
@@ -234,12 +245,22 @@ dados de acesso - email e senha
             required
           ></v-text-field>
         </v-col>
-        <v-col lg="2">
+        <v-col lg="6">
+          <v-combobox
+            v-model="tipoEnderecoCliente"
+            :items="itemsTipoEnderecoCliente"
+            label="Tipo de endereço"
+          ></v-combobox>
+        </v-col>
+      </v-row>
+      <v-row class="mt-5 mx-3 my-3">
+        <v-col lg="4">
           <v-text-field
             v-model="cepCliente"
             :counter="10"
             v-mask="['#####-###']"
             label="Digite seu CEP"
+            @blur="pesquisarCep"
             required
           ></v-text-field>
         </v-col>
@@ -251,7 +272,7 @@ dados de acesso - email e senha
             required
           ></v-text-field>
         </v-col>
-        <v-col lg="2">
+        <v-col lg="4">
           <v-text-field
             v-model="numeroCliente"
             :counter="10"
@@ -280,12 +301,17 @@ dados de acesso - email e senha
           ></v-text-field>
         </v-col>
         <v-col lg="4">
-          <v-text-field
+          <v-combobox
+            v-model="ufCliente"
+            :items="itemsUfCliente"
+            label="Digite o nome do seu UF"
+          ></v-combobox>
+          <!-- <v-text-field
             v-model="ufCliente"
             :counter="10"
             label="Digite o nome do seu UF"
             required
-          ></v-text-field>
+          ></v-text-field> -->
         </v-col>
       </v-row>
     </v-card>
@@ -343,6 +369,7 @@ export default {
   },
   data() {
     return {
+      show3: false,
       txtDoBotao: "Continuar",
       faseCadastro: 0,
       codCliente: "",
@@ -367,6 +394,42 @@ export default {
       date: "",
       menu: false,
       forca: 0,
+      rules: {
+        required: (value) => !!value || "Required.",
+        min: (v) => v.length >= 8 || "Min 8 characters",
+        emailMatch: () => `The email and password you entered don't match`,
+      },
+      tipoEnderecoCliente: "",
+      itemsTipoEnderecoCliente: ["Residencial", "Comercial", "Empresárial"],
+      itemsUfCliente: [
+        "AC",
+        "AL",
+        "AP",
+        "AM",
+        "BA",
+        "CE",
+        "DF",
+        "ES",
+        "GO",
+        "MA",
+        "MT",
+        "MS",
+        "MG",
+        "PA",
+        "PB",
+        "PR",
+        "PE",
+        "PI",
+        "RJ",
+        "RN",
+        "RS",
+        "RO",
+        "RR",
+        "SC",
+        "SP",
+        "SE",
+        "TO",
+      ],
     };
   },
   watch: {
@@ -392,18 +455,25 @@ export default {
     formataDataNasc() {
       return this.$moment(this.date, "YYYY-MM-DD").format("DD/MM/YYYY");
     },
-    rules() {
+    rulesSenha() {
       let rules = [];
 
       if (this.forca < 30) {
         rules.push("Senha fraca");
-        //  console.log("aaaaaa", this.$refs.corDoInput)
       } else if (this.forca >= 30 && this.forca < 50) {
         rules.push("Senha média");
       } else if (this.forca >= 50 && this.forca < 70) {
         rules.push("Senha forte");
       } else {
         rules.push("Senha excelente");
+      }
+      return rules;
+    },
+    rulesConfirmacaoSenha() {
+      let rules = [];
+
+      if (this.senhaCliente != this.confirmacaoSenhaCliente) {
+        rules.push("As senhas não conferem!");
       }
       return rules;
     },
@@ -429,6 +499,8 @@ export default {
         this.cidadeCliente != "" &&
         this.ufCliente != "" &&
         this.nomeEnderecoCliente != "" &&
+        this.forca >= 70 &&
+        this.tipoEnderecoCliente != "" &&
         this.confirmacaoSenhaCliente != ""
       ) {
         return true;
@@ -454,6 +526,20 @@ export default {
       } else {
         this.faseCadastro++;
       }
+    },
+    pesquisarCep() {
+      this.$http
+        .get(`https://viacep.com.br/ws/${this.cepCliente}/json/unicode/`)
+        .then((res) => {
+          console.log(res);
+          this.logradouroCliente = res.data.logradouro;
+          this.bairroCliente = res.data.bairro;
+          this.cidadeCliente = res.data.localidade;
+          this.ufCliente = res.data.uf;
+        });
+    },
+    salvarEndereco(){
+
     },
     salvar() {
       this.$store.state.cadastro = true;
