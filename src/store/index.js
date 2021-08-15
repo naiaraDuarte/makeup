@@ -16,7 +16,11 @@ export default new Vuex.Store({
     },
     addEnderecos(state, payload) {
       state.enderecos.push(payload);
-      console.log(state.enderecos)
+    },
+    editarEnderecos(state, payload){
+      
+      state.enderecos[payload.cod] = payload;
+
     },
     addFormatsObject(state, payload) {
       state.beforeValueFormatsObject = payload;

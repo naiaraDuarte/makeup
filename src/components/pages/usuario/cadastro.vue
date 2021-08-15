@@ -232,7 +232,7 @@ dados de acesso - email e senha
     <v-card elevation="0" v-if="faseCadastro == 2">
       <h2 class="cor-letra text-center mt-5 pt-5">
         Agora preciso que você me informe um endereço...
-        <v-btn elevation="0" text class="btnSubmit" @click="addEndereco()"
+        <v-btn elevation="0" text class="btnSubmit" @click="salvarEndereco()"
           ><v-icon left> mdi-plus </v-icon> add endereço</v-btn
         >
       </h2>
@@ -306,12 +306,6 @@ dados de acesso - email e senha
             :items="itemsUfCliente"
             label="Digite o nome do seu UF"
           ></v-combobox>
-          <!-- <v-text-field
-            v-model="ufCliente"
-            :counter="10"
-            label="Digite o nome do seu UF"
-            required
-          ></v-text-field> -->
         </v-col>
       </v-row>
       <v-row class="mt-5 mx-3 my-3" v-if="this.$store.state.enderecos">
@@ -321,25 +315,25 @@ dados de acesso - email e senha
               v-for="(item, i) in this.$store.state.enderecos"
               :key="i"
             >
-              <v-expansion-panel-header @click="getEndereco(i)">
+              <v-expansion-panel-header>
                 <v-row>
                   <v-col lg="4">
                     <p>{{ item.nomeEnderecoCliente }}</p>
                   </v-col>
-                  <v-col lg="4">
+                  <v-col lg="3">
                     <p>{{ item.tipoEnderecoCliente }}</p>
                   </v-col>
                   <v-col lg="4">
                     <p>{{ item.cepCliente }}</p>
                   </v-col>
+                  <v-col lg="1">
+                    <v-btn elevation="0" icon @click="getEndereco(i)"
+                      ><v-icon>mdi-pencil-outline</v-icon></v-btn
+                    >
+                  </v-col>
                 </v-row>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <!-- logradouroCliente: this.logradouroCliente,
-        numeroCliente: this.numeroCliente,
-        bairroCliente: this.bairroCliente,
-        cidadeCliente: this.cidadeCliente,
-        ufCliente: this.ufCliente, -->
                 <v-row>
                   <v-col lg="4">
                     <p>{{ item.logradouroCliente }}</p>
@@ -421,7 +415,7 @@ export default {
       show3: false,
       txtDoBotao: "Continuar",
       faseCadastro: 0,
-      codEnderecoCliente: 0,
+      idEnderecoCliente: null,
       codCliente: "",
       nomeCliente: "",
       cpfCliente: "",
@@ -562,7 +556,6 @@ export default {
     ...mapMutations(["addEnderecos"]),
     addEndereco() {
       this.addEnderecos({
-        cod: this.codEnderecoCliente,
         tipoEnderecoCliente: this.tipoEnderecoCliente,
         nomeEnderecoCliente: this.nomeEnderecoCliente,
         cepCliente: this.cepCliente,
@@ -573,7 +566,39 @@ export default {
         ufCliente: this.ufCliente,
       });
     },
-    getEndereco(id){
+    ...mapMutations(["editarEnderecos"]),
+    editarEndereco(id) {
+      this.editarEnderecos({
+        cod: id,
+        tipoEnderecoCliente: this.tipoEnderecoCliente,
+        nomeEnderecoCliente: this.nomeEnderecoCliente,
+        cepCliente: this.cepCliente,
+        logradouroCliente: this.logradouroCliente,
+        numeroCliente: this.numeroCliente,
+        bairroCliente: this.bairroCliente,
+        cidadeCliente: this.cidadeCliente,
+        ufCliente: this.ufCliente,
+      });
+    },
+    salvarEndereco() {
+      if (this.idEnderecoCliente == null) this.addEndereco();
+      else this.editarEndereco(this.idEnderecoCliente);
+
+      this.limparEndereco();
+      this.idEnderecoCliente = null;
+    },
+    limparEndereco() {
+      this.cepCliente = "";
+      this.logradouroCliente = "";
+      this.numeroCliente = "";
+      this.bairroCliente = "";
+      this.cidadeCliente = "";
+      this.ufCliente = "";
+      this.nomeEnderecoCliente = "";
+      this.tipoEnderecoCliente = "";
+    },
+    getEndereco(id) {
+      this.idEnderecoCliente = id;
       let endereco = this.$store.state.enderecos[id];
       this.cepCliente = endereco.cepCliente;
       this.logradouroCliente = endereco.logradouroCliente;
@@ -606,7 +631,6 @@ export default {
       this.$http
         .get(`https://viacep.com.br/ws/${this.cepCliente}/json/unicode/`)
         .then((res) => {
-          console.log(res);
           this.logradouroCliente = res.data.logradouro;
           this.bairroCliente = res.data.bairro;
           this.cidadeCliente = res.data.localidade;
