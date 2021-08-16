@@ -1,14 +1,4 @@
 <template>
-  <!-- 
-
-Nome -
-Telefone
-CPF
-genero
-data de nasc
-dados de acesso - email e senha
-
- -->
   <v-container fluid>
     <v-card elevation="0" v-if="faseCadastro == 0">
       <h2 class="cor-letra text-center mt-5 pt-5">
@@ -72,7 +62,20 @@ dados de acesso - email e senha
             </v-col>
           </v-row>
           <v-row class="mx-4">
-            <v-col lg="6" class="p-0">
+            <v-col lg="2" class="p-0">
+              <v-combobox
+                v-model="tipoEnderecoCliente"
+                :items="itensTipoTelefoneCliente"
+                label="Tipo"
+              >
+                <template slot="item" slot-scope="data">
+                  <v-icon class="ml-5" v-if="data.item == 'Celular'">mdi-cellphone</v-icon>
+                  <v-icon class="ml-5" v-if="data.item == 'Fixo'">mdi-phone-classic</v-icon>
+                  <!-- <span class="cb-item">{{ data.item }}</span> -->
+                </template>
+              </v-combobox>
+            </v-col>
+            <v-col lg="4" class="p-0">
               <v-text-field
                 v-model="telefoneCliente"
                 v-mask="['(##) ####-####', '(##) #####-####']"
@@ -242,7 +245,7 @@ dados de acesso - email e senha
         </v-col>
       </v-row> -->
       <v-row class="mt-5 mx-4 pt-5">
-        <v-col lg="6">
+        <v-col lg="4">
           <v-text-field
             v-model="nomeEnderecoCliente"
             :counter="10"
@@ -250,15 +253,13 @@ dados de acesso - email e senha
             required
           ></v-text-field>
         </v-col>
-        <v-col lg="6">
+        <v-col lg="4">
           <v-combobox
             v-model="tipoEnderecoCliente"
             :items="itemsTipoEnderecoCliente"
             label="Tipo de endereço"
           ></v-combobox>
         </v-col>
-      </v-row>
-      <v-row class="mt-5 mx-3 my-3">
         <v-col lg="4">
           <v-text-field
             v-model="cepCliente"
@@ -269,6 +270,8 @@ dados de acesso - email e senha
             required
           ></v-text-field>
         </v-col>
+      </v-row>
+      <v-row class="mt-5 mx-3 my-3">
         <v-col lg="4">
           <v-text-field
             v-model="logradouroCliente"
@@ -286,9 +289,19 @@ dados de acesso - email e senha
             required
           ></v-text-field>
         </v-col>
+        <v-col lg="4">
+          <v-text-field
+            v-model="complementoCliente"
+            :counter="10"
+            v-mask="['#####-###']"
+            label="Digite o complemento"
+            @blur="pesquisarCep"
+            required
+          ></v-text-field>
+        </v-col>
       </v-row>
       <v-row class="mt-5 mx-3 my-3">
-        <v-col lg="4">
+        <v-col lg="3">
           <!-- Colocar um auto complete -->
           <v-text-field
             :counter="10"
@@ -297,7 +310,7 @@ dados de acesso - email e senha
             required
           ></v-text-field>
         </v-col>
-        <v-col lg="4">
+        <v-col lg="3">
           <v-text-field
             v-model="cidadeCliente"
             :counter="10"
@@ -305,12 +318,19 @@ dados de acesso - email e senha
             required
           ></v-text-field>
         </v-col>
-        <v-col lg="4">
+        <v-col lg="3">
           <v-combobox
             v-model="ufCliente"
             :items="itemsUfCliente"
             label="Digite o nome do seu UF"
           ></v-combobox>
+        </v-col>
+        <v-col lg="3">
+          <v-text-field
+            v-model="paisCliente"
+            label="Digite seu país"
+            required
+          ></v-text-field>
         </v-col>
       </v-row>
       <v-row class="mt-5 mx-3 my-3" v-if="this.$store.state.enderecos">
@@ -337,14 +357,18 @@ dados de acesso - email e senha
                     >
                   </v-col>
                   <v-col lg="1">
-                    <v-icon v-if="item.status == false" color="error">mdi-alert-circle</v-icon>
-                     <v-icon v-if="item.status == true" color="teal" >mdi-check</v-icon>
+                    <v-icon v-if="item.status == false" color="error"
+                      >mdi-alert-circle</v-icon
+                    >
+                    <v-icon v-if="item.status == true" color="teal"
+                      >mdi-check</v-icon
+                    >
                   </v-col>
                 </v-row>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <v-row>
-                  <v-col lg="4">
+                  <v-col lg="3">
                     <p>{{ item.logradouroCliente }}</p>
                   </v-col>
                   <v-col lg="1">
@@ -353,11 +377,14 @@ dados de acesso - email e senha
                   <v-col lg="3">
                     <p>{{ item.bairroCliente }}</p>
                   </v-col>
-                  <v-col lg="3">
+                  <v-col lg="2">
                     <p>{{ item.cidadeCliente }}</p>
                   </v-col>
                   <v-col lg="1">
                     <p>{{ item.ufCliente }}</p>
+                  </v-col>
+                  <v-col lg="2">
+                    <p>{{ item.paisCliente }}</p>
                   </v-col>
                 </v-row>
               </v-expansion-panel-content>
@@ -444,7 +471,9 @@ export default {
       senhaCliente: "",
       cepCliente: "",
       logradouroCliente: "",
+      paisCliente: "Brasil",
       numeroCliente: "",
+      complementoCliente: "",
       bairroCliente: "",
       cidadeCliente: "",
       ufCliente: "",
@@ -462,9 +491,11 @@ export default {
       rules: {
         required: (value) => !!value || "Required.",
         min: (v) => v.length >= 8 || "Min 8 characters",
-        emailMatch: () => `The email and password you entered don't match`,
+        emailMatch: () => `The  email and password you entered don't match`,
       },
       tipoEnderecoCliente: "",
+      tipoTelefoneCliente: "",
+      itensTipoTelefoneCliente: ["Celular", "Fixo"],
       itemsTipoEnderecoCliente: ["Residencial", "Comercial", "Empresárial"],
       itemsUfCliente: [
         "AC",
@@ -548,6 +579,8 @@ export default {
         this.senhaCliente != "" &&
         this.cepCliente != "" &&
         this.logradouroCliente != "" &&
+        this.paisCliente != "" &&
+        this.complementoCliente != "" &&
         this.numeroCliente != "" &&
         this.bairroCliente != "" &&
         this.cidadeCliente != "" &&
@@ -593,10 +626,12 @@ export default {
         nomeEnderecoCliente: this.nomeEnderecoCliente,
         cepCliente: this.cepCliente,
         logradouroCliente: this.logradouroCliente,
+        complemento: this.complementoCliente,
         numeroCliente: this.numeroCliente,
         bairroCliente: this.bairroCliente,
         cidadeCliente: this.cidadeCliente,
         ufCliente: this.ufCliente,
+        paisCliente: this.paisCliente,
       });
     },
     ...mapMutations(["editarEnderecos"]),
@@ -609,10 +644,12 @@ export default {
         nomeEnderecoCliente: this.nomeEnderecoCliente,
         cepCliente: this.cepCliente,
         logradouroCliente: this.logradouroCliente,
+        complemento: this.complementoCliente,
         numeroCliente: this.numeroCliente,
         bairroCliente: this.bairroCliente,
         cidadeCliente: this.cidadeCliente,
         ufCliente: this.ufCliente,
+        paisCliente: this.paisCliente,
       });
     },
     salvarEndereco() {
@@ -622,12 +659,13 @@ export default {
       this.limparEndereco();
       this.idEnderecoCliente = null;
     },
-    verificaPreenchimento(){
-
+    verificaPreenchimento() {
       //Parei aqui, proximo passo é validar os campos e ver se está tudo certo
       if (
         this.cepCliente != "" &&
         this.logradouroCliente != "" &&
+        this.paisCliente != "" &&
+        this.complementoCliente != "" &&
         this.numeroCliente != "" &&
         this.bairroCliente != "" &&
         this.cidadeCliente != "" &&
@@ -638,10 +676,12 @@ export default {
         return true;
       }
       return false;
-    },  
+    },
     limparEndereco() {
       this.cepCliente = "";
       this.logradouroCliente = "";
+      this.paisCliente = "";
+      this.complementoCliente = "";
       this.numeroCliente = "";
       this.bairroCliente = "";
       this.cidadeCliente = "";
@@ -654,6 +694,8 @@ export default {
       let endereco = this.$store.state.enderecos[id];
       this.cepCliente = endereco.cepCliente;
       this.logradouroCliente = endereco.logradouroCliente;
+      this.paisCliente = endereco.paisCliente;
+      this.complementoCliente = endereco.complementoCliente;
       this.numeroCliente = endereco.numeroCliente;
       this.bairroCliente = endereco.bairroCliente;
       this.cidadeCliente = endereco.cidadeCliente;
