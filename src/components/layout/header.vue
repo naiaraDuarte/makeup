@@ -1,45 +1,73 @@
 <template>
   <div>
-    <v-app-bar app clipped-left dark height="auto" class="navbar" color="black">
+    <v-app-bar app clipped-left dark height="80" class="navbar" color="black">
       <v-row class="my-1">
-        <v-col lg="2">
+        <v-col lg="2" class="centraliza">
           <img
             class="ml-5 pl-5"
             :src="require('../../assets/images/logocortado.png')"
             height="43"
           />
         </v-col>
-        <v-col lg="8">
+        <v-col lg="6" class="centraliza">
           <v-row>
-            <v-col lg="8"></v-col>
-            <v-col lg="4">
+            <v-col lg="4"></v-col>
+            <v-col lg="8" class="mt-5 centraliza">
               <v-text-field
-                outlined
-                dense
+                color="#b38b57"
                 label="O que você está procurando?"
               ></v-text-field>
             </v-col>
           </v-row>
         </v-col>
-        <v-col lg="2">
-          <v-row
-            class="w-100"
-            style="max-width: 100%"
-          >
-            <v-col lg="6" class="text-center"  v-if="!$store.state.cadastro">
-              <p class="mb-0">Bem vindo :)</p>
+        <v-col lg="4" class="centraliza mb-2">
+          <v-row class="w-100" style="max-width: 100%">
+            <v-col
+              lg="4"
+              class="text-center retiraPadding"
+              v-if="!$store.state.cadastro"
+            >
+              <!-- <p class="mb-0">Bem vindo :)</p> -->
               <v-btn
                 class="white--text btnLink"
                 @click="$router.push(`/usuario`)"
                 target="_blank"
                 text
               >
-                <span>Entre ou cadastre-se</span>
+                <v-icon color="#b38b57" class="pr-3"
+                  >mdi-account-circle-outline</v-icon
+                >Entrar
               </v-btn>
             </v-col>
-            <v-col lg="12" class="text-center" v-if="$store.state.cadastro">
+            <v-col lg="4">
+              <v-btn
+                class="white--text btnLink"
+                @click="$router.push(`/usuario`)"
+                target="_blank"
+                text
+              >
+                <v-icon color="#b38b57" class="pr-3">mdi-heart-outline</v-icon
+                >Favoritos
+              </v-btn>
+            </v-col>
+            <v-col lg="4">
+              <v-btn
+                class="white--text btnLink"
+                @click="$router.push(`/usuario`)"
+                target="_blank"
+                text
+              >
+                <v-icon color="#b38b57" class="pr-3">mdi-cart-variant</v-icon
+                >Carrinho
+              </v-btn>
+            </v-col>
+            <v-col
+              lg="12"
+              class="text-center retiraPadding"
+              v-if="$store.state.cadastro"
+            >
               <p class="mb-0">Bem vindo {{ $store.state.nome }}</p>
-               <v-btn
+              <v-btn
                 class="white--text btnLink"
                 @click="$router.push(`/usuario`)"
                 target="_blank"
@@ -48,7 +76,6 @@
                 <span>Minha conta</span>
               </v-btn>
             </v-col>
-
           </v-row>
         </v-col>
       </v-row>
@@ -85,6 +112,7 @@ export default {
   .col-lg-6 {
     flex: 0 0 50%;
     max-width: 100%;
+    /* padding: 5px; */
   }
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <v-row style="margin-top: 120px" v-if="!$store.state.cadastro">
+    <v-row style="margin-top: 0px" v-if="!$store.state.cadastro">
       <v-col>
         <v-btn
           @click="componente = 'login'"

@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-container fluid>
-      <v-row style="margin-top: 150px">
+      <v-row style="margin-top: 0px">
         <v-col lg="2" class="px-2" v-for="(item, i) in 28" :key="i">
           <v-card elevation="0">
             <v-img
