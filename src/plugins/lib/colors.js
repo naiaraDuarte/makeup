@@ -294,7 +294,7 @@ const shades = Object.freeze({
     black: '#000000',
     white: '#ffffff',
     transparent: 'transparent',
-    corAuxiliar: '#b38b57'
+    corauxiliar: '#b38b57'
 });
 export default Object.freeze({
     red,
