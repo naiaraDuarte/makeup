@@ -269,7 +269,7 @@
         <v-col lg="4">
           <v-combobox
             v-model="tipoEnderecoCliente"
-            :items="itemsTipoEnderecoCliente"
+            :items="itensTipoEnderecoCliente"
             label="Tipo de endereço"
           ></v-combobox>
         </v-col>
@@ -284,6 +284,13 @@
         </v-col>
       </v-row>
       <v-row class="mt-1 mx-3 my-3">
+        <v-col lg="2">
+          <v-combobox
+            v-model="tipoLogradouro"
+            :items="itensTipoLogradouro"
+            label="Tipo Logradouro"
+          ></v-combobox>
+        </v-col>
         <v-col lg="4">
           <v-text-field
             v-model="logradouroCliente"
@@ -291,7 +298,7 @@
             required
           ></v-text-field>
         </v-col>
-        <v-col lg="4">
+        <v-col lg="3">
           <v-text-field
             v-model="numeroCliente"
             label="Número"
@@ -299,7 +306,7 @@
             required
           ></v-text-field>
         </v-col>
-        <v-col lg="4">
+        <v-col lg="3">
           <v-text-field
             v-model="complementoCliente"
             v-mask="['#####-###']"
@@ -327,7 +334,7 @@
         <v-col lg="3">
           <v-combobox
             v-model="ufCliente"
-            :items="itemsUfCliente"
+            :items="itensUfCliente"
             label="Estado"
           ></v-combobox>
         </v-col>
@@ -485,6 +492,7 @@ export default {
       emailCliente: "",
       senhaCliente: "",
       cepCliente: "",
+      tipoLogradouro:"",
       logradouroCliente: "",
       paisCliente: "Brasil",
       numeroCliente: "",
@@ -511,8 +519,9 @@ export default {
       tipoEnderecoCliente: "",
       tipoTelefoneCliente: "",
       itensTipoTelefoneCliente: ["Celular", "Fixo"],
-      itemsTipoEnderecoCliente: ["Residencial", "Comercial", "Empresárial"],
-      itemsUfCliente: [
+      itensTipoLogradouro: ["Rua", "Av"],
+      itensTipoEnderecoCliente: ["Residencial", "Comercial", "Empresárial"],
+      itensUfCliente: [
         "AC",
         "AL",
         "AP",
