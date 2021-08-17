@@ -22,8 +22,7 @@
         </v-col>
         <v-col lg="4" class="centraliza mb-2">
           <v-row class="w-100" style="max-width: 100%">
-            <v-col
-              lg="4"
+            <v-col lg="4"
               class="text-center retiraPadding"
               v-if="!$store.state.cadastro"
             >
@@ -37,6 +36,20 @@
                 <v-icon color="#b38b57" class="pr-3"
                   >mdi-account-circle-outline</v-icon
                 >Entrar
+              </v-btn>
+            </v-col>
+            <v-col lg="4"
+              class="text-center retiraPadding"
+              v-if="$store.state.cadastro"
+            >
+              <v-btn
+                class="white--text btnLink"
+                @click="$router.push(`/usuario`)"
+                target="_blank"
+                text
+              ><v-icon color="#b38b57" class="pr-3"
+                  >mdi-account-circle-outline</v-icon
+                >Minha conta
               </v-btn>
             </v-col>
             <v-col lg="4">
@@ -59,21 +72,6 @@
               >
                 <v-icon color="#b38b57" class="pr-3">mdi-cart-variant</v-icon
                 >Carrinho
-              </v-btn>
-            </v-col>
-            <v-col
-              lg="12"
-              class="text-center retiraPadding"
-              v-if="$store.state.cadastro"
-            >
-              <p class="mb-0">Bem vindo {{ $store.state.nome }}</p>
-              <v-btn
-                class="white--text btnLink"
-                @click="$router.push(`/usuario`)"
-                target="_blank"
-                text
-              >
-                <span>Minha conta</span>
               </v-btn>
             </v-col>
           </v-row>

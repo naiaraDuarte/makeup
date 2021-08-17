@@ -1,7 +1,14 @@
 <template>
   <v-container fluid>
-    <v-row style="margin-top: 0px" v-if="!$store.state.cadastro">
+    <v-row v-if="!$store.state.cadastro">
       <v-col>
+        <v-btn
+          @click="$router.push(`/`)"
+          target="_blank"
+          text
+        >
+          <v-icon color="#ccc">mdi-arrow-left</v-icon>
+        </v-btn>
         <v-btn
           @click="componente = 'login'"
           :class="[componente == 'login' ? 'ativado' : 'desativado']"
@@ -30,7 +37,14 @@
     </v-card>
 
     <!-- Depois que o cadastro já foi efetuado -->
-    <v-card style="margin-top: 150px" v-if="$store.state.cadastro">
+    <v-card style="margin-top: 50px" v-if="$store.state.cadastro">
+      <v-btn
+          @click="$router.push(`/`)"
+          target="_blank"
+          text
+        >
+          <v-icon color="#ccc">mdi-arrow-left</v-icon>
+        </v-btn>
       <v-row class="">
         <v-col class="text-left" lg="2">
           <v-card elevation="0"
