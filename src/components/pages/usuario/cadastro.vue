@@ -48,7 +48,7 @@
               <v-text-field
                 v-model="nomeCliente"
                 :counter="30"
-                label="Digite seu nome"
+                label="Nome"
                 required
               ></v-text-field>
             </v-col>
@@ -56,7 +56,7 @@
               <v-text-field
                 v-model="apelidoCliente"
                 :counter="30"
-                label="Como você gostaria de ser chamado?"
+                label="Como gostaria de ser chamado?"
                 required
               ></v-text-field>
             </v-col>
@@ -84,7 +84,7 @@
                 v-model="telefoneCliente"
                 v-mask="['(##) ####-####', '(##) #####-####']"
                 :counter="10"
-                label="Digite seu telefone"
+                label="Telefone"
                 required
               ></v-text-field>
             </v-col>
@@ -94,7 +94,7 @@
                 v-model="cpfCliente"
                 :counter="10"
                 v-mask="['###.###.###-##']"
-                label="Digite seu CPF"
+                label="CPF"
                 required
               ></v-text-field>
             </v-col>
@@ -158,7 +158,7 @@
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
                     v-model="formataDataNasc"
-                    label="Digite sua data de nascimento"
+                    label="Data de nascimento"
                     prepend-icon="mdi-calendar"
                     v-mask="['##/##/####']"
                     placeholder="DD/MM/AAAA"
@@ -196,7 +196,7 @@
             <v-col lg="6">
               <v-text-field
                 v-model="emailCliente"
-                label="Digite seu email"
+                label="Email"
                 required
               ></v-text-field>
             </v-col>
@@ -212,7 +212,7 @@
                 :rules="rulesSenha"
                 color="blue"
                 :counter="30"
-                label="Digite sua senha"
+                label="Senha"
                 class="input-group--focused"
                 @click:append="show3 = !show3"
                 required
@@ -262,7 +262,7 @@
         <v-col lg="4">
           <v-text-field
             v-model="nomeEnderecoCliente"
-            label="Digite um nome para seu endereço"
+            label="Nome desse endereço"
             required
           ></v-text-field>
         </v-col>
@@ -277,7 +277,7 @@
           <v-text-field
             v-model="cepCliente"
             v-mask="['#####-###']"
-            label="Digite seu CEP"
+            label="CEP"
             @blur="pesquisarCep"
             required
           ></v-text-field>
@@ -287,14 +287,14 @@
         <v-col lg="4">
           <v-text-field
             v-model="logradouroCliente"
-            label="Digite o nome da sua rua"
+            label="Logradouro"
             required
           ></v-text-field>
         </v-col>
         <v-col lg="4">
           <v-text-field
             v-model="numeroCliente"
-            label="Digite o N°"
+            label="Número"
             v-mask="['######']"
             required
           ></v-text-field>
@@ -303,7 +303,7 @@
           <v-text-field
             v-model="complementoCliente"
             v-mask="['#####-###']"
-            label="Digite o complemento"
+            label="Complemento"
             @blur="pesquisarCep"
             required
           ></v-text-field>
@@ -313,14 +313,14 @@
         <v-col lg="3">
           <v-text-field
             v-model="bairroCliente"
-            label="Digite o nome do seu bairro"
+            label="Bairro"
             required
           ></v-text-field>
         </v-col>
         <v-col lg="3">
           <v-text-field
             v-model="cidadeCliente"
-            label="Digite o nome da sua cidade"
+            label="Cidade"
             required
           ></v-text-field>
         </v-col>
@@ -328,13 +328,13 @@
           <v-combobox
             v-model="ufCliente"
             :items="itemsUfCliente"
-            label="Digite o nome do seu UF"
+            label="Estado"
           ></v-combobox>
         </v-col>
         <v-col lg="3">
           <v-text-field
             v-model="paisCliente"
-            label="Digite seu país"
+            label="País"
             required
           ></v-text-field>
         </v-col>
