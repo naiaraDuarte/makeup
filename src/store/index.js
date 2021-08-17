@@ -9,30 +9,25 @@ export default new Vuex.Store({
     nome: '',
     usuario: [],
     enderecos: [],
+    countId: 0,
   },
   mutations: {
     addUsuario(state, payload) {
       state.usuario[payload[0]] = payload[1];
     },
     addEnderecos(state, payload) {
+      payload.id = state.countId;
       state.enderecos.push(payload);
+      state.countId++;
     },
     editarEnderecos(state, payload){
-      
-      state.enderecos[payload.cod] = payload;
-
+      let index = state.enderecos.findIndex(endereco => endereco.id == payload.id);
+      state.enderecos[index] = payload;
     },
-    addFormatsObject(state, payload) {
-      state.beforeValueFormatsObject = payload;
-      state.formatsObject = payload;
+    removeEnderecos(state, payload){
+      let index = state.enderecos.findIndex(endereco => endereco.id == payload);
+      state.enderecos.splice(index, 1);
     },
-    updateVariationsFormatsObject(state, payload) {
-      state.variationsFormats = payload;
-      state.formatsObject.variations = payload;
-    },
-    addLocalStorage(state, payload) {
-      localStorage.setItem(payload[0], payload[1]);
-    }
   },
   getters: {},
   actions: {},

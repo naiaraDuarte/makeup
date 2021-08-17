@@ -64,13 +64,17 @@
           <v-row class="mx-4">
             <v-col lg="2" class="p-0">
               <v-combobox
-                v-model="tipoEnderecoCliente"
+                v-model="tipoTelefoneCliente"
                 :items="itensTipoTelefoneCliente"
                 label="Tipo"
               >
                 <template slot="item" slot-scope="data">
-                  <v-icon class="ml-5" v-if="data.item == 'Celular'">mdi-cellphone</v-icon>
-                  <v-icon class="ml-5" v-if="data.item == 'Fixo'">mdi-phone-classic</v-icon>
+                  <v-icon class="ml-5" v-if="data.item == 'Celular'"
+                    >mdi-cellphone</v-icon
+                  >
+                  <v-icon class="ml-5" v-if="data.item == 'Fixo'"
+                    >mdi-phone-classic</v-icon
+                  >
                   <!-- <span class="cb-item">{{ data.item }}</span> -->
                 </template>
               </v-combobox>
@@ -234,21 +238,30 @@
     <v-card elevation="0" v-if="faseCadastro == 2">
       <h2 class="cor-letra text-center mt-5 pt-5">
         Agora preciso que você me informe um endereço...
-        <v-btn elevation="0" text class="btnSubmit" @click="salvarEndereco()"
-          ><v-icon left> mdi-plus </v-icon> add endereço</v-btn
-        >
-      </h2>
 
-      <!-- <v-row v-if="mensagem != ''">
-        <v-col lg="12">
-          <p style="color: red">{{ mensagem }}</p>
-        </v-col>
-      </v-row> -->
-      <v-row class="mt-5 mx-4 pt-5">
+        <div class="mt-2">
+          <v-btn
+            elevation="0"
+            v-if="idEnderecoCliente == null"
+            text
+            class="btnSubmit"
+            @click="salvarEndereco()"
+            ><v-icon left> mdi-plus </v-icon> add endereço</v-btn
+          >
+          <v-btn
+            elevation="0"
+            v-if="idEnderecoCliente != null"
+            text
+            class="btnSubmit"
+            @click="salvarEndereco()"
+            ><v-icon left> mdi-pencil-outline </v-icon> Editar endereço</v-btn
+          >
+        </div>
+      </h2>
+      <v-row class="mt-0 mx-4 pt-3">
         <v-col lg="4">
           <v-text-field
             v-model="nomeEnderecoCliente"
-            :counter="10"
             label="Digite um nome para seu endereço"
             required
           ></v-text-field>
@@ -263,7 +276,6 @@
         <v-col lg="4">
           <v-text-field
             v-model="cepCliente"
-            :counter="10"
             v-mask="['#####-###']"
             label="Digite seu CEP"
             @blur="pesquisarCep"
@@ -271,11 +283,10 @@
           ></v-text-field>
         </v-col>
       </v-row>
-      <v-row class="mt-5 mx-3 my-3">
+      <v-row class="mt-1 mx-3 my-3">
         <v-col lg="4">
           <v-text-field
             v-model="logradouroCliente"
-            :counter="10"
             label="Digite o nome da sua rua"
             required
           ></v-text-field>
@@ -283,7 +294,6 @@
         <v-col lg="4">
           <v-text-field
             v-model="numeroCliente"
-            :counter="10"
             label="Digite o N°"
             v-mask="['######']"
             required
@@ -292,7 +302,6 @@
         <v-col lg="4">
           <v-text-field
             v-model="complementoCliente"
-            :counter="10"
             v-mask="['#####-###']"
             label="Digite o complemento"
             @blur="pesquisarCep"
@@ -300,11 +309,9 @@
           ></v-text-field>
         </v-col>
       </v-row>
-      <v-row class="mt-5 mx-3 my-3">
+      <v-row class="mt-1 mx-3 my-1">
         <v-col lg="3">
-          <!-- Colocar um auto complete -->
           <v-text-field
-            :counter="10"
             v-model="bairroCliente"
             label="Digite o nome do seu bairro"
             required
@@ -313,7 +320,6 @@
         <v-col lg="3">
           <v-text-field
             v-model="cidadeCliente"
-            :counter="10"
             label="Digite o nome da sua cidade"
             required
           ></v-text-field>
@@ -333,7 +339,7 @@
           ></v-text-field>
         </v-col>
       </v-row>
-      <v-row class="mt-5 mx-3 my-3" v-if="this.$store.state.enderecos">
+      <v-row class="mt-1 mx-3 my-3" v-if="this.$store.state.enderecos">
         <v-col lg="12">
           <v-expansion-panels accordion>
             <v-expansion-panel
@@ -345,24 +351,33 @@
                   <v-col lg="4">
                     <p>{{ item.nomeEnderecoCliente }}</p>
                   </v-col>
-                  <v-col lg="3">
+                  <v-col lg="2">
                     <p>{{ item.tipoEnderecoCliente }}</p>
                   </v-col>
                   <v-col lg="3">
                     <p>{{ item.cepCliente }}</p>
                   </v-col>
-                  <v-col lg="1">
-                    <v-btn elevation="0" icon @click="getEndereco(i)"
-                      ><v-icon>mdi-pencil-outline</v-icon></v-btn
-                    >
-                  </v-col>
-                  <v-col lg="1">
-                    <v-icon v-if="item.status == false" color="error"
-                      >mdi-alert-circle</v-icon
-                    >
-                    <v-icon v-if="item.status == true" color="teal"
-                      >mdi-check</v-icon
-                    >
+                  <v-col lg="2">
+                    <v-row>
+                      <v-col lg="4">
+                        <v-btn elevation="0" icon @click="getEndereco(item.id)"
+                          ><v-icon>mdi-pencil-outline</v-icon></v-btn
+                        >
+                      </v-col>
+                      <v-col lg="4">
+                        <v-btn elevation="0" icon @click="remove(item.id)"
+                          ><v-icon>mdi-delete-empty</v-icon></v-btn
+                        >
+                      </v-col>
+                      <v-col lg="4" class="mt-2">
+                        <v-icon v-if="item.status == false" color="error"
+                          >mdi-alert-circle</v-icon
+                        >
+                        <v-icon v-if="item.status == true" color="teal"
+                          >mdi-check</v-icon
+                        >
+                      </v-col>
+                    </v-row>
                   </v-col>
                 </v-row>
               </v-expansion-panel-header>
@@ -621,6 +636,7 @@ export default {
       this.mensagem = "";
       let status = this.verificaPreenchimento();
       this.addEnderecos({
+        id: 0,
         status: status,
         tipoEnderecoCliente: this.tipoEnderecoCliente,
         nomeEnderecoCliente: this.nomeEnderecoCliente,
@@ -637,8 +653,10 @@ export default {
     ...mapMutations(["editarEnderecos"]),
     editarEndereco(id) {
       let status = this.verificaPreenchimento();
+      let endereco = this.verificaIdExistente();
+      console.log(endereco);
       this.editarEnderecos({
-        cod: id,
+        id: id,
         status: status,
         tipoEnderecoCliente: this.tipoEnderecoCliente,
         nomeEnderecoCliente: this.nomeEnderecoCliente,
@@ -651,6 +669,20 @@ export default {
         ufCliente: this.ufCliente,
         paisCliente: this.paisCliente,
       });
+    },
+    ...mapMutations(["removeEnderecos"]),
+    remove(id) {
+      console.log("id", id);
+      this.removeEnderecos(id);
+    },
+    verificaIdExistente() {
+      let enderecos = this.$store.state.enderecos;
+
+      let encontrou = enderecos.filter(
+        (endereco) => endereco.id == this.idEnderecoCliente
+      );
+      console.log("Achooooooooouuuuuuuuuuuuuu", encontrou);
+      return true;
     },
     salvarEndereco() {
       if (this.idEnderecoCliente == null) this.addEndereco();
@@ -690,8 +722,15 @@ export default {
       this.tipoEnderecoCliente = "";
     },
     getEndereco(id) {
+      console.log("IDDDDDD RECEBIDO", id);
       this.idEnderecoCliente = id;
-      let endereco = this.$store.state.enderecos[id];
+
+      let endereco = this.$store.state.enderecos.filter(
+        (endereco) => endereco.id == id
+      );
+      console.log("ENDERECO", endereco);
+      endereco = endereco[0];
+      // let endereco = this.$store.state.enderecos[id];
       this.cepCliente = endereco.cepCliente;
       this.logradouroCliente = endereco.logradouroCliente;
       this.paisCliente = endereco.paisCliente;
