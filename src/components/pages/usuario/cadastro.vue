@@ -623,6 +623,18 @@ export default {
       return false;
     },
   },
+  mounted(){
+    if (this.$store.state.usuario.nomeCliente != null || this.$store.state.usuario.nomeCliente != "") {
+      let usuario = this.$store.state.usuario;
+      this.nomeCliente = usuario.nomeCliente;
+      this.cpfCliente = usuario.cpfCliente;
+      this.apelidoCliente = usuario.apelidoCliente;
+      this.telefoneCliente = usuario.telefoneCliente;
+      this.sexoCliente = usuario.sexoCliente;
+      this.emailCliente = usuario.emailCliente;
+      this.senhaCliente = usuario.senhaCliente;
+    }
+  },
   methods: {
     ...mapMutations(["addEnderecos"]),
     addEndereco() {
@@ -730,7 +742,6 @@ export default {
       );
       console.log("ENDERECO", endereco);
       endereco = endereco[0];
-      // let endereco = this.$store.state.enderecos[id];
       this.cepCliente = endereco.cepCliente;
       this.logradouroCliente = endereco.logradouroCliente;
       this.paisCliente = endereco.paisCliente;
@@ -771,9 +782,21 @@ export default {
         });
     },
     salvar() {
+      this.addDadosUsuario("nome", this.nomeCliente);
+      this.addDadosUsuario("cpfCliente", this.cpfCliente);
+      this.addDadosUsuario("apelidoCliente", this.apelidoCliente);
+      this.addDadosUsuario("telefoneCliente", this.telefoneCliente);
+      this.addDadosUsuario("sexoCliente", this.sexoCliente);
+      this.addDadosUsuario("emailCliente", this.emailCliente);
+      this.addDadosUsuario("senhaCliente", this.senhaCliente);
       this.$store.state.cadastro = true;
       this.$store.state.nome = this.apelidoCliente;
       this.$router.push(`/`);
+    },
+
+    ...mapMutations(["addUsuario"]),
+    addDadosUsuario(key, val) {
+      this.addUsuario([key, val]);
     },
     verificacaoSenhaForte() {
       this.forca = 0;
