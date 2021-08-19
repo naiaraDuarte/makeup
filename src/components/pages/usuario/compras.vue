@@ -1,3 +1,15 @@
 <template>
-    <h1>Compras</h1>
+    <v-container fluid>
+        <cartao></cartao>
+    </v-container>
+    
 </template>
+<script>
+import cartao from '../../../components/ui/cartao.vue';
+
+export default {
+    components: {
+        cartao
+    }
+}
+</script>

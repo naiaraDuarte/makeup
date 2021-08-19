@@ -47,15 +47,13 @@
             <v-col lg="6" class="p-0">
               <v-text-field
                 v-model="nomeCliente"
-                :counter="30"
-                label="Nome"
+                label="Nome completo"
                 required
               ></v-text-field>
             </v-col>
             <v-col lg="6" class="p-0">
               <v-text-field
                 v-model="apelidoCliente"
-                :counter="30"
                 label="Como gostaria de ser chamado?"
                 required
               ></v-text-field>
@@ -83,7 +81,6 @@
               <v-text-field
                 v-model="telefoneCliente"
                 v-mask="['(##) ####-####', '(##) #####-####']"
-                :counter="10"
                 label="Telefone"
                 required
               ></v-text-field>
@@ -92,7 +89,6 @@
               <!-- Colocar um auto complete -->
               <v-text-field
                 v-model="cpfCliente"
-                :counter="10"
                 v-mask="['###.###.###-##']"
                 label="CPF"
                 required
@@ -520,7 +516,7 @@ export default {
       tipoTelefoneCliente: "",
       itensTipoTelefoneCliente: ["Celular", "Fixo"],
       itensTipoLogradouro: ["Rua", "Av"],
-      itensTipoEnderecoCliente: ["Residencial", "Comercial", "Empresárial"],
+      itensTipoEnderecoCliente: ["Cobrança", "Entrega"],
       itensUfCliente: [
         "AC",
         "AL",
@@ -604,7 +600,6 @@ export default {
         this.cepCliente != "" &&
         this.logradouroCliente != "" &&
         this.paisCliente != "" &&
-        this.complementoCliente != "" &&
         this.numeroCliente != "" &&
         this.bairroCliente != "" &&
         this.cidadeCliente != "" &&
@@ -642,6 +637,9 @@ export default {
       this.sexoCliente = usuario.sexoCliente;
       this.emailCliente = usuario.emailCliente;
       this.senhaCliente = usuario.senhaCliente;
+      this.tipoTelefoneCliente = usuario.tipoEnderecoCliente;
+      this.date = usuario.date;
+      this.image = usuario.image;
     }
   },
   methods: {
@@ -718,7 +716,6 @@ export default {
         this.cepCliente != "" &&
         this.logradouroCliente != "" &&
         this.paisCliente != "" &&
-        this.complementoCliente != "" &&
         this.numeroCliente != "" &&
         this.bairroCliente != "" &&
         this.cidadeCliente != "" &&
@@ -791,13 +788,17 @@ export default {
         });
     },
     salvar() {
-      this.addDadosUsuario("nome", this.nomeCliente);
+      this.addDadosUsuario("nomeCliente", this.nomeCliente);
       this.addDadosUsuario("cpfCliente", this.cpfCliente);
       this.addDadosUsuario("apelidoCliente", this.apelidoCliente);
       this.addDadosUsuario("telefoneCliente", this.telefoneCliente);
       this.addDadosUsuario("sexoCliente", this.sexoCliente);
       this.addDadosUsuario("emailCliente", this.emailCliente);
       this.addDadosUsuario("senhaCliente", this.senhaCliente);
+      this.addDadosUsuario("date", this.date);
+      this.addDadosUsuario("imagem", this.image);
+      this.addDadosUsuario("tipoTelefoneCliente", this.tipoTelefoneCliente);
+
       this.$store.state.cadastro = true;
       this.$store.state.nome = this.apelidoCliente;
       this.$router.push(`/`);
