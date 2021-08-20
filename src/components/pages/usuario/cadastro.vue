@@ -486,7 +486,7 @@ export default {
       telefoneCliente: "",
       sexoCliente: "",
       emailCliente: "",
-      senhaCliente: "",
+      senhaCliente: " ",
       cepCliente: "",
       tipoLogradouro:"",
       logradouroCliente: "",

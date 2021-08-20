@@ -1,53 +1,39 @@
 <template>
-  <v-container>
-    <div class="lugarDoBody">
-      <div class="container">
-        <div class="credit-card">
-          <div class="face front">
-            <div class="top">
-              <img src="https://i.imgur.com/b8hMuIe.png" alt="mastercard" />
-              <span id="card-label">MasterCard (Débito)</span>
-            </div>
+  <div>
+    <div class="card-wrapper"></div>
 
-            <div class="bottom">
-              <span class="card-number">•••• •••• •••• 4856</span>
-
-              <div class="card-field">
-                <span>Validade</span>
-                <span>01/28</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="face back">
-            <div class="top">
-              <div class="card-line"></div>
-
-              <span id="card-name">João Alberto V Gomes</span>
-              <span class="card-number">•••• •••• •••• 4856</span>
-            </div>
-
-            <div class="bottom">
-              <div class="card-field">
-                <span>Emissão</span>
-                <span>01/22</span>
-              </div>
-
-              <div class="card-field">
-                <span>Validade</span>
-                <span>01/28</span>
-              </div>
-
-              <div class="card-field">
-                <span>CCV</span>
-                <span>••••</span>
-              </div>
-
-              <img src="https://i.imgur.com/b8hMuIe.png" alt="mastercard" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </v-container>
+    <form>
+      <input type="text" id="cc-number" name="number" />
+      <input type="text" id="cc-name" name="first-name" />
+      <input type="text" id="cc-expiration" name="expiry" />
+      <input type="text" id="cc-cvv" name="cvc" />
+    </form>
+  </div>
 </template>
+<script>
+import * as Card from "card";
+
+export default {
+  name: "Form CreditCard",
+  mounted() {
+    new Card({
+      form: "form",
+      container: ".card-wrapper",
+      formSelectors: {
+        numberInput: "input#cc-number",
+        nameInput: "input#cc-name",
+        expiryInput: "input#cc-expiration",
+        cvcInput: "input#cc-cvv",
+      },
+      width: 270,
+      formatting: true,
+      placeholders: {
+        number: "•••• •••• •••• ••••",
+        name: "Nome Completo",
+        expiry: "••/••",
+        cvc: "•••",
+      },
+    });
+  },
+};
+</script>

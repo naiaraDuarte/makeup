@@ -3,7 +3,7 @@
     <v-container fluid>
       <v-row style="margin-top: 0px" v-if="itens.length > 0">
         <v-col lg="3" class="px-2" v-for="(item, i) in itens" :key="i">
-          <v-card :loading="loading" class="mx-auto my-12" max-width="374">
+          <v-card class="mx-auto my-12" max-width="374">
             <template slot="progress">
               <v-progress-linear
                 color="deep-purple"
@@ -41,7 +41,7 @@
               </div>
             </v-card-text>
             <v-card-actions>
-              <v-btn style="width: 100%" class="btnCarrinho white--text" color="#b38b57" @click="reserve">
+              <v-btn style="width: 100%" class="btnCarrinho white--text" color="#b38b57">
                 <v-icon color="white" class="pr-3">mdi-cart-variant</v-icon
                 > Add ao carrinho
               </v-btn>
