@@ -1,7 +1,7 @@
 <template>
   <v-app>
-    <!-- <navbar></navbar> -->
-    <app-header></app-header>
+    <navbar v-if="$store.state.perfil == 'adm'"></navbar>
+    <app-header v-if="$store.state.perfil == 'usuario'"></app-header>
     <v-content>
       <v-container>
         <router-view />
@@ -12,13 +12,13 @@
 
 <script>
 import "./assets/css/main.scss";
-// import navbar from "./components/layout/navbar.vue";
+import navbar from "./components/layout/navbar.vue";
 import appHeader from './components/layout/header.vue';
 export default {
   name: "App",
   components: {
     appHeader,
-    // navbar,
+    navbar,
   },
   data: () => ({
     //

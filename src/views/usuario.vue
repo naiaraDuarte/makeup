@@ -90,6 +90,9 @@ export default {
     pagamento,
     compras
   },
+  mounted(){
+    this.$store.state.perfil = "usuario"
+  },
   data() {
     return {
       componente: "cadastro",

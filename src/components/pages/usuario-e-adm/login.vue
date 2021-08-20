@@ -6,15 +6,19 @@
     <v-row class="mx-3 my-3 centraliza">
       <v-col lg="5">
         <v-text-field
-          v-model="emailCliente"
+          v-model="email"
+          v-on:keyup.enter="entrar"
           label="Digite seu email"
           required
         ></v-text-field>
 
         <v-text-field
-          v-model="senhaCliente"
+          v-model="senha"
+          v-on:keyup.enter="entrar"
+          :append-icon="show3 ? 'mdi-eye' : 'mdi-eye-off'"
           :type="show3 ? 'text' : 'password'"
           label="Digite sua senha"
+          @click:append="show3 = !show3"
           required
         ></v-text-field>
       </v-col>
@@ -42,8 +46,8 @@ export default {
   data() {
     return {
       show3: false,
-      emailCliente: "",
-      senhaCliente: "",
+      email: "",
+      senha: "",
       mensagem: "",
       snackbar: false,
       snackbarColor: "",
@@ -51,7 +55,7 @@ export default {
   },
   methods: {
     validacaoDePreenchimento() {
-      if (this.emailCliente != "" && this.senhaCliente != "") {
+      if (this.email != "" && this.senha != "") {
         this.mensage = "";
         return true;
       }
@@ -62,12 +66,26 @@ export default {
     },
     entrar() {
       if (this.validacaoDePreenchimento()) {
-        this.$router.push("/adm");
+        let usuarios = this.$store.state.usuario;
+        let usuario = usuarios.filter(
+          (usuario) =>
+            usuario.email == this.email && usuario.senha == this.senha
+        );
+        if (usuario[0]) {
+          console.log(usuario);
+          if (usuario[0].perfil == "adm") {
+            this.$router.push("/adm");
+          } else {
+            this.$store.state.cadastro = true;
+            this.$router.push(`/`);
+          }
+        } else {
+          this.snackbarColor = "red";
+          this.mensagem = "Login ou senha não conferem";
+          this.snackbar = true;
+        }
       }
     },
-    validarCredenciais(){
-      
-    }
   },
 };
 </script>
