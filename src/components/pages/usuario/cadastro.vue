@@ -46,14 +46,14 @@
           <v-row class="mx-4">
             <v-col lg="6" class="p-0">
               <v-text-field
-                v-model="nomeCliente"
+                v-model="nome"
                 label="Nome completo"
                 required
               ></v-text-field>
             </v-col>
             <v-col lg="6" class="p-0">
               <v-text-field
-                v-model="apelidoCliente"
+                v-model="apelido"
                 label="Como gostaria de ser chamado?"
                 required
               ></v-text-field>
@@ -62,8 +62,8 @@
           <v-row class="mx-4">
             <v-col lg="2" class="p-0">
               <v-combobox
-                v-model="tipoTelefoneCliente"
-                :items="itensTipoTelefoneCliente"
+                v-model="tipoTelefone"
+                :items="itensTipoTelefone"
                 label="Tipo"
               >
                 <template slot="item" slot-scope="data">
@@ -79,7 +79,7 @@
             </v-col>
             <v-col lg="4" class="p-0">
               <v-text-field
-                v-model="telefoneCliente"
+                v-model="telefone"
                 v-mask="['(##) ####-####', '(##) #####-####']"
                 label="Telefone"
                 required
@@ -88,7 +88,7 @@
             <v-col lg="6" class="p-0">
               <!-- Colocar um auto complete -->
               <v-text-field
-                v-model="cpfCliente"
+                v-model="cpf"
                 v-mask="['###.###.###-##']"
                 label="CPF"
                 required
@@ -175,7 +175,7 @@
             </v-col>
             <v-col lg="6" class="p-0">
               <!-- <span>Sexo:</span> -->
-              <v-radio-group v-model="sexoCliente" row>
+              <v-radio-group v-model="sexo" row>
                 <v-radio label="Masculino" value="masculino"></v-radio>
                 <v-radio label="Feminino" value="feminino"></v-radio>
                 <v-radio label="Outros" value="outros"></v-radio>
@@ -185,7 +185,7 @@
           <v-row class="mx-4">
             <v-col lg="6">
               <v-text-field
-                v-model="emailCliente"
+                v-model="email"
                 :disabled="$store.state.usuario.length > 1"
                 label="Email"
                 required
@@ -204,7 +204,7 @@
             <v-col lg="6" class="p-0">
               <v-text-field
                 :append-icon="show3 ? 'mdi-eye' : 'mdi-eye-off'"
-                v-model="senhaCliente"
+                v-model="senha"
                 ref="corDoInput"
                 :disabled="$store.state.usuario.length > 1"
                 :type="show3 ? 'text' : 'password'"
@@ -220,7 +220,7 @@
             <v-col lg="6" class="p-0" v-if="!$store.state.usuario[1]">
               <v-text-field
                 :append-icon="show3 ? 'mdi-eye' : 'mdi-eye-off'"
-                v-model="confirmacaoSenhaCliente"
+                v-model="confirmacaoSenha"
                 :type="show3 ? 'text' : 'password'"
                 :counter="30"
                 :rules="rulesConfirmacaoSenha"
@@ -249,7 +249,7 @@
         <div class="mt-2">
           <v-btn
             elevation="0"
-            v-if="idEnderecoCliente == null"
+            v-if="idEndereco == null"
             text
             class="btnSubmit"
             @click="salvarEndereco()"
@@ -257,7 +257,7 @@
           >
           <v-btn
             elevation="0"
-            v-if="idEnderecoCliente != null"
+            v-if="idEndereco != null"
             text
             class="btnSubmit"
             @click="salvarEndereco()"
@@ -268,21 +268,21 @@
       <v-row class="mt-0 mx-4 pt-3">
         <v-col lg="4">
           <v-text-field
-            v-model="nomeEnderecoCliente"
+            v-model="nomeEndereco"
             label="Nome desse endereço"
             required
           ></v-text-field>
         </v-col>
         <v-col lg="4">
           <v-combobox
-            v-model="tipoEnderecoCliente"
-            :items="itensTipoEnderecoCliente"
+            v-model="tipoEndereco"
+            :items="itensTipoEndereco"
             label="Tipo de endereço"
           ></v-combobox>
         </v-col>
         <v-col lg="4">
           <v-text-field
-            v-model="cepCliente"
+            v-model="cep"
             v-mask="['#####-###']"
             label="CEP"
             @blur="pesquisarCep"
@@ -300,14 +300,14 @@
         </v-col>
         <v-col lg="4">
           <v-text-field
-            v-model="logradouroCliente"
+            v-model="logradouro"
             label="Logradouro"
             required
           ></v-text-field>
         </v-col>
         <v-col lg="3">
           <v-text-field
-            v-model="numeroCliente"
+            v-model="numero"
             label="Número"
             v-mask="['######']"
             required
@@ -315,7 +315,7 @@
         </v-col>
         <v-col lg="3">
           <v-text-field
-            v-model="complementoCliente"
+            v-model="complemento"
             v-mask="['#####-###']"
             label="Complemento"
             @blur="pesquisarCep"
@@ -326,28 +326,28 @@
       <v-row class="mt-1 mx-3 my-1">
         <v-col lg="3">
           <v-text-field
-            v-model="bairroCliente"
+            v-model="bairro"
             label="Bairro"
             required
           ></v-text-field>
         </v-col>
         <v-col lg="3">
           <v-text-field
-            v-model="cidadeCliente"
+            v-model="cidade"
             label="Cidade"
             required
           ></v-text-field>
         </v-col>
         <v-col lg="3">
           <v-combobox
-            v-model="ufCliente"
-            :items="itensUfCliente"
+            v-model="uf"
+            :items="itensUf"
             label="Estado"
           ></v-combobox>
         </v-col>
         <v-col lg="3">
           <v-text-field
-            v-model="paisCliente"
+            v-model="pais"
             label="País"
             required
           ></v-text-field>
@@ -363,13 +363,13 @@
               <v-expansion-panel-header>
                 <v-row class="centraliza">
                   <v-col lg="4">
-                    <p>{{ item.nomeEnderecoCliente }}</p>
+                    <p>{{ item.nomeEndereco }}</p>
                   </v-col>
                   <v-col lg="2">
-                    <p>{{ item.tipoEnderecoCliente }}</p>
+                    <p>{{ item.tipoEndereco }}</p>
                   </v-col>
                   <v-col lg="3">
-                    <p>{{ item.cepCliente }}</p>
+                    <p>{{ item.cep }}</p>
                   </v-col>
                   <v-col lg="2">
                     <v-row>
@@ -398,22 +398,22 @@
               <v-expansion-panel-content>
                 <v-row>
                   <v-col lg="3">
-                    <p>{{ item.logradouroCliente }}</p>
+                    <p>{{ item.logradouro }}</p>
                   </v-col>
                   <v-col lg="1">
-                    <p>N° {{ item.numeroCliente }}</p>
+                    <p>N° {{ item.numero }}</p>
                   </v-col>
                   <v-col lg="3">
-                    <p>{{ item.bairroCliente }}</p>
+                    <p>{{ item.bairro }}</p>
                   </v-col>
                   <v-col lg="2">
-                    <p>{{ item.cidadeCliente }}</p>
+                    <p>{{ item.cidade }}</p>
                   </v-col>
                   <v-col lg="1">
-                    <p>{{ item.ufCliente }}</p>
+                    <p>{{ item.uf }}</p>
                   </v-col>
                   <v-col lg="2">
-                    <p>{{ item.paisCliente }}</p>
+                    <p>{{ item.pais }}</p>
                   </v-col>
                 </v-row>
               </v-expansion-panel-content>
@@ -489,26 +489,26 @@ export default {
       show3: false,
       txtDoBotao: "Continuar",
       faseCadastro: 0,
-      idEnderecoCliente: null,
-      codCliente: "",
-      nomeCliente: "",
-      cpfCliente: "",
-      apelidoCliente: "",
-      telefoneCliente: "",
-      sexoCliente: "",
-      emailCliente: "",
-      senhaCliente: " ",
-      cepCliente: "",
+      idEndereco: null,
+      cod: "",
+      nome: "",
+      cpf: "",
+      apelido: "",
+      telefone: "",
+      sexo: "",
+      email: "",
+      senha: " ",
+      cep: "",
       tipoLogradouro: "",
-      logradouroCliente: "",
-      paisCliente: "Brasil",
-      numeroCliente: "",
-      complementoCliente: "",
-      bairroCliente: "",
-      cidadeCliente: "",
-      ufCliente: "",
-      nomeEnderecoCliente: "",
-      confirmacaoSenhaCliente: "",
+      logradouro: "",
+      pais: "Brasil",
+      numero: "",
+      complemento: "",
+      bairro: "",
+      cidade: "",
+      uf: "",
+      nomeEndereco: "",
+      confirmacaoSenha: "",
       image: null,
       valorBarra: 50,
       activePicker: null,
@@ -523,12 +523,12 @@ export default {
         min: (v) => v.length >= 8 || "Min 8 characters",
         emailMatch: () => `The  email and password you entered don't match`,
       },
-      tipoEnderecoCliente: "",
-      tipoTelefoneCliente: "",
-      itensTipoTelefoneCliente: ["Celular", "Fixo"],
+      tipoEndereco: "",
+      tipoTelefone: "",
+      itensTipoTelefone: ["Celular", "Fixo"],
       itensTipoLogradouro: ["Rua", "Avenida"],
-      itensTipoEnderecoCliente: ["Cobrança", "Entrega"],
-      itensUfCliente: [
+      itensTipoEndereco: ["Cobrança", "Entrega"],
+      itensUf: [
         "AC",
         "AL",
         "AP",
@@ -591,7 +591,7 @@ export default {
     rulesConfirmacaoSenha() {
       let rules = [];
 
-      if (this.senhaCliente != this.confirmacaoSenhaCliente) {
+      if (this.senha != this.confirmacaoSenha) {
         rules.push("As senhas não conferem!");
       }
       return rules;
@@ -604,37 +604,37 @@ export default {
     },
     validacaoDePreenchimento() {
       if (
-        this.nomeCliente != "" &&
-        this.cpfCliente != "" &&
-        this.apelidoCliente != "" &&
-        this.telefoneCliente != "" &&
-        this.sexoCliente != "" &&
-        this.emailCliente != "" &&
-        this.senhaCliente != "" &&
-        this.cepCliente != "" &&
-        this.logradouroCliente != "" &&
-        this.paisCliente != "" &&
-        this.numeroCliente != "" &&
-        this.bairroCliente != "" &&
-        this.cidadeCliente != "" &&
-        this.ufCliente != "" &&
-        this.nomeEnderecoCliente != "" &&
+        this.nome != "" &&
+        this.cpf != "" &&
+        this.apelido != "" &&
+        this.telefone != "" &&
+        this.sexo != "" &&
+        this.email != "" &&
+        this.senha != "" &&
+        this.cep != "" &&
+        this.logradouro != "" &&
+        this.pais != "" &&
+        this.numero != "" &&
+        this.bairro != "" &&
+        this.cidade != "" &&
+        this.uf != "" &&
+        this.nomeEndereco != "" &&
         this.forca >= 70 &&
-        this.tipoEnderecoCliente != "" &&
-        this.confirmacaoSenhaCliente != ""
+        this.tipoEndereco != "" &&
+        this.confirmacaoSenha != ""
       ) {
         return true;
       } else if (
-        this.nomeCliente != "" &&
-        this.cpfCliente != "" &&
-        this.apelidoCliente != "" &&
-        this.telefoneCliente != "" &&
-        this.sexoCliente != "" &&
-        this.emailCliente != "" &&
-        this.senhaCliente != "" &&
+        this.nome != "" &&
+        this.cpf != "" &&
+        this.apelido != "" &&
+        this.telefone != "" &&
+        this.sexo != "" &&
+        this.email != "" &&
+        this.senha != "" &&
         this.$store.state.enderecos.length > 0 &&
         this.forca >= 70 &&
-        this.confirmacaoSenhaCliente != ""
+        this.confirmacaoSenha != ""
       ) {
         return true;
       }
@@ -644,19 +644,19 @@ export default {
   mounted() {
     if (this.$store.state.usuario.length > 1) {
       if (
-        this.$store.state.usuario[1].nomeCliente != null ||
-        this.$store.state.usuario[1].nomeCliente != ""
+        this.$store.state.usuario[1].nome != null ||
+        this.$store.state.usuario[1].nome != ""
       ) {
         //Alerta coisa fixa, PROVISÓRIO
         let usuario = this.$store.state.usuario[1];
-        this.nomeCliente = usuario.nomeCliente;
-        this.cpfCliente = usuario.cpfCliente;
-        this.apelidoCliente = usuario.apelidoCliente;
-        this.telefoneCliente = usuario.telefoneCliente;
-        this.sexoCliente = usuario.sexoCliente;
-        this.emailCliente = usuario.emailCliente;
-        this.senhaCliente = usuario.senhaCliente;
-        this.tipoTelefoneCliente = usuario.tipoEnderecoCliente;
+        this.nome = usuario.nome;
+        this.cpf = usuario.cpf;
+        this.apelido = usuario.apelido;
+        this.telefone = usuario.telefone;
+        this.sexo = usuario.sexo;
+        this.email = usuario.email;
+        this.senha = usuario.senha;
+        this.tipoTelefone = usuario.tipoEndereco;
         this.date = usuario.date;
         this.image = usuario.image;
       }
@@ -665,7 +665,7 @@ export default {
   methods: {
     ...mapMutations(["addEnderecos"]),
     addEndereco() {
-      if (this.cepCliente == "" && this.nomeEnderecoCliente == "") {
+      if (this.cep == "" && this.nomeEndereco == "") {
         this.snackbarColor = "#b38b57";
         this.mensagem =
           "Ao menos o nome do endereço ou CEP devem ser preenchidos antes de adicioná-los";
@@ -677,16 +677,16 @@ export default {
       this.addEnderecos({
         id: 0,
         status: status,
-        tipoEnderecoCliente: this.tipoEnderecoCliente,
-        nomeEnderecoCliente: this.nomeEnderecoCliente,
-        cepCliente: this.cepCliente,
-        logradouroCliente: this.logradouroCliente,
-        complemento: this.complementoCliente,
-        numeroCliente: this.numeroCliente,
-        bairroCliente: this.bairroCliente,
-        cidadeCliente: this.cidadeCliente,
-        ufCliente: this.ufCliente,
-        paisCliente: this.paisCliente,
+        tipoEndereco: this.tipoEndereco,
+        nomeEndereco: this.nomeEndereco,
+        cep: this.cep,
+        logradouro: this.logradouro,
+        complemento: this.complemento,
+        numero: this.numero,
+        bairro: this.bairro,
+        cidade: this.cidade,
+        uf: this.uf,
+        pais: this.pais,
       });
     },
     ...mapMutations(["editarEnderecos"]),
@@ -697,16 +697,16 @@ export default {
       this.editarEnderecos({
         id: id,
         status: status,
-        tipoEnderecoCliente: this.tipoEnderecoCliente,
-        nomeEnderecoCliente: this.nomeEnderecoCliente,
-        cepCliente: this.cepCliente,
-        logradouroCliente: this.logradouroCliente,
-        complemento: this.complementoCliente,
-        numeroCliente: this.numeroCliente,
-        bairroCliente: this.bairroCliente,
-        cidadeCliente: this.cidadeCliente,
-        ufCliente: this.ufCliente,
-        paisCliente: this.paisCliente,
+        tipoEndereco: this.tipoEndereco,
+        nomeEndereco: this.nomeEndereco,
+        cep: this.cep,
+        logradouro: this.logradouro,
+        complemento: this.complemento,
+        numero: this.numero,
+        bairro: this.bairro,
+        cidade: this.cidade,
+        uf: this.uf,
+        pais: this.pais,
       });
     },
     ...mapMutations(["removeEnderecos"]),
@@ -718,66 +718,66 @@ export default {
       let enderecos = this.$store.state.enderecos;
 
       let encontrou = enderecos.filter(
-        (endereco) => endereco.id == this.idEnderecoCliente
+        (endereco) => endereco.id == this.idEndereco
       );
       console.log("Achooooooooouuuuuuuuuuuuuu", encontrou);
       return true;
     },
     salvarEndereco() {
-      if (this.idEnderecoCliente == null) this.addEndereco();
-      else this.editarEndereco(this.idEnderecoCliente);
+      if (this.idEndereco == null) this.addEndereco();
+      else this.editarEndereco(this.idEndereco);
 
       this.limparEndereco();
-      this.idEnderecoCliente = null;
+      this.idEndereco = null;
     },
     verificaPreenchimento() {
       //Parei aqui, proximo passo é validar os campos e ver se está tudo certo
       if (
-        this.cepCliente != "" &&
-        this.logradouroCliente != "" &&
-        this.paisCliente != "" &&
-        this.numeroCliente != "" &&
-        this.bairroCliente != "" &&
-        this.cidadeCliente != "" &&
-        this.ufCliente != "" &&
-        this.nomeEnderecoCliente != "" &&
-        this.tipoEnderecoCliente != ""
+        this.cep != "" &&
+        this.logradouro != "" &&
+        this.pais != "" &&
+        this.numero != "" &&
+        this.bairro != "" &&
+        this.cidade != "" &&
+        this.uf != "" &&
+        this.nomeEndereco != "" &&
+        this.tipoEndereco != ""
       ) {
         return true;
       }
       return false;
     },
     limparEndereco() {
-      this.cepCliente = "";
-      this.logradouroCliente = "";
-      this.paisCliente = "";
-      this.complementoCliente = "";
-      this.numeroCliente = "";
-      this.bairroCliente = "";
-      this.cidadeCliente = "";
-      this.ufCliente = "";
-      this.nomeEnderecoCliente = "";
-      this.tipoEnderecoCliente = "";
+      this.cep = "";
+      this.logradouro = "";
+      this.pais = "";
+      this.complemento = "";
+      this.numero = "";
+      this.bairro = "";
+      this.cidade = "";
+      this.uf = "";
+      this.nomeEndereco = "";
+      this.tipoEndereco = "";
     },
     getEndereco(id) {
       console.log("IDDDDDD RECEBIDO", id);
-      this.idEnderecoCliente = id;
+      this.idEndereco = id;
 
       let endereco = this.$store.state.enderecos.filter(
         (endereco) => endereco.id == id
       );
       console.log("ENDERECO", endereco);
       endereco = endereco[0];
-      this.cepCliente = endereco.cepCliente;
-      this.logradouroCliente = endereco.logradouroCliente;
-      this.paisCliente = endereco.paisCliente;
-      this.complementoCliente = endereco.complementoCliente;
-      this.numeroCliente = endereco.numeroCliente;
-      this.bairroCliente = endereco.bairroCliente;
-      this.cidadeCliente = endereco.cidadeCliente;
-      this.ufCliente = endereco.ufCliente;
-      this.nomeEnderecoCliente = endereco.nomeEnderecoCliente;
-      this.tipoEnderecoCliente = endereco.tipoEnderecoCliente;
+      this.cep = endereco.cep;
+      this.logradouro = endereco.logradouro;
+      this.pais = endereco.pais;
+      this.complemento = endereco.complemento;
+      this.numero = endereco.numero;
+      this.bairro = endereco.bairro;
+      this.cidade = endereco.cidade;
+      this.uf = endereco.uf;
+      this.nomeEndereco = endereco.nomeEndereco;
+      this.tipoEndereco = endereco.tipoEndereco;
     },
     save(date) {
       this.$refs.menu.save(date);
@@ -799,14 +799,14 @@ export default {
     },
     pesquisarCep() {
       this.$http
-        .get(`https://viacep.com.br/ws/${this.cepCliente}/json/unicode/`)
+        .get(`https://viacep.com.br/ws/${this.cep}/json/unicode/`)
         .then((res) => {
-          this.logradouroCliente = res.data.logradouro;
-          this.bairroCliente = res.data.bairro;
-          this.cidadeCliente = res.data.localidade;
-          this.ufCliente = res.data.uf;
+          this.logradouro = res.data.logradouro;
+          this.bairro = res.data.bairro;
+          this.cidade = res.data.localidade;
+          this.uf = res.data.uf;
 
-          if (this.logradouroCliente.split(" ", 1)[0].length > 3) {
+          if (this.logradouro.split(" ", 1)[0].length > 3) {
             this.tipoLogradouro = "Avenida";
           } else {
             this.tipoLogradouro = "Rua";
@@ -819,30 +819,20 @@ export default {
       }
       let frm = {
         perfl: "usuario",
-        nomeCliente: this.nomeCliente,
-        cpfCliente: this.cpfCliente,
-        apelidoCliente: this.apelidoCliente,
-        tipoTelefoneCliente: this.tipoTelefoneCliente,
-        telefoneCliente: this.telefoneCliente,
-        sexoCliente: this.sexoCliente,
-        emailCliente: this.emailCliente,
-        senhaCliente: this.senhaCliente,
+        nome: this.nome,
+        cpf: this.cpf,
+        apelido: this.apelido,
+        tipoTelefone: this.tipoTelefone,
+        telefone: this.telefone,
+        sexo: this.sexo,
+        email: this.email,
+        senha: this.senha,
         date: this.date,
         imagem: this.imagem,
       };
       this.addDadosUsuario(frm);
-      // this.addDadosUsuario("cpfCliente", this.cpfCliente);
-      // this.addDadosUsuario("apelidoCliente", this.apelidoCliente);
-      // this.addDadosUsuario("telefoneCliente", this.telefoneCliente);
-      // this.addDadosUsuario("sexoCliente", this.sexoCliente);
-      // this.addDadosUsuario("emailCliente", this.emailCliente);
-      // this.addDadosUsuario("senhaCliente", this.senhaCliente);
-      // this.addDadosUsuario("date", this.date);
-      // this.addDadosUsuario("imagem", this.image);
-      // this.addDadosUsuario("tipoTelefoneCliente", this.tipoTelefoneCliente);
-
       this.$store.state.cadastro = true;
-      this.$store.state.nome = this.apelidoCliente;
+      this.$store.state.nome = this.apelido;
       this.$router.push(`/`);
     },
 
@@ -852,28 +842,28 @@ export default {
     },
     verificacaoSenhaForte() {
       this.forca = 0;
-      if (this.senhaCliente.length >= 4 && this.senhaCliente.length <= 7) {
+      if (this.senha.length >= 4 && this.senha.length <= 7) {
         this.forca += 10;
-      } else if (this.senhaCliente.length > 7) {
+      } else if (this.senha.length > 7) {
         this.forca += 20;
       }
 
-      if (this.senhaCliente.length >= 5 && this.senhaCliente.match(/[a-z]+/)) {
+      if (this.senha.length >= 5 && this.senha.match(/[a-z]+/)) {
         this.forca += 10;
       }
 
-      if (this.senhaCliente.length >= 6 && this.senhaCliente.match(/[A-Z]+/)) {
+      if (this.senha.length >= 6 && this.senha.match(/[A-Z]+/)) {
         this.forca += 20;
       }
 
       if (
-        this.senhaCliente.length >= 7 &&
-        this.senhaCliente.match(/[@#$%&;*]/)
+        this.senha.length >= 7 &&
+        this.senha.match(/[@#$%&;*]/)
       ) {
         this.forca += 25;
       }
 
-      if (this.senhaCliente.match(/([1-9]+)\1{1,}/)) {
+      if (this.senha.match(/([1-9]+)\1{1,}/)) {
         this.forca += 25;
       }
     },
