@@ -488,7 +488,7 @@ export default {
       emailCliente: "",
       senhaCliente: " ",
       cepCliente: "",
-      tipoLogradouro:"",
+      tipoLogradouro: "",
       logradouroCliente: "",
       paisCliente: "Brasil",
       numeroCliente: "",
@@ -515,7 +515,7 @@ export default {
       tipoEnderecoCliente: "",
       tipoTelefoneCliente: "",
       itensTipoTelefoneCliente: ["Celular", "Fixo"],
-      itensTipoLogradouro: ["Rua", "Av"],
+      itensTipoLogradouro: ["Rua", "Avenida"],
       itensTipoEnderecoCliente: ["Cobrança", "Entrega"],
       itensUfCliente: [
         "AC",
@@ -785,9 +785,18 @@ export default {
           this.bairroCliente = res.data.bairro;
           this.cidadeCliente = res.data.localidade;
           this.ufCliente = res.data.uf;
+
+          if (this.logradouroCliente.split(" ", 1)[0].length > 3) {
+            this.tipoLogradouro = "Avenida"
+          }else{
+            this.tipoLogradouro = "Rua"
+          }
         });
     },
     salvar() {
+      if (this.verificaPreenchimento()) {
+        this.addEndereco();
+      }
       this.addDadosUsuario("nomeCliente", this.nomeCliente);
       this.addDadosUsuario("cpfCliente", this.cpfCliente);
       this.addDadosUsuario("apelidoCliente", this.apelidoCliente);

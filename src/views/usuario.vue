@@ -79,7 +79,7 @@
 </template>
 <script>
 import cadastro from "../components/pages/usuario/cadastro.vue";
-import login from "../components/pages/usuario/login.vue";
+import login from "../components/pages/usuario-e-adm/login.vue";
 import pagamento from '../components/pages/usuario/pagamento.vue';
 import compras from '../components/pages/usuario/compras.vue';
 

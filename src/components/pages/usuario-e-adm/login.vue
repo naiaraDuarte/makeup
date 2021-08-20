@@ -7,7 +7,6 @@
       <v-col lg="5">
         <v-text-field
           v-model="emailCliente"
-          :counter="30"
           label="Digite seu email"
           required
         ></v-text-field>
@@ -15,34 +14,39 @@
         <v-text-field
           v-model="senhaCliente"
           :type="show3 ? 'text' : 'password'"
-          :counter="30"
           label="Digite sua senha"
           required
         ></v-text-field>
       </v-col>
     </v-row>
     <v-row>
-      <v-col class="text-center" lg="12" md="" sm="" col="5">
-        <v-btn
-          elevation="0"
-          text
-          class="btnSubmit"
-          @click="entrar"
-        >
+      <v-col class="text-center mb-5" lg="12" md="" sm="" col="5">
+        <v-btn elevation="0" text class="btnSubmit" @click="entrar">
           Entrar</v-btn
         >
-        {{ mensage }}
       </v-col>
     </v-row>
+    <v-snackbar v-model="snackbar" :color="snackbarColor">
+      <h4 style="font-weight: 100">{{ mensagem }}</h4>
+
+      <template v-slot:action="{ attrs }">
+        <v-btn text icon v-bind="attrs" @click="snackbar = false">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-container>
 </template>
 <script>
 export default {
   data() {
     return {
+      show3: false,
       emailCliente: "",
       senhaCliente: "",
-      mensage: "",
+      mensagem: "",
+      snackbar: false,
+      snackbarColor: "",
     };
   },
   methods: {
@@ -51,15 +55,16 @@ export default {
         this.mensage = "";
         return true;
       }
-      this.mensage = "Campos incompletos!!!";
+      this.snackbarColor = "red";
+      this.mensagem = "Campos incompletos";
+      this.snackbar = true;
       return false;
     },
-    entrar(){
-      if(this.validacaoDePreenchimento()){
+    entrar() {
+      if (this.validacaoDePreenchimento()) {
         this.$router.push("/");
       }
-  }
+    },
   },
-
 };
 </script>
