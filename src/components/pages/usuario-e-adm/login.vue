@@ -62,9 +62,12 @@ export default {
     },
     entrar() {
       if (this.validacaoDePreenchimento()) {
-        this.$router.push("/");
+        this.$router.push("/adm");
       }
     },
+    validarCredenciais(){
+      
+    }
   },
 };
 </script>

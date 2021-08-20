@@ -166,13 +166,7 @@
                 <v-date-picker
                   v-model="date"
                   :active-picker.sync="activePicker"
-                  :max="
-                    new Date(
-                      Date.now() - new Date().getTimezoneOffset() * 60000
-                    )
-                      .toISOString()
-                      .substr(0, 10)
-                  "
+                  :max="maxAniversario"
                   min="1950-01-01"
                   @change="save"
                   locale="pt-br"
@@ -192,9 +186,18 @@
             <v-col lg="6">
               <v-text-field
                 v-model="emailCliente"
+                :disabled="$store.state.usuario.length > 1"
                 label="Email"
                 required
               ></v-text-field>
+            </v-col>
+            <v-col lg="6" class="mt-3 text-center" v-if="$store.state.usuario[1]">
+               <v-btn
+              elevation="0"
+              color="white"
+              class="btnSubmit"
+              >Alterar email</v-btn
+            >
             </v-col>
           </v-row>
           <v-row class="mx-4">
@@ -203,10 +206,10 @@
                 :append-icon="show3 ? 'mdi-eye' : 'mdi-eye-off'"
                 v-model="senhaCliente"
                 ref="corDoInput"
+                :disabled="$store.state.usuario.length > 1"
                 :type="show3 ? 'text' : 'password'"
                 @keyup="verificacaoSenhaForte()"
                 :rules="rulesSenha"
-                color="blue"
                 :counter="30"
                 label="Senha"
                 class="input-group--focused"
@@ -214,7 +217,7 @@
                 required
               ></v-text-field>
             </v-col>
-            <v-col lg="6" class="p-0">
+            <v-col lg="6" class="p-0" v-if="!$store.state.usuario[1]">
               <v-text-field
                 :append-icon="show3 ? 'mdi-eye' : 'mdi-eye-off'"
                 v-model="confirmacaoSenhaCliente"
@@ -226,6 +229,14 @@
                 @click:append="show3 = !show3"
                 required
               ></v-text-field>
+            </v-col>
+             <v-col lg="6" class="mt-3 text-center" v-if="$store.state.usuario[1]">
+              <v-btn
+              elevation="0"
+              color="white"
+              class="btnSubmit"
+              >Alterar senha</v-btn
+            >
             </v-col>
           </v-row>
         </v-col>
@@ -560,6 +571,9 @@ export default {
     formataDataNasc() {
       return this.$moment(this.date, "YYYY-MM-DD").format("DD/MM/YYYY");
     },
+    maxAniversario() {
+      return this.$moment().subtract("years", 18).format("YYYY-MM-DD");
+    },
     rulesSenha() {
       let rules = [];
 
@@ -627,19 +641,25 @@ export default {
       return false;
     },
   },
-  mounted(){
-    if (this.$store.state.usuario.nomeCliente != null || this.$store.state.usuario.nomeCliente != "") {
-      let usuario = this.$store.state.usuario;
-      this.nomeCliente = usuario.nomeCliente;
-      this.cpfCliente = usuario.cpfCliente;
-      this.apelidoCliente = usuario.apelidoCliente;
-      this.telefoneCliente = usuario.telefoneCliente;
-      this.sexoCliente = usuario.sexoCliente;
-      this.emailCliente = usuario.emailCliente;
-      this.senhaCliente = usuario.senhaCliente;
-      this.tipoTelefoneCliente = usuario.tipoEnderecoCliente;
-      this.date = usuario.date;
-      this.image = usuario.image;
+  mounted() {
+    if (this.$store.state.usuario.length > 1) {
+      if (
+        this.$store.state.usuario[1].nomeCliente != null ||
+        this.$store.state.usuario[1].nomeCliente != ""
+      ) {
+        //Alerta coisa fixa, PROVISÓRIO
+        let usuario = this.$store.state.usuario[1];
+        this.nomeCliente = usuario.nomeCliente;
+        this.cpfCliente = usuario.cpfCliente;
+        this.apelidoCliente = usuario.apelidoCliente;
+        this.telefoneCliente = usuario.telefoneCliente;
+        this.sexoCliente = usuario.sexoCliente;
+        this.emailCliente = usuario.emailCliente;
+        this.senhaCliente = usuario.senhaCliente;
+        this.tipoTelefoneCliente = usuario.tipoEnderecoCliente;
+        this.date = usuario.date;
+        this.image = usuario.image;
+      }
     }
   },
   methods: {
@@ -787,9 +807,9 @@ export default {
           this.ufCliente = res.data.uf;
 
           if (this.logradouroCliente.split(" ", 1)[0].length > 3) {
-            this.tipoLogradouro = "Avenida"
-          }else{
-            this.tipoLogradouro = "Rua"
+            this.tipoLogradouro = "Avenida";
+          } else {
+            this.tipoLogradouro = "Rua";
           }
         });
     },
@@ -797,16 +817,29 @@ export default {
       if (this.verificaPreenchimento()) {
         this.addEndereco();
       }
-      this.addDadosUsuario("nomeCliente", this.nomeCliente);
-      this.addDadosUsuario("cpfCliente", this.cpfCliente);
-      this.addDadosUsuario("apelidoCliente", this.apelidoCliente);
-      this.addDadosUsuario("telefoneCliente", this.telefoneCliente);
-      this.addDadosUsuario("sexoCliente", this.sexoCliente);
-      this.addDadosUsuario("emailCliente", this.emailCliente);
-      this.addDadosUsuario("senhaCliente", this.senhaCliente);
-      this.addDadosUsuario("date", this.date);
-      this.addDadosUsuario("imagem", this.image);
-      this.addDadosUsuario("tipoTelefoneCliente", this.tipoTelefoneCliente);
+      let frm = {
+        perfl: "usuario",
+        nomeCliente: this.nomeCliente,
+        cpfCliente: this.cpfCliente,
+        apelidoCliente: this.apelidoCliente,
+        tipoTelefoneCliente: this.tipoTelefoneCliente,
+        telefoneCliente: this.telefoneCliente,
+        sexoCliente: this.sexoCliente,
+        emailCliente: this.emailCliente,
+        senhaCliente: this.senhaCliente,
+        date: this.date,
+        imagem: this.imagem,
+      };
+      this.addDadosUsuario(frm);
+      // this.addDadosUsuario("cpfCliente", this.cpfCliente);
+      // this.addDadosUsuario("apelidoCliente", this.apelidoCliente);
+      // this.addDadosUsuario("telefoneCliente", this.telefoneCliente);
+      // this.addDadosUsuario("sexoCliente", this.sexoCliente);
+      // this.addDadosUsuario("emailCliente", this.emailCliente);
+      // this.addDadosUsuario("senhaCliente", this.senhaCliente);
+      // this.addDadosUsuario("date", this.date);
+      // this.addDadosUsuario("imagem", this.image);
+      // this.addDadosUsuario("tipoTelefoneCliente", this.tipoTelefoneCliente);
 
       this.$store.state.cadastro = true;
       this.$store.state.nome = this.apelidoCliente;
@@ -814,8 +847,8 @@ export default {
     },
 
     ...mapMutations(["addUsuario"]),
-    addDadosUsuario(key, val) {
-      this.addUsuario([key, val]);
+    addDadosUsuario(value) {
+      this.addUsuario(value);
     },
     verificacaoSenhaForte() {
       this.forca = 0;

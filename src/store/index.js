@@ -7,14 +7,18 @@ export default new Vuex.Store({
     state: {
         cadastro: false,
         nome: '',
-        usuario: [],
+        usuario: [{
+            perfil: "adm",
+            email: "adm@gmail.com",
+            senha: "123456"
+        }],
         enderecos: [],
         countId: 0,
         cartoes: []
     },
     mutations: {
         addUsuario(state, payload) {
-            state.usuario[payload[0]] = payload[1];
+            state.usuario.push(payload);
         },
         addEnderecos(state, payload) {
             payload.id = state.countId;

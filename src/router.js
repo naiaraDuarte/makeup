@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import produtos from './views/produtos.vue'
 import home from './views/Home.vue';
 import usuario from './views/usuario.vue';
+import adm from './views/administrador.vue';
 
 Vue.use(VueRouter)
 
@@ -21,6 +22,11 @@ const routes = [{
       path: '/usuario',
       name: 'usuario',
       component: usuario
+    },
+    {
+      path: '/adm',
+      name: 'adm',
+      component: adm
     },
     {
       path: "*",
