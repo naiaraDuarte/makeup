@@ -2,7 +2,7 @@
   <v-container style="width: 1200px" fluid>
     <v-card elevation="0">
       <v-card-title>
-        <h2>Clientes</h2>
+        <h2><v-icon x-large>mdi-chevron-double-right</v-icon> Clientes</h2>
         <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
@@ -35,8 +35,8 @@
 
         <template v-slot:[`item.acoes`]="{ item }">
           <v-row align="center" class="mx-0">
-            <v-card v-show="false">{{ item }}</v-card>
-            <v-btn @click="dialog = !dialog" icon>
+            <!-- <v-card v-show="false">{{ item }}</v-card> -->
+            <v-btn @click="verMais(item.acoes)" icon>
               <v-icon>mdi-dots-horizontal</v-icon>
             </v-btn>
           </v-row>
@@ -44,114 +44,95 @@
       </v-data-table>
     </v-card>
     <v-row justify="center">
-      <v-dialog
-        v-model="dialog"
-        persistent
-        max-width="1000px"
-      >
+      <v-dialog v-model="dialog" persistent max-width="1000px">
         <v-card>
           <v-card-title>
-            <span class="text-h5">User Profile</span>
+            <v-row>
+              <v-col lg="12" class="espacamentoEntreEl px-5">
+                <span class="text-h5">{{ perfilSelecionado[0].nome }}</span>
+                <v-switch v-model="situacao"></v-switch>
+              </v-col>
+            </v-row>
           </v-card-title>
+          <v-divider></v-divider>
           <v-card-text>
             <v-container>
-              <v-row>
-                <v-col
-                  cols="12"
-                  sm="6"
-                  md="4"
-                >
-                  <v-text-field
-                    label="Legal first name*"
-                    required
-                  ></v-text-field>
+              <v-row class="espacamentoEntreEl px-2 mt-2">
+                <v-col lg="5" class="dados">
+                  <v-row>
+                    <p><b>Dados pessoais:</b></p>
+                    <v-col lg="12" class="addBorder">
+                      <p><b>CPF:</b> {{ perfilSelecionado[0].cpf }}</p>
+                      <p><b>Data nascimento:</b> 20/05/2001</p>
+                      <p><b>Telefone:</b> (11) 97854-5212</p>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <p><b>Dados de entrega:</b></p>
+                    <v-col lg="12" class="addBorder">
+                      <p><b>CPF:</b> {{ perfilSelecionado[0].cpf }}</p>
+                      <p><b>Data nascimento:</b> 20/05/2001</p>
+                      <p><b>Telefone:</b> (11) 97854-5212</p>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <p><b>Dados de pagamento:</b></p>
+                    <v-col lg="12" class="addBorder">
+                      <p><b>CPF:</b> {{ perfilSelecionado[0].cpf }}</p>
+                      <p><b>Data nascimento:</b> 20/05/2001</p>
+                      <p><b>Telefone:</b> (11) 97854-5212</p>
+                    </v-col>
+                  </v-row>
                 </v-col>
-                <v-col
-                  cols="12"
-                  sm="6"
-                  md="4"
-                >
-                  <v-text-field
-                    label="Legal middle name"
-                    hint="example of helper text only on focus"
-                  ></v-text-field>
-                </v-col>
-                <v-col
-                  cols="12"
-                  sm="6"
-                  md="4"
-                >
-                  <v-text-field
-                    label="Legal last name*"
-                    hint="example of persistent helper text"
-                    persistent-hint
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12">
-                  <v-text-field
-                    label="Email*"
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12">
-                  <v-text-field
-                    label="Password*"
-                    type="password"
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col
-                  cols="12"
-                  sm="6"
-                >
-                  <v-select
-                    :items="['0-17', '18-29', '30-54', '54+']"
-                    label="Age*"
-                    required
-                  ></v-select>
-                </v-col>
-                <v-col
-                  cols="12"
-                  sm="6"
-                >
-                  <v-autocomplete
-                    :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
-                    label="Interests"
-                    multiple
-                  ></v-autocomplete>
+                <v-col lg="6">
+                  <p><b>Histórico de compras</b></p>
+                  <v-expansion-panels>
+                    <v-expansion-panel v-for="(item, i) in 10" :key="i">
+                      <v-expansion-panel-header>
+                        Item
+                      </v-expansion-panel-header>
+                      <v-expansion-panel-content>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                        sed do eiusmod tempor incididunt ut labore et dolore
+                        magna aliqua. Ut enim ad minim veniam, quis nostrud
+                        exercitation ullamco laboris nisi ut aliquip ex ea
+                        commodo consequat.
+                      </v-expansion-panel-content>
+                    </v-expansion-panel>
+                  </v-expansion-panels>
                 </v-col>
               </v-row>
             </v-container>
-            <small>*indicates required field</small>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn
-              color="blue darken-1"
-              text
-              @click="dialog = false"
-            >
+            <v-btn color="blue darken-1" text @click="dialog = false">
               Close
             </v-btn>
-            <v-btn
-              color="blue darken-1"
-              text
-              @click="dialog = false"
-            >
+            <v-btn color="blue darken-1" text @click="dialog = false">
               Save
             </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
     </v-row>
-
   </v-container>
 </template>
 <script>
 export default {
   data() {
     return {
+      situacao: true,
+      perfilSelecionado: [
+        {
+          nome: "Ice cream sandwich",
+          cpf: "000.000.000-00",
+          email: "email@teste.com",
+          cidade: "Itaquaquecetuba-SP",
+          avaliacao: 4.3,
+          acoes: 2,
+        },
+      ],
       search: "",
       dialog: false,
       headers: [
@@ -251,10 +232,22 @@ export default {
       ],
     };
   },
-  methods:{
-    verMais(id){
-      console.log("Tá funcionando essa bagaça", id);
-    }
-  }
+  methods: {
+    verMais(id) {
+      this.perfilSelecionado = this.desserts.filter(
+        (clientes) => clientes.acoes == id
+      );
+      this.dialog = !this.dialog;
+      return this.perfilSelecionado;
+    },
+  },
 };
 </script>
+<style>
+.addBorder {
+  border: 1px solid #bbb;
+  border-radius: 10px;
+}
+.dados{
+}
+</style>
