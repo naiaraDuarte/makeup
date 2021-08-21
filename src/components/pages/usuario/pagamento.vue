@@ -116,7 +116,7 @@
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
-        <v-snackbar v-model="snackbar" :color="snackbarColor">
+        <!-- <v-snackbar v-model="snackbar" :color="snackbarColor">
           <h4 style="font-weight: 100">{{ mensagem }}</h4>
 
           <template v-slot:action="{ attrs }">
@@ -124,7 +124,7 @@
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </template>
-        </v-snackbar>
+        </v-snackbar> -->
       </v-col>
     </v-row>
   </v-container>
@@ -141,6 +141,8 @@ export default {
       codCartao: "",
       numeroCartao: "",
       idCartaoCliente: null,
+      snackbar: false,
+      snackbarColor: ""
     };
   },
   methods: {
@@ -169,7 +171,7 @@ export default {
       });
     },
     ...mapMutations(["editarCartao"]),
-    editarCartao(id) {
+    editarCartoes(id) {
       let status = this.verificaPreenchimento();
       let cartao = this.verificaIdExistente();
       console.log(cartao);
@@ -180,7 +182,9 @@ export default {
         bandeiraCartao: this.bandeiraCartao,
         numeroCartao: this.numeroCartao,
         nomeCartao: this.nomeCartao,
+        
       });
+      console.log("dentro funçao", this.numeroCartao)
     },
     ...mapMutations(["removeCartao"]),
     remove(id) {
@@ -198,7 +202,7 @@ export default {
     },
     salvarCartao() {
       if (this.idCartaoCliente == null) this.addCartoes();
-      else this.editarCartao(this.idCartaoCliente);
+      else this.editarCartoes(this.idCartaoCliente);
 
       this.limparCartao();
       this.idCartaoCliente = null;
