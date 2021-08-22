@@ -48,6 +48,8 @@
               <v-text-field
                 v-model="nome"
                 label="Nome completo"
+                name="nomeCompleto"
+                id="nome"
                 required
               ></v-text-field>
             </v-col>
