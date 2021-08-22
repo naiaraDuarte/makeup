@@ -67,6 +67,7 @@
               <v-combobox
                 v-model="tipoTelefone"
                 :items="itensTipoTelefone"
+                id="tipoTelefone"
                 label="Tipo"
               >
                 <template slot="item" slot-scope="data">
@@ -203,9 +204,9 @@
             <v-col lg="6" class="p-0">
               <!-- <span>Sexo:</span> -->
               <v-radio-group v-model="sexo" row>
-                <v-radio label="Masculino" value="masculino"></v-radio>
-                <v-radio label="Feminino" value="feminino"></v-radio>
-                <v-radio label="Outros" value="outros"></v-radio>
+                <v-radio label="Masculino" id="m" value="masculino"></v-radio>
+                <v-radio label="Feminino" id="f" value="feminino"></v-radio>
+                <v-radio label="Outros" id="o" value="outros"></v-radio>
               </v-radio-group>
             </v-col>
           </v-row>
@@ -228,7 +229,7 @@
                 elevation="0"
                 color="white"
                 class="btnSubmit"
-                @click="alterarEmail()"
+                @click="editarEmail = !editarEmail"
                 >Alterar email</v-btn
               >
             </v-col>
@@ -270,7 +271,7 @@
               class="mt-3 text-center"
               v-if="$store.state.usuario[1]"
             >
-              <v-btn elevation="0" color="white" class="btnSubmit"
+              <v-btn elevation="0" color="white" class="btnSubmit" @click="editarSenha = true"
                 >Alterar senha</v-btn
               >
             </v-col>
@@ -315,6 +316,7 @@
             v-model="tipoEndereco"
             :items="itensTipoEndereco"
             label="Tipo de endereço"
+            id="tipoEndereco"
           ></v-combobox>
         </v-col>
         <v-col lg="4">
@@ -364,16 +366,31 @@
       </v-row>
       <v-row class="mt-1 mx-3 my-1">
         <v-col lg="3">
-          <v-text-field v-model="bairro" label="Bairro" id="bairro" required ></v-text-field>
+          <v-text-field
+            v-model="bairro"
+            label="Bairro"
+            id="bairro"
+            required
+          ></v-text-field>
         </v-col>
         <v-col lg="3">
-          <v-text-field v-model="cidade" label="Cidade" id="cidade" required></v-text-field>
+          <v-text-field
+            v-model="cidade"
+            label="Cidade"
+            id="cidade"
+            required
+          ></v-text-field>
         </v-col>
         <v-col lg="3">
           <v-combobox v-model="uf" :items="itensUf" label="Estado"></v-combobox>
         </v-col>
         <v-col lg="3">
-          <v-text-field v-model="pais" label="País" id="pais" required></v-text-field>
+          <v-text-field
+            v-model="pais"
+            label="País"
+            id="pais"
+            required
+          ></v-text-field>
         </v-col>
       </v-row>
       <v-row class="mt-1 mx-3 my-3" v-if="this.$store.state.enderecos">
@@ -487,9 +504,92 @@
         </v-btn>
       </template>
     </v-snackbar>
+
+    <v-dialog v-model="editarEmail" persistent max-width="550px">
+      <v-card>
+        <v-card-title>
+          <span class="text-h5">Editar email</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container v-if="$store.state.usuario.length > 0">
+            <v-text-field
+              :value="email"
+              label="Email atual"
+              id="emailAtualAlteracao"
+              required
+            ></v-text-field>
+            <v-text-field
+              v-model="emailNovoAlteracao"
+              label="Email novo"
+              id="emailNovoAlteracao"
+              required
+            ></v-text-field>
+            <v-text-field
+              v-model="emailNovoConfirmacaoAlteracao"
+              label="Confirme seu novo email"
+              id="emailNovoConfirmacaoAlteracao"
+              required
+            ></v-text-field>
+            <v-text-field
+              v-model="senhaConfirmacao"
+              label="Senha atual"
+              id="emailNovoConfirmacaoAlteracao"
+              required
+            ></v-text-field>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="editarEmail = false">
+            Cancelar
+          </v-btn>
+          <v-btn color="blue darken-1" text @click="salvarEmailAlterado()">
+            Salvar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="editarSenha" persistent max-width="550px">
+      <v-card>
+        <v-card-title>
+          <span class="text-h5">Editar senha</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container v-if="$store.state.usuario.length > 0">
+            <v-text-field
+              v-model="senhaNovoAlteracao"
+              label="Senha nova"
+              id="senhaNovoAlteracao"
+              required
+            ></v-text-field>
+            <v-text-field
+              v-model="senhaNovoConfirmacaoAlteracao"
+              label="Confirme sua nova senha"
+              id="senhaNovoConfirmacaoAlteracao"
+              required
+            ></v-text-field>
+            <v-text-field
+              v-model="senhaConfirmacaoParaSenhaNova"
+              label="Senha atual"
+              id="senha"
+              required
+            ></v-text-field>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="editarSenha = false">
+            Cancelar
+          </v-btn>
+          <v-btn color="blue darken-1" text @click="salvarSenhaAlterado()">
+            Salvar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
-
 
 <script>
 import { validationMixin } from "vuelidate";
@@ -509,7 +609,15 @@ export default {
   },
   data() {
     return {
+      senhaNovoAlteracao: "",
+      senhaNovoConfirmacaoAlteracao: "",
+      senhaConfirmacaoParaSenhaNova: "",
+      editarEmail: false,
+      editarSenha: false,
       show3: false,
+      emailNovoAlteracao: "",
+      emailNovoConfirmacaoAlteracao: "",
+      senhaConfirmacao: "",
       txtDoBotao: "Continuar",
       faseCadastro: 0,
       idEndereco: null,
@@ -520,7 +628,7 @@ export default {
       telefone: "",
       sexo: "",
       email: "",
-      senha: " ",
+      senha: "",
       cep: "",
       tipoLogradouro: "",
       logradouro: "",
@@ -720,8 +828,43 @@ export default {
       }
       return false;
     },
-    alterarEmail() {},
-    alterarSenha() {},
+    ...mapMutations(["editarEmailUsuario"]),
+    salvarEmailAlterado() {
+      if (this.emailNovoAlteracao != this.emailNovoConfirmacaoAlteracao) {
+        this.snackbarColor = "#b38b57";
+        this.mensagem ="Os campos email e confirmação de email devem ser iguais";
+        this.snackbar = true;
+        return false;
+      }
+      if (this.senhaConfirmacao != this.$store.state.usuario[1].senha) {
+        this.snackbarColor = "#b38b57";
+        this.mensagem = "A senha digitada não corresponde";
+        this.snackbar = true;
+        return false;
+      }
+      this.editarEmailUsuario(this.emailNovoAlteracao);
+      this.email = this.emailNovoAlteracao;
+      this.editarEmail = false;
+    },
+    ...mapMutations(["editarSenhaUsuario"]),
+    salvarSenhaAlterado(){
+      if (this.senhaNovoAlteracao != this.senhaNovoConfirmacaoAlteracao) {
+        this.snackbarColor = "#b38b57";
+        this.mensagem ="Os campos senha e confirmação de senha devem ser iguais";
+        this.snackbar = true;
+        return false;
+      }
+      if (this.senhaConfirmacaoParaSenhaNova != this.$store.state.usuario[1].senha) {
+        this.snackbarColor = "#b38b57";
+        this.mensagem = "A senha atual digitada não corresponde";
+        this.snackbar = true;
+        return false;
+      }
+      this.editarSenhaUsuario(this.senhaNovoAlteracao);
+      this.senha = this.senhaNovoAlteracao;
+      console.log("Alteroioooooou", this.$store.state.usuario[1].senha);
+      this.editarSenha = false;
+    },
     limparEndereco() {
       this.cep = "";
       this.logradouro = "";
@@ -892,8 +1035,6 @@ export default {
   },
 };
 </script>
-
-
 
 <style scoped>
 .image {
