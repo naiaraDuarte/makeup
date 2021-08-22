@@ -2,7 +2,7 @@
   <v-container style="width: 1200px" fluid>
     <v-card elevation="0">
       <v-card-title>
-        <h2><v-icon x-large>mdi-chevron-double-right</v-icon> Clientes</h2>
+        <h2 class="nameTable"><v-icon x-large>mdi-chevron-double-right</v-icon> Clientes</h2>
         <v-spacer></v-spacer>
         <v-text-field
           v-model="search"

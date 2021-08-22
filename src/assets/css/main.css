@@ -37,6 +37,12 @@
   font-weight: 500;
 }
 
+.nameTable {
+  color: #616161;
+  font-weight: 500;
+  font-family: 'PT Sans', sans-serif;
+}
+
 .nameBtn {
   color: #f8d2a1 !important;
 }

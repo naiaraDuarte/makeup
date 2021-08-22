@@ -12,6 +12,10 @@
               ></v-progress-linear>
             </template>
 
+            <!-- top: 701px;
+    right: 90px;
+    position: fixed; -->
+
             <v-img height="250" :src="getImgUrl(item.src)"></v-img>
 
             <v-card-title>
@@ -28,7 +32,6 @@
                     readonly
                     size="14"
                   ></v-rating>
-
                   <!-- <div class="grey--text ms-1">4.5 (413)</div> -->
                 </v-col>
               </v-row>
@@ -36,28 +39,28 @@
 
             <v-card-text>
               <div class="text-center">
-              <h4 class="preco"><b>R$ 49,00</b></h4> 
-              <p>Até <b>2x</b> de <b>R$24,95</b></p>
+                <h4 class="preco"><b>R$ 49,00</b></h4>
+                <p>Até <b>2x</b> de <b>R$24,95</b></p>
               </div>
             </v-card-text>
             <v-card-actions>
-              <v-btn style="width: 100%" class="btnCarrinho white--text" color="#b38b57">
-                <v-icon color="white" class="pr-3">mdi-cart-variant</v-icon
-                > Add ao carrinho
+              <v-btn
+                style="width: 100%"
+                class="btnCarrinho white--text"
+                color="#b38b57"
+              >
+                <v-icon color="white" class="pr-3">mdi-cart-variant</v-icon> Add
+                ao carrinho
               </v-btn>
             </v-card-actions>
           </v-card>
-          <!-- <v-card elevation="0">
-            <v-img
-              :src="getImgUrl(item.src)"
-              class="w-100"
-              max-height="150"
-              max-width="300"
-            /><v-img />
-            Dados da imagem
-          </v-card> -->
         </v-col>
       </v-row>
+      <v-fab-transition>
+        <v-btn color="pink" dark absolute right fab>
+          <v-icon>mdi-plus</v-icon>
+        </v-btn>
+      </v-fab-transition>
     </v-container>
   </div>
 </template>
@@ -86,10 +89,10 @@ export default {
 };
 </script>
 <style>
-.titulo-card{
+.titulo-card {
   font-size: 18px;
 }
-.preco{
+.preco {
   font-size: 20px;
   font-weight: bold;
   color: black;
