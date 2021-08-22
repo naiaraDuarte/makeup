@@ -2,8 +2,8 @@
   <div class="teste">
     <v-container fluid>
       <v-row style="margin-top: 0px" v-if="itens.length > 0">
-        <v-col lg="3" class="px-2" v-for="(item, i) in itens" :key="i">
-          <v-card class="mx-auto my-12" max-width="374">
+        <v-col class="px-2 custom5cols" v-for="(item, i) in itens" :key="i">
+          <v-card class="mx-auto my-12">
             <template slot="progress">
               <v-progress-linear
                 color="deep-purple"
@@ -11,28 +11,21 @@
                 indeterminate
               ></v-progress-linear>
             </template>
-
-            <!-- top: 701px;
-    right: 90px;
-    position: fixed; -->
-
-            <v-img height="250" :src="getImgUrl(item.src)"></v-img>
+            <v-img height="200" :src="getImgUrl(item.src)"></v-img>
 
             <v-card-title>
               <v-row>
-                <v-col lg="6">
-                  <p class="titulo-card">Cafe Badilico</p>
-                </v-col>
-                <v-col lg="6">
+                <v-col lg="12" class="text-center">
                   <v-rating
                     :value="4.5"
-                    color="amber"
+                    color="#deb887"
                     dense
                     half-increments
                     readonly
                     size="14"
                   ></v-rating>
-                  <!-- <div class="grey--text ms-1">4.5 (413)</div> -->
+
+                  <p class="titulo-card">BASE FEELS CASTANHA 20 - RUBY ROSE</p>
                 </v-col>
               </v-row>
             </v-card-title>
@@ -44,20 +37,34 @@
               </div>
             </v-card-text>
             <v-card-actions>
-              <v-btn
+              <v-row class="pb-1">
+                <v-col lg="12" class="p-0">
+                  <v-btn outlined color="#b38b57" class="btnCarrinho" style="width: 100%;"
+                    ><v-icon color="b38b57" class="pr-3 w-100"
+                      >mdi-cart-variant</v-icon
+                    >Comprar</v-btn
+                  >
+                </v-col>
+                <!-- <v-col lg="3" class="p-0">
+                  <v-btn icon><v-icon color="#b38b57">mdi-heart-outline</v-icon></v-btn>
+                </v-col> -->
+              </v-row>
+
+              <!-- <v-btn
                 style="width: 100%"
                 class="btnCarrinho white--text"
                 color="#b38b57"
               >
-                <v-icon color="white" class="pr-3">mdi-cart-variant</v-icon> Add
-                ao carrinho
-              </v-btn>
+                <v-icon color="white" class="pr-3">mdi-cart-variant</v-icon> Comprar
+              </v-btn> -->
             </v-card-actions>
           </v-card>
         </v-col>
       </v-row>
       <v-fab-transition>
-        <v-btn color="pink" dark absolute right fab>
+        <!-- <v-btn color="pink" dark absolute right fab> -->
+
+        <v-btn class="fixedbutton" color="pink" dark fab>
           <v-icon>mdi-plus</v-icon>
         </v-btn>
       </v-fab-transition>
@@ -90,7 +97,8 @@ export default {
 </script>
 <style>
 .titulo-card {
-  font-size: 18px;
+  font-size: 13px;
+  text-transform: uppercase;
 }
 .preco {
   font-size: 20px;
@@ -99,5 +107,25 @@ export default {
 }
 .teste {
   /* background-image: url("../assets/images/produto2.png"); */
+}
+.v-application p {
+  margin-bottom: 0px;
+}
+.v-card__title {
+  line-height: 1rem;
+}
+.custom5cols {
+  width: 20%;
+  max-width: 20%;
+  flex-basis: 20%;
+}
+.btnCarrinho{
+  font-weight: 600;
+}
+
+.fixedbutton {
+    position: fixed;
+    top: 650px;
+    right: 60px; 
 }
 </style>

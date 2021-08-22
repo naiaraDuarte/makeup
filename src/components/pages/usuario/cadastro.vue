@@ -191,13 +191,14 @@
                 required
               ></v-text-field>
             </v-col>
-            <v-col lg="6" class="mt-3 text-center" v-if="$store.state.usuario[1]">
-               <v-btn
-              elevation="0"
-              color="white"
-              class="btnSubmit"
-              >Alterar email</v-btn
+            <v-col
+              lg="6"
+              class="mt-3 text-center"
+              v-if="$store.state.usuario[1]"
             >
+              <v-btn elevation="0" color="white" class="btnSubmit"
+                >Alterar email</v-btn
+              >
             </v-col>
           </v-row>
           <v-row class="mx-4">
@@ -230,13 +231,14 @@
                 required
               ></v-text-field>
             </v-col>
-             <v-col lg="6" class="mt-3 text-center" v-if="$store.state.usuario[1]">
-              <v-btn
-              elevation="0"
-              color="white"
-              class="btnSubmit"
-              >Alterar senha</v-btn
+            <v-col
+              lg="6"
+              class="mt-3 text-center"
+              v-if="$store.state.usuario[1]"
             >
+              <v-btn elevation="0" color="white" class="btnSubmit"
+                >Alterar senha</v-btn
+              >
             </v-col>
           </v-row>
         </v-col>
@@ -325,32 +327,16 @@
       </v-row>
       <v-row class="mt-1 mx-3 my-1">
         <v-col lg="3">
-          <v-text-field
-            v-model="bairro"
-            label="Bairro"
-            required
-          ></v-text-field>
+          <v-text-field v-model="bairro" label="Bairro" required></v-text-field>
         </v-col>
         <v-col lg="3">
-          <v-text-field
-            v-model="cidade"
-            label="Cidade"
-            required
-          ></v-text-field>
+          <v-text-field v-model="cidade" label="Cidade" required></v-text-field>
         </v-col>
         <v-col lg="3">
-          <v-combobox
-            v-model="uf"
-            :items="itensUf"
-            label="Estado"
-          ></v-combobox>
+          <v-combobox v-model="uf" :items="itensUf" label="Estado"></v-combobox>
         </v-col>
         <v-col lg="3">
-          <v-text-field
-            v-model="pais"
-            label="País"
-            required
-          ></v-text-field>
+          <v-text-field v-model="pais" label="País" required></v-text-field>
         </v-col>
       </v-row>
       <v-row class="mt-1 mx-3 my-3" v-if="this.$store.state.enderecos">
@@ -443,7 +429,7 @@
               ><v-icon>mdi-chevron-right</v-icon></v-btn
             >
           </v-col>
-          <v-col class="text-left" v-if="validacaoDePreenchimento">
+          <v-col class="text-left" v-if="faseCadastro == 2">
             <v-btn
               elevation="3"
               color="white"
@@ -602,44 +588,6 @@ export default {
       }
       return null;
     },
-    validacaoDePreenchimento() {
-      if (
-        this.nome != "" &&
-        this.cpf != "" &&
-        this.apelido != "" &&
-        this.telefone != "" &&
-        this.sexo != "" &&
-        this.email != "" &&
-        this.senha != "" &&
-        this.cep != "" &&
-        this.logradouro != "" &&
-        this.pais != "" &&
-        this.numero != "" &&
-        this.bairro != "" &&
-        this.cidade != "" &&
-        this.uf != "" &&
-        this.nomeEndereco != "" &&
-        this.forca >= 70 &&
-        this.tipoEndereco != "" &&
-        this.confirmacaoSenha != ""
-      ) {
-        return true;
-      } else if (
-        this.nome != "" &&
-        this.cpf != "" &&
-        this.apelido != "" &&
-        this.telefone != "" &&
-        this.sexo != "" &&
-        this.email != "" &&
-        this.senha != "" &&
-        this.$store.state.enderecos.length > 0 &&
-        this.forca >= 70 &&
-        this.confirmacaoSenha != ""
-      ) {
-        return true;
-      }
-      return false;
-    },
   },
   mounted() {
     if (this.$store.state.usuario.length > 1) {
@@ -692,8 +640,6 @@ export default {
     ...mapMutations(["editarEnderecos"]),
     editarEndereco(id) {
       let status = this.verificaPreenchimento();
-      let endereco = this.verificaIdExistente();
-      console.log(endereco);
       this.editarEnderecos({
         id: id,
         status: status,
@@ -711,17 +657,7 @@ export default {
     },
     ...mapMutations(["removeEnderecos"]),
     remove(id) {
-      console.log("id", id);
       this.removeEnderecos(id);
-    },
-    verificaIdExistente() {
-      let enderecos = this.$store.state.enderecos;
-
-      let encontrou = enderecos.filter(
-        (endereco) => endereco.id == this.idEndereco
-      );
-      console.log("Achooooooooouuuuuuuuuuuuuu", encontrou);
-      return true;
     },
     salvarEndereco() {
       if (this.idEndereco == null) this.addEndereco();
@@ -760,13 +696,11 @@ export default {
       this.tipoEndereco = "";
     },
     getEndereco(id) {
-      console.log("IDDDDDD RECEBIDO", id);
       this.idEndereco = id;
 
       let endereco = this.$store.state.enderecos.filter(
         (endereco) => endereco.id == id
       );
-      console.log("ENDERECO", endereco);
       endereco = endereco[0];
       this.cep = endereco.cep;
       this.logradouro = endereco.logradouro;
@@ -814,6 +748,12 @@ export default {
         });
     },
     salvar() {
+      if (!this.validacaoDePreenchimentoCompleto()) {
+        this.snackbarColor = "#b38b57";
+        this.mensagem = "Todos os dados deverão ser preenchidos";
+        this.snackbar = true;
+        return false;
+      }
       if (this.verificaPreenchimento()) {
         this.addEndereco();
       }
@@ -834,6 +774,44 @@ export default {
       this.$store.state.cadastro = true;
       this.$store.state.nome = this.apelido;
       this.$router.push(`/`);
+    },
+    validacaoDePreenchimentoCompleto() {
+      if (
+        this.nome != "" &&
+        this.cpf != "" &&
+        this.apelido != "" &&
+        this.telefone != "" &&
+        this.sexo != "" &&
+        this.email != "" &&
+        this.senha != "" &&
+        this.cep != "" &&
+        this.logradouro != "" &&
+        this.pais != "" &&
+        this.numero != "" &&
+        this.bairro != "" &&
+        this.cidade != "" &&
+        this.uf != "" &&
+        this.nomeEndereco != "" &&
+        this.forca >= 70 &&
+        this.tipoEndereco != "" &&
+        this.confirmacaoSenha != ""
+      ) {
+        return true;
+      } else if (
+        this.nome != "" &&
+        this.cpf != "" &&
+        this.apelido != "" &&
+        this.telefone != "" &&
+        this.sexo != "" &&
+        this.email != "" &&
+        this.senha != "" &&
+        this.$store.state.enderecos.length > 0 &&
+        this.forca >= 70 &&
+        this.confirmacaoSenha != ""
+      ) {
+        return true;
+      }
+      return false;
     },
 
     ...mapMutations(["addUsuario"]),
@@ -856,10 +834,7 @@ export default {
         this.forca += 20;
       }
 
-      if (
-        this.senha.length >= 7 &&
-        this.senha.match(/[@#$%&;*]/)
-      ) {
+      if (this.senha.length >= 7 && this.senha.match(/[@#$%&;*]/)) {
         this.forca += 25;
       }
 
