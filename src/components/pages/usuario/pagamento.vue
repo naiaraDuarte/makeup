@@ -31,7 +31,7 @@
       <v-col lg="6">
         <v-combobox
           v-model="bandeiraCartao"
-          :items="itemsBandeiraCartao"
+          :items="itensBandeiraCartao"
           label="Bandeira do cartão"
           required
         >
@@ -65,7 +65,6 @@
             :key="i"
           >
             <v-expansion-panel-header>
-              <!-- Colocar os itens da lista cartoes do Store -->
               <v-row class="centraliza">
                 <v-col lg="4">
                   <p>{{ item.nomeCartao }}</p>
@@ -116,7 +115,7 @@
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
-        <!-- <v-snackbar v-model="snackbar" :color="snackbarColor">
+        <v-snackbar v-model="snackbar" :color="snackbarColor">
           <h4 style="font-weight: 100">{{ mensagem }}</h4>
 
           <template v-slot:action="{ attrs }">
@@ -124,7 +123,7 @@
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </template>
-        </v-snackbar> -->
+        </v-snackbar>
       </v-col>
     </v-row>
   </v-container>
@@ -137,28 +136,24 @@ export default {
     return {
       nomeCartao: "",
       bandeiraCartao: "",
-      itemsBandeiraCartao: ["MasterCard", "Visa", "Elo"],
+      itensBandeiraCartao: ["MasterCard", "Visa", "Elo"],
       codCartao: "",
       numeroCartao: "",
       idCartaoCliente: null,
       snackbar: false,
-      snackbarColor: ""
+      snackbarColor: "",
+      mensagem: ""
     };
   },
   methods: {
     ...mapMutations(["addCartao"]),
     addCartoes() {
-      if (
-        this.codCartao == "" &&
-        this.bandeiraCartao == "" &&
-        this.numeroCartao == "" &&
-        this.nomeCartao == ""
-      ) {
+      if (!this.verificaPreenchimento()){
         this.snackbarColor = "#b38b57";
         this.mensagem = "Todos os dados devem ser preenchidos";
         this.snackbar = true;
         return false;
-      }
+    }
       this.mensagem = "";
       let status = this.verificaPreenchimento();
       this.addCartao({
@@ -208,7 +203,6 @@ export default {
       this.idCartaoCliente = null;
     },
     verificaPreenchimento() {
-      //Parei aqui, proximo passo é validar os campos e ver se está tudo certo
       if (
         this.codCartao != "" &&
         this.bandeiraCartao != "" &&
@@ -232,10 +226,10 @@ export default {
       let cartao = this.$store.state.cartoes.filter((cartao) => cartao.id == id);
       console.log("Cartao", cartao);
       cartao = cartao[0];
-      (this.codCartao = cartao.codCartao),
-        (this.bandeiraCartao = cartao.bandeiraCartao),
-        (this.numeroCartao = cartao.numeroCartao),
-        (this.nomeCartao = cartao.nomeCartao);
+      this.codCartao = cartao.codCartao,
+        this.bandeiraCartao = cartao.bandeiraCartao,
+        this.numeroCartao = cartao.numeroCartao,
+        this.nomeCartao = cartao.nomeCartao;
     },
   },
 };

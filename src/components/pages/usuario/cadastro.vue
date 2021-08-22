@@ -57,6 +57,7 @@
               <v-text-field
                 v-model="apelido"
                 label="Como gostaria de ser chamado?"
+                id="apelido"
                 required
               ></v-text-field>
             </v-col>
@@ -84,6 +85,7 @@
                 v-model="telefone"
                 v-mask="['(##) ####-####', '(##) #####-####']"
                 label="Telefone"
+                id="telefone"
                 required
               ></v-text-field>
             </v-col>
@@ -93,6 +95,7 @@
                 v-model="cpf"
                 v-mask="['###.###.###-##']"
                 label="CPF"
+                id="cpf"
                 required
               ></v-text-field>
             </v-col>
@@ -164,6 +167,7 @@
                     prepend-icon="mdi-calendar"
                     v-bind="attrs"
                     v-on="on"
+                    id="dataNasc"
                   ></v-text-field>
                 </template>
                 <v-date-picker
@@ -211,6 +215,7 @@
                 v-model="email"
                 :disabled="$store.state.usuario.length > 1"
                 label="Email"
+                id="email"
                 required
               ></v-text-field>
             </v-col>
@@ -242,6 +247,7 @@
                 label="Senha"
                 class="input-group--focused"
                 @click:append="show3 = !show3"
+                id="senha"
                 required
               ></v-text-field>
             </v-col>
@@ -255,6 +261,7 @@
                 label="Confirme sua senha"
                 class="input-group--focused"
                 @click:append="show3 = !show3"
+                id="confirmacaoSenha"
                 required
               ></v-text-field>
             </v-col>
@@ -299,6 +306,7 @@
           <v-text-field
             v-model="nomeEndereco"
             label="Nome desse endereço"
+            id="nomeEndereco"
             required
           ></v-text-field>
         </v-col>
@@ -315,6 +323,7 @@
             v-mask="['#####-###']"
             label="CEP"
             @blur="pesquisarCep"
+            id="cep"
             required
           ></v-text-field>
         </v-col>
@@ -331,6 +340,7 @@
           <v-text-field
             v-model="logradouro"
             label="Logradouro"
+            id="logradouro"
             required
           ></v-text-field>
         </v-col>
@@ -339,31 +349,31 @@
             v-model="numero"
             label="Número"
             v-mask="['######']"
+            id="numero"
             required
           ></v-text-field>
         </v-col>
         <v-col lg="3">
           <v-text-field
             v-model="complemento"
-            v-mask="['#####-###']"
             label="Complemento"
-            @blur="pesquisarCep"
+            id="complemento"
             required
           ></v-text-field>
         </v-col>
       </v-row>
       <v-row class="mt-1 mx-3 my-1">
         <v-col lg="3">
-          <v-text-field v-model="bairro" label="Bairro" required></v-text-field>
+          <v-text-field v-model="bairro" label="Bairro" id="bairro" required ></v-text-field>
         </v-col>
         <v-col lg="3">
-          <v-text-field v-model="cidade" label="Cidade" required></v-text-field>
+          <v-text-field v-model="cidade" label="Cidade" id="cidade" required></v-text-field>
         </v-col>
         <v-col lg="3">
           <v-combobox v-model="uf" :items="itensUf" label="Estado"></v-combobox>
         </v-col>
         <v-col lg="3">
-          <v-text-field v-model="pais" label="País" required></v-text-field>
+          <v-text-field v-model="pais" label="País" id="pais" required></v-text-field>
         </v-col>
       </v-row>
       <v-row class="mt-1 mx-3 my-3" v-if="this.$store.state.enderecos">

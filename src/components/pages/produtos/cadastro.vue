@@ -14,7 +14,7 @@
                   v-model="codProduto"
                   :counter="10"
                   type="number"
-                  label="Digite o código do produto"
+                  label="Código"
                   required
                 ></v-text-field>
               </v-col>
@@ -22,7 +22,7 @@
                 <v-text-field
                   v-model="nomeProduto"
                   :counter="10"
-                  label="Digite o nome do produto"
+                  label="Nome"
                   required
                 ></v-text-field>
               </v-col>
@@ -30,7 +30,7 @@
                 <v-text-field
                   v-model="descProduto"
                   :counter="10"
-                  label="Digite a descrição do produto"
+                  label="Descrição"
                   required
                 ></v-text-field>
               </v-col>
@@ -41,7 +41,7 @@
                 <v-text-field
                   :counter="10"
                   v-model="marcaProduto"
-                  label="Digite a marca do produto"
+                  label="Marca"
                   required
                 ></v-text-field>
               </v-col>
@@ -49,7 +49,7 @@
                 <v-text-field
                   v-model="categoriaProduto"
                   :counter="10"
-                  label="Digite a categoria do produto"
+                  label="Categoria"
                   required
                 ></v-text-field>
               </v-col>
@@ -57,7 +57,7 @@
                 <v-text-field
                   v-model="tipoProduto"
                   :counter="10"
-                  label="Digite o tipo do produto"
+                  label="Tipo"
                   required
                 ></v-text-field>
               </v-col>
@@ -105,7 +105,7 @@
                       v-model="pesoProduto"
                       :counter="10"
                       type="number"
-                      label="Digite o peso do produto"
+                      label="Peso do produto"
                       required
                     ></v-text-field>
                   </v-col>
@@ -113,7 +113,7 @@
                     <v-text-field
                       v-model="alturaProduto"
                       :counter="10"
-                      label="Digite a altura do produto"
+                      label="Altura do produto"
                       required
                     ></v-text-field>
                   </v-col>
@@ -123,7 +123,7 @@
                     <v-text-field
                       v-model="comprimentoProduto"
                       :counter="10"
-                      label="Digite o comprimento do produto"
+                      label="Comprimento do produto"
                       required
                     ></v-text-field>
                   </v-col>
@@ -132,7 +132,7 @@
                     <v-text-field
                       v-model="quantidadeProduto"
                       :counter="10"
-                      label="Digite a quantidade do produto em estoque"
+                      label="Quantidade do produto a cadastrar"
                       required
                     ></v-text-field>
                   </v-col>
@@ -142,7 +142,7 @@
                     <v-text-field
                       v-model="mgLucroProduto"
                       :counter="10"
-                      label="Digite a margem de lucro do produto"
+                      label="Margem de lucro do produto"
                       required
                     ></v-text-field>
                   </v-col>
@@ -150,7 +150,7 @@
                     <v-text-field
                       v-model="precoProduto"
                       :counter="10"
-                      label="Digite o preço do produto"
+                      label="Preço de venda produto"
                       required
                     ></v-text-field>
                   </v-col>
@@ -180,24 +180,36 @@
                 :disabled="faseCadastro == 1"
                 ><v-icon>mdi-chevron-right</v-icon></v-btn
               >
-            </v-col>
-            <v-col class="text-left" v-if="validacaoDePreenchimento">
+            </v-col>  
+            <v-col class="text-left" v-if="validacaoDePreenchimento" >
+              
               <v-btn
                 elevation="3"
                 color="white"
                 class="btnSubmit"
-                @click="salvar()"
-                >Salvar</v-btn
+                @click="salvarProduto()"
+                >add produto</v-btn
               >
-            </v-col>
+            </v-col>          
           </v-row>
+         
+          <v-snackbar v-model="snackbar" :color="snackbarColor">
+          <h4 style="font-weight: 100">{{ mensagem }}</h4>
+
+          <template v-slot:action="{ attrs }">
+            <v-btn text icon v-bind="attrs" @click="snackbar = false">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </template>
+        </v-snackbar>
         </v-col>
-      </v-row>
+      </v-row>      
     </v-container>
   </div>
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 export default {
   components: {},
   data() {
@@ -216,8 +228,12 @@ export default {
       mgLucroProduto: "",
       precoProduto: "",
       marcaProduto: "",
+      idProduto: null,
       image: null,
       valorBarra: 50,
+      snackbar: false,
+      mensagem: "",
+      snackbarColor: "",
     };
   },
   created(){
@@ -271,7 +287,117 @@ export default {
         document.getElementById("uploadPreview").src = oFREvent.target.result;
       };
     },
-    salvar() {},
+    ...mapMutations(["addProduto"]),
+    addProdutos(){
+      if (!this.verificaPreenchimento()){
+        this.snackbarColor = "#b38b57";
+        this.mensagem = "Todos os dados devem ser preenchidos";
+        this.snackbar = true;
+        return false;
+    }
+    this.mensagem ="";
+    this.addProduto({
+      id: 0,
+      codProduto: this.codProduto,
+      nomeProduto: this.nomeProduto,
+      descProduto: this.descProduto,
+      categoriaProduto: this.categoriaProduto,
+      tipoProduto: this.tipoProduto,
+      pesoProduto: this.pesoProduto,
+      alturaProduto: this.alturaProduto,
+      comprimentoProduto: this.comprimentoProduto,
+      quantidadeProduto: this.quantidadeProduto,
+      mgLucroProduto: this.mgLucroProduto,
+      precoProduto: this.precoProduto,
+      marcaProduto: this.marcaProduto
+    })  
+
+    },
+    ...mapMutations(["editarProduto"]),
+    editarProdutos(id){
+      this.editarProduto({
+      id: id,
+      codProduto: this.codProduto,
+      nomeProduto: this.nomeProduto,
+      descProduto: this.descProduto,
+      categoriaProduto: this.categoriaProduto,
+      tipoProduto: this.tipoProduto,
+      pesoProduto: this.pesoProduto,
+      alturaProduto: this.alturaProduto,
+      comprimentoProduto: this.comprimentoProduto,
+      quantidadeProduto: this.quantidadeProduto,
+      mgLucroProduto: this.mgLucroProduto,
+      precoProduto: this.precoProduto,
+      marcaProduto: this.marcaProduto
+
+      })
+    },
+    ...mapMutations(["removeProduto"]),
+    remove(id){
+      this.removeProduto(id);
+      console.log("id", id);
+
+    },
+    salvarProduto() {
+      if(this.idProduto == null) this.addProdutos();
+      else this.editarProdutos(this.idProduto);
+
+      this.limparProduto();
+      this.idProduto = null;
+      this.$router.push(`/`);
+
+    },
+    verificaPreenchimento() {
+      if (this.nomeProduto != "" &&
+      this.descProduto != "" &&
+      this.categoriaProduto != ""&&
+      this.tipoProduto != ""&&
+      this.pesoProduto != ""&&
+      this.alturaProduto != ""&&
+      this.comprimentoProduto != ""&&
+      this.quantidadeProduto != ""&&
+      this.mgLucroProduto != ""&&
+      this.precoProduto != ""&&
+      this.marcaProduto != ""
+      ) {
+        return true;
+      }
+      return false;
+    },
+    getProduto(id) {
+      console.log("IDDDDDD RECEBIDO", id);
+      this.idProduto = id;
+
+      let produto = this.$store.state.produtos.filter((produto) => produto.id == id);
+      console.log("produto", produto);
+      produto = produto[0];
+      this.nomeProduto = produto.nomeProduto,
+      this.descProduto = produto.descProduto,
+      this.categoriaProduto = produto.categoriaProduto,
+      this.tipoProduto = produto.tipoProduto,
+      this.pesoProduto = produto.pesoProduto,      	
+      this.alturaProduto = produto.alturaProduto,
+      this.comprimentoProduto = produto.comprimentoProduto,
+      this.quantidadeProduto = produto.quantidadeProduto,
+      this.mgLucroProduto = produto.mgLucroProduto,
+      this.precoProduto = produto.precoProduto,
+      this.marcaProduto = produto.marcaProduto
+      
+    },
+    limparProduto() {
+      this.codProduto = "",
+      this.nomeProduto = "",
+      this.descProduto = "",
+      this.categoriaProduto = "",
+      this.tipoProduto = "",
+      this.pesoProduto = "",
+      this.alturaProduto = "",
+      this.comprimentoProduto = "",
+      this.quantidadeProduto = "",
+      this.mgLucroProduto = "",
+      this.precoProduto = "",
+      this.marcaProduto = ""
+    },
     trocaValores() {
       if (this.faseCadastro == 0) {
         this.txtDoBotao = "Finalizar";

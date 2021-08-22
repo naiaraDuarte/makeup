@@ -15,7 +15,8 @@ export default new Vuex.Store({
         }],
         enderecos: [],
         countId: 0,
-        cartoes: []
+        cartoes: [],
+        produtos: []
     },
     mutations: {
         addUsuario(state, payload) {
@@ -48,6 +49,20 @@ export default new Vuex.Store({
             let index = state.cartoes.findIndex(cartao => cartao.id == payload);
             state.cartoes.splice(index, 1);
         },
+        addProduto(state, payload) {
+            payload.id = state.countId;
+            state.produtos.push(payload);
+            state.countId++;
+            console.log("cadastrou produto");
+        },
+        editarProduto(state, payload) {
+            let index = state.produto.findIndex(produto => produto.id == payload.id);
+            state.produtos[index] = payload;
+        },
+        removeProduto(state, payload) {
+            let index = state.addProduto.findIndex(produto => produto.id == payload);
+            state.produtos.splice(index, 1);
+        }
     },
     getters: {},
     actions: {},
