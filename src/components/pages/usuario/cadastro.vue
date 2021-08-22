@@ -154,6 +154,27 @@
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
                     v-model="formataDataNasc"
+                    label="Date"
+                    hint="MM/DD/YYYY format"
+                    persistent-hint
+                    v-mask="['##/##/####']"
+                    placeholder="DD/MM/AAAA"
+                    prepend-icon="mdi-calendar"
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="date"
+                  @input="menu1 = true"
+                  :active-picker.sync="activePicker"
+                  :max="maxAniversario"
+                  min="1950-01-01"
+                  @change="save"
+                  locale="pt-br"
+                ></v-date-picker>
+                <!-- <v-text-field
+                    v-model="date"
                     label="Data de nascimento"
                     prepend-icon="mdi-calendar"
                     v-mask="['##/##/####']"
@@ -170,7 +191,7 @@
                   min="1950-01-01"
                   @change="save"
                   locale="pt-br"
-                ></v-date-picker>
+                ></v-date-picker> -->
               </v-menu>
             </v-col>
             <v-col lg="6" class="p-0">
@@ -196,7 +217,11 @@
               class="mt-3 text-center"
               v-if="$store.state.usuario[1]"
             >
-              <v-btn elevation="0" color="white" class="btnSubmit"
+              <v-btn
+                elevation="0"
+                color="white"
+                class="btnSubmit"
+                @click="alterarEmail()"
                 >Alterar email</v-btn
               >
             </v-col>
@@ -683,6 +708,8 @@ export default {
       }
       return false;
     },
+    alterarEmail() {},
+    alterarSenha() {},
     limparEndereco() {
       this.cep = "";
       this.logradouro = "";
@@ -794,7 +821,8 @@ export default {
         this.nomeEndereco != "" &&
         this.forca >= 70 &&
         this.tipoEndereco != "" &&
-        this.confirmacaoSenha != ""
+        this.confirmacaoSenha != "" &&
+        this.confirmacaoSenha == this.senha
       ) {
         return true;
       } else if (
@@ -807,11 +835,18 @@ export default {
         this.senha != "" &&
         this.$store.state.enderecos.length > 0 &&
         this.forca >= 70 &&
-        this.confirmacaoSenha != ""
+        this.confirmacaoSenha != "" &&
+        this.confirmacaoSenha == this.senha
       ) {
         return true;
       }
       return false;
+    },
+    parseDate(date) {
+      if (!date) return null;
+
+      const [month, day, year] = date.split("/");
+      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
     },
 
     ...mapMutations(["addUsuario"]),
