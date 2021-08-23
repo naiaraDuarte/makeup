@@ -286,10 +286,12 @@
         </v-col>
       </v-row>
     </v-card>
-    <!-- <v-card elevation="0" v-if="faseCadastro == 2">
-      <endereco @verificacaoEndereco="enderecoValido = $event"></endereco>
-    </v-card> -->
     <v-card elevation="0" v-if="faseCadastro == 2">
+      <keep-alive>
+        <endereco @verificacaoEndereco="enderecoValido = $event" :clickNoSalvar="clickNoSalvar"></endereco>
+      </keep-alive>
+    </v-card>
+    <!-- <v-card elevation="0" v-if="faseCadastro == 2">
       <h2 class="cor-letra text-center mt-5 pt-5">
         Agora preciso que você me informe um endereço...
 
@@ -471,7 +473,7 @@
           </v-expansion-panels>
         </v-col>
       </v-row>
-    </v-card>
+    </v-card> -->
     <v-row class="text-right mx-1 mb-3">
       <v-col lg="9"></v-col>
       <v-col lg="3">
@@ -628,19 +630,20 @@
 import { validationMixin } from "vuelidate";
 import { mapMutations } from "vuex";
 import jsFunctions from "../../../assets/js/jsFunctions";
-//import endereco from "../usuario/endereco.vue"
+import endereco from "../usuario/endereco.vue"
 import { required, minLength, maxLength } from "vuelidate/lib/validators";
 export default {
   mixins: [validationMixin],
   components: {
-    
+    endereco
   },
   validations: {
     street: { required, minLength: minLength(4), maxLength: maxLength(50) },
   },
   data() {
     return {
-      enderecoValido: true,
+      enderecoValido: false,
+      clickNoSalvar: false,
       senhaNovoAlteracao: "",
       senhaNovoConfirmacaoAlteracao: "",
       senhaConfirmacaoParaSenhaNova: "",
@@ -994,16 +997,18 @@ export default {
           }
         });
     },
-    salvar() {
-      if (!this.validacaoDePreenchimentoCompleto()) {
+    async salvar() {
+      this.clickNoSalvar = true;
+      if (await !this.validacaoDePreenchimentoCompleto()) {
         this.snackbarColor = "#b38b57";
         this.mensagem = "Todos os dados deverão ser preenchidos";
         this.snackbar = true;
         return false;
       }
-      if (this.verificaPreenchimento()) {
-        this.addEndereco();
-      }
+      
+      // if (this.verificaPreenchimento()) {
+      //   this.addEndereco();
+      // }
       let frm = {
         perfl: "usuario",
         nome: this.nome,
@@ -1018,27 +1023,30 @@ export default {
         imagem: this.imagem,
       };
       this.addDadosUsuario(frm);
+      this.clickNoSalvar = false;
+      this.enderecoValido = false;
       this.$store.state.cadastro = true;
       this.$store.state.nome = this.apelido;
       this.$router.push(`/`);
     },
     ...mapMutations(["editarInformacoesCliente"]),
-    editarInformacoes() {
-      if (!this.validacaoDePreenchimentoCompleto()) {
+    async editarInformacoes() {
+      this.clickNoSalvar = true;
+      if (await !this.validacaoDePreenchimentoCompleto()) {
         this.snackbarColor = "#b38b57";
         this.mensagem = "Todos os dados deverão ser preenchidos";
         this.snackbar = true;
         return false;
       }
-      if (this.idEndereco != null) {
-        if (this.verificaPreenchimento()) {
-          this.editarEndereco(this.idEndereco);
-        }
-      }else{
-        if (this.verificaPreenchimento()) {
-          this.addEndereco();
-        }
-      }
+      // if (this.idEndereco != null) {
+      //   if (this.verificaPreenchimento()) {
+      //     this.editarEndereco(this.idEndereco);
+      //   }
+      // }else{
+      //   if (this.verificaPreenchimento()) {
+      //     this.addEndereco();
+      //   }
+      // }
 
       let frm = {
         perfl: "usuario",
@@ -1059,9 +1067,11 @@ export default {
       this.snackbarColor = "green";
       this.mensagem = "Informações editadas com sucesso!";
       this.snackbar = true;
+      this.clickNoSalvar = false;
+      this.enderecoValido = false;
       this.faseCadastro = 0;
     },
-    validacaoDePreenchimentoCompleto() {
+    async validacaoDePreenchimentoCompleto() {
       if (
         this.nome != "" &&
         this.cpf != "" &&

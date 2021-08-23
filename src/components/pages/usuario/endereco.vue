@@ -185,12 +185,23 @@
         </v-expansion-panels>
       </v-col>
     </v-row>
+    <v-snackbar v-model="snackbar" :color="snackbarColor">
+      <h4 style="font-weight: 100">{{ mensagem }}</h4>
+      <template v-slot:action="{ attrs }">
+        <v-btn text icon v-bind="attrs" @click="snackbar = false">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-card>
+  
 </template>
 <script>
 import { mapMutations } from "vuex";
 export default {
-    
+  props: {
+    clickNoSalvar: Boolean,
+  },
   data() {
     return {
       idEndereco: null,
@@ -204,6 +215,9 @@ export default {
       tipoEndereco: "",
       cidade: "",
       uf: "",
+      snackbar: false,
+      snackbarColor: "",
+      mensagem: "",
       pais: "Brasil",
       itensTipoLogradouro: ["Rua", "Avenida"],
       itensTipoEndereco: ["Cobrança", "Entrega"],
@@ -238,18 +252,16 @@ export default {
       ],
     };
   },
+  watch:{
+    clickNoSalvar(newVal){
+      if(newVal == true){
+        this.salvarEndereco();
+      }
+    }
+  },
   methods: {
     ...mapMutations(["addEnderecos"]),
-    addEndereco() {
-      if (this.cep == "" && this.nomeEndereco == "") {
-        this.snackbarColor = "#b38b57";
-        this.mensagem =
-          "Ao menos o nome do endereço ou CEP devem ser preenchidos antes de adicioná-los";
-        this.snackbar = true;
-        return false;
-      }
-      this.mensagem = "";
-      let status = this.verificaPreenchimento();
+    addEndereco(status) {
       this.addEnderecos({
         id: 0,
         status: status,
@@ -266,8 +278,7 @@ export default {
       });
     },
     ...mapMutations(["editarEnderecos"]),
-    editarEndereco(id) {
-      let status = this.verificaPreenchimento();
+    editarEndereco(id, status) {
       this.editarEnderecos({
         id: id,
         status: status,
@@ -288,10 +299,21 @@ export default {
       this.removeEnderecos(id);
     },
     salvarEndereco() {
-      if (this.idEndereco == null) this.addEndereco();
-      else this.editarEndereco(this.idEndereco);
+      if (this.cep == "" && this.nomeEndereco == "") {
+        this.snackbarColor = "#b38b57";
+        this.mensagem =
+          "Ao menos o nome do endereço ou CEP devem ser preenchidos antes de adicioná-los";
+        this.snackbar = true;
+        return false;
+      }
+      this.mensagem = "";
+      let status = this.verificaPreenchimento();
+      if (this.idEndereco == null) this.addEndereco(status);
+      else this.editarEndereco(this.idEndereco, status);
       this.limparEndereco();
-      this.$emit("verificacaoEndereco", true);
+      if (status == true) {
+         this.$emit("verificacaoEndereco", true);
+      }
       this.idEndereco = null;
     },
     getEndereco(id) {
