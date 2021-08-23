@@ -22,6 +22,10 @@ export default new Vuex.Store({
         addUsuario(state, payload) {
             state.usuario.push(payload);
         },
+        editarInformacoesCliente(state, payload){
+            state.usuario[1] = payload;
+            console.log("Deu certooooo", state.usuario[1])
+        },
         editarEmailUsuario(state, payload){
             state.usuario[1].email = payload;
         },

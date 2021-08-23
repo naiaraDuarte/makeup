@@ -492,11 +492,20 @@
           </v-col>
           <v-col class="text-left" v-if="faseCadastro == 2">
             <v-btn
+              v-if="$store.state.usuario.length <= 1"
               elevation="3"
               color="white"
               class="btnSubmit"
               @click="salvar()"
               >Salvar</v-btn
+            >
+            <v-btn
+              v-if="$store.state.usuario.length > 1"
+              elevation="3"
+              color="white"
+              class="btnSubmit"
+              @click="editarInformacoes()"
+              >Editar</v-btn
             >
           </v-col>
         </v-row>
@@ -791,6 +800,8 @@ export default {
         this.sexo = usuario.sexo;
         this.email = usuario.email;
         this.senha = usuario.senha;
+        this.confirmacaoSenha = usuario.senha;
+        this.forca = 85;
         this.tipoTelefone = usuario.tipoEndereco;
         this.date = usuario.date;
         this.image = usuario.image;
@@ -1002,6 +1013,41 @@ export default {
       this.$store.state.cadastro = true;
       this.$store.state.nome = this.apelido;
       this.$router.push(`/`);
+    },
+    ...mapMutations(["editarInformacoesCliente"]),
+    editarInformacoes() {
+      if (!this.validacaoDePreenchimentoCompleto()) {
+        this.snackbarColor = "#b38b57";
+        this.mensagem = "Todos os dados deverão ser preenchidos";
+        this.snackbar = true;
+        return false;
+      }
+      if (this.idEndereco != null) {
+        if (this.verificaPreenchimento()) {
+          this.editarEndereco(this.idEndereco);
+        }
+      }
+
+      let frm = {
+        perfl: "usuario",
+        nome: this.nome,
+        cpf: this.cpf,
+        apelido: this.apelido,
+        tipoTelefone: this.tipoTelefone,
+        telefone: this.telefone,
+        sexo: this.sexo,
+        email: this.email,
+        senha: this.senha,
+        date: this.date,
+        imagem: this.imagem,
+      };
+      this.editarInformacoesCliente(frm);
+      this.$store.state.cadastro = true;
+      this.$store.state.nome = this.apelido;
+       this.snackbarColor = "green";
+        this.mensagem = "Informações editadas com sucesso!";
+        this.snackbar = true;
+      this.faseCadastro = 0;
     },
     validacaoDePreenchimentoCompleto() {
       if (
