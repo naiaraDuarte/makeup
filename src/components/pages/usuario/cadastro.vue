@@ -288,192 +288,12 @@
     </v-card>
     <v-card elevation="0" v-if="faseCadastro == 2">
       <keep-alive>
-        <endereco @verificacaoEndereco="enderecoValido = $event" :clickNoSalvar="clickNoSalvar"></endereco>
+        <endereco
+          @verificacaoEndereco="enderecoValido = $event"
+          :clickNoSalvar="clickNoSalvar"
+        ></endereco>
       </keep-alive>
     </v-card>
-    <!-- <v-card elevation="0" v-if="faseCadastro == 2">
-      <h2 class="cor-letra text-center mt-5 pt-5">
-        Agora preciso que você me informe um endereço...
-
-        <div class="mt-2">
-          <v-btn
-            elevation="0"
-            v-if="idEndereco == null"
-            text
-            class="btnSubmit"
-            @click="salvarEndereco()"
-            ><v-icon left> mdi-plus </v-icon> add endereço</v-btn
-          >
-          <v-btn
-            elevation="0"
-            v-if="idEndereco != null"
-            text
-            class="btnSubmit"
-            @click="salvarEndereco()"
-            ><v-icon left> mdi-pencil-outline </v-icon> Editar endereço</v-btn
-          >
-        </div>
-      </h2>
-      <v-row class="mt-0 mx-4 pt-3">
-        <v-col lg="4">
-          <v-text-field
-            v-model="nomeEndereco"
-            label="Nome desse endereço"
-            id="nomeEndereco"
-            required
-          ></v-text-field>
-        </v-col>
-        <v-col lg="4">
-          <v-combobox
-            v-model="tipoEndereco"
-            :items="itensTipoEndereco"
-            label="Tipo de endereço"
-            id="tipoEndereco"
-          ></v-combobox>
-        </v-col>
-        <v-col lg="4">
-          <v-text-field
-            v-model="cep"
-            v-mask="['#####-###']"
-            label="CEP"
-            @blur="pesquisarCep"
-            id="cep"
-            required
-          ></v-text-field>
-        </v-col>
-      </v-row>
-      <v-row class="mt-1 mx-3 my-3">
-        <v-col lg="2">
-          <v-combobox
-            v-model="tipoLogradouro"
-            :items="itensTipoLogradouro"
-            label="Tipo Logradouro"
-          ></v-combobox>
-        </v-col>
-        <v-col lg="4">
-          <v-text-field
-            v-model="logradouro"
-            label="Logradouro"
-            id="logradouro"
-            required
-          ></v-text-field>
-        </v-col>
-        <v-col lg="3">
-          <v-text-field
-            v-model="numero"
-            label="Número"
-            v-mask="['######']"
-            id="numero"
-            required
-          ></v-text-field>
-        </v-col>
-        <v-col lg="3">
-          <v-text-field
-            v-model="complemento"
-            label="Complemento"
-            id="complemento"
-            required
-          ></v-text-field>
-        </v-col>
-      </v-row>
-      <v-row class="mt-1 mx-3 my-1">
-        <v-col lg="3">
-          <v-text-field
-            v-model="bairro"
-            label="Bairro"
-            id="bairro"
-            required
-          ></v-text-field>
-        </v-col>
-        <v-col lg="3">
-          <v-text-field
-            v-model="cidade"
-            label="Cidade"
-            id="cidade"
-            required
-          ></v-text-field>
-        </v-col>
-        <v-col lg="3">
-          <v-combobox v-model="uf" :items="itensUf" label="Estado"></v-combobox>
-        </v-col>
-        <v-col lg="3">
-          <v-text-field
-            v-model="pais"
-            label="País"
-            id="pais"
-            required
-          ></v-text-field>
-        </v-col>
-      </v-row>
-      <v-row class="mt-1 mx-3 my-3" v-if="this.$store.state.enderecos">
-        <v-col lg="12">
-          <v-expansion-panels accordion>
-            <v-expansion-panel
-              v-for="(item, i) in this.$store.state.enderecos"
-              :key="i"
-            >
-              <v-expansion-panel-header>
-                <v-row class="centraliza">
-                  <v-col lg="4">
-                    <p>{{ item.nomeEndereco }}</p>
-                  </v-col>
-                  <v-col lg="2">
-                    <p>{{ item.tipoEndereco }}</p>
-                  </v-col>
-                  <v-col lg="3">
-                    <p>{{ item.cep }}</p>
-                  </v-col>
-                  <v-col lg="2">
-                    <v-row>
-                      <v-col lg="4">
-                        <v-btn elevation="0" icon @click="getEndereco(item.id)"
-                          ><v-icon>mdi-pencil-outline</v-icon></v-btn
-                        >
-                      </v-col>
-                      <v-col lg="4">
-                        <v-btn elevation="0" v-if="$store.state.enderecos.length > 1" icon @click="remove(item.id)"
-                          ><v-icon>mdi-delete-empty</v-icon></v-btn
-                        >
-                      </v-col>
-                      <v-col lg="4" class="mt-2">
-                        <v-icon v-if="item.status == false" color="error"
-                          >mdi-alert-circle</v-icon
-                        >
-                        <v-icon v-if="item.status == true" color="teal"
-                          >mdi-check</v-icon
-                        >
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                </v-row>
-              </v-expansion-panel-header>
-              <v-expansion-panel-content>
-                <v-row>
-                  <v-col lg="3">
-                    <p>{{ item.logradouro }}</p>
-                  </v-col>
-                  <v-col lg="1">
-                    <p>N° {{ item.numero }}</p>
-                  </v-col>
-                  <v-col lg="3">
-                    <p>{{ item.bairro }}</p>
-                  </v-col>
-                  <v-col lg="2">
-                    <p>{{ item.cidade }}</p>
-                  </v-col>
-                  <v-col lg="1">
-                    <p>{{ item.uf }}</p>
-                  </v-col>
-                  <v-col lg="2">
-                    <p>{{ item.pais }}</p>
-                  </v-col>
-                </v-row>
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
-        </v-col>
-      </v-row>
-    </v-card> -->
     <v-row class="text-right mx-1 mb-3">
       <v-col lg="9"></v-col>
       <v-col lg="3">
@@ -630,31 +450,19 @@
 import { validationMixin } from "vuelidate";
 import { mapMutations } from "vuex";
 import jsFunctions from "../../../assets/js/jsFunctions";
-import endereco from "../usuario/endereco.vue"
+import endereco from "../usuario/endereco.vue";
 import { required, minLength, maxLength } from "vuelidate/lib/validators";
 export default {
   mixins: [validationMixin],
   components: {
-    endereco
+    endereco,
   },
   validations: {
     street: { required, minLength: minLength(4), maxLength: maxLength(50) },
   },
   data() {
     return {
-      enderecoValido: false,
-      clickNoSalvar: false,
-      senhaNovoAlteracao: "",
-      senhaNovoConfirmacaoAlteracao: "",
-      senhaConfirmacaoParaSenhaNova: "",
-      editarEmail: false,
-      editarSenha: false,
-      show3: false,
-      emailNovoAlteracao: "",
-      emailNovoConfirmacaoAlteracao: "",
-      senhaConfirmacao: "",
-      txtDoBotao: "Continuar",
-      faseCadastro: 0,
+      //Dados Pessoais
       idEndereco: null,
       cod: "",
       nome: "",
@@ -662,67 +470,39 @@ export default {
       apelido: "",
       telefone: "",
       sexo: "",
-      email: "",
-      senha: "",
-      cep: "",
-      tipoLogradouro: "",
-      logradouro: "",
-      pais: "Brasil",
-      numero: "",
-      complemento: "",
-      bairro: "",
-      cidade: "",
-      uf: "",
-      nomeEndereco: "",
-      confirmacaoSenha: "",
-      image: null,
-      valorBarra: 50,
-      activePicker: null,
       date: "",
-      menu: false,
       forca: 0,
+      tipoTelefone: "",
+      itensTipoTelefone: ["Celular", "Fixo"],
+
+      //Email
+      editarEmail: false,
+      email: "",
+      emailNovoAlteracao: "",
+      emailNovoConfirmacaoAlteracao: "",
+      editarSenha: false,
+
+      //Senha
+      senha: "",
+      senhaConfirmacao: "",
+      confirmacaoSenha: "",
+      senhaNovoAlteracao: "",
+      senhaNovoConfirmacaoAlteracao: "",
+      senhaConfirmacaoParaSenhaNova: "",
+
+      //necessidades HTML
+      show3: false,
+      image: null,
+      menu: false,
       mensagem: "",
       snackbar: false,
       snackbarColor: "",
-      rules: {
-        required: (value) => !!value || "Required.",
-        min: (v) => v.length >= 8 || "Min 8 characters",
-        emailMatch: () => `The  email and password you entered don't match`,
-      },
-      tipoEndereco: "",
-      tipoTelefone: "",
-      itensTipoTelefone: ["Celular", "Fixo"],
-      itensTipoLogradouro: ["Rua", "Avenida"],
-      itensTipoEndereco: ["Cobrança", "Entrega"],
-      itensUf: [
-        "AC",
-        "AL",
-        "AP",
-        "AM",
-        "BA",
-        "CE",
-        "DF",
-        "ES",
-        "GO",
-        "MA",
-        "MT",
-        "MS",
-        "MG",
-        "PA",
-        "PB",
-        "PR",
-        "PE",
-        "PI",
-        "RJ",
-        "RN",
-        "RS",
-        "RO",
-        "RR",
-        "SC",
-        "SP",
-        "SE",
-        "TO",
-      ],
+      faseCadastro: 0,
+      activePicker: null,
+
+      //Endereço
+      enderecoValido: false,
+      clickNoSalvar: false,
     };
   },
   watch: {
@@ -739,6 +519,12 @@ export default {
     },
     maxAniversario() {
       return this.$moment().subtract("years", 18).format("YYYY-MM-DD");
+    },
+    url() {
+      if (this.image) {
+        return URL.createObjectURL(this.image);
+      }
+      return null;
     },
     rulesSenha() {
       let rules = [];
@@ -788,12 +574,6 @@ export default {
       }
       return rules;
     },
-    url() {
-      if (this.image) {
-        return URL.createObjectURL(this.image);
-      }
-      return null;
-    },
   },
   mounted() {
     if (this.$store.state.usuario.length > 1) {
@@ -812,98 +592,24 @@ export default {
         this.senha = usuario.senha;
         this.confirmacaoSenha = usuario.senha;
         this.forca = 85;
-        this.tipoTelefone = usuario.tipoEndereco;
+        this.tipoTelefone = usuario.tipoTelefone;
         this.date = usuario.date;
         this.image = usuario.image;
       }
     }
   },
   methods: {
-    ...mapMutations(["addEnderecos"]),
-    addEndereco() {
-      if (this.cep == "" && this.nomeEndereco == "") {
-        this.snackbarColor = "#b38b57";
-        this.mensagem =
-          "Ao menos o nome do endereço ou CEP devem ser preenchidos antes de adicioná-los";
-        this.snackbar = true;
-        return false;
-      }
-      this.mensagem = "";
-      let status = this.verificaPreenchimento();
-      this.addEnderecos({
-        id: 0,
-        status: status,
-        tipoEndereco: this.tipoEndereco,
-        nomeEndereco: this.nomeEndereco,
-        cep: this.cep,
-        logradouro: this.logradouro,
-        complemento: this.complemento,
-        numero: this.numero,
-        bairro: this.bairro,
-        cidade: this.cidade,
-        uf: this.uf,
-        pais: this.pais,
-      });
-    },
-    ...mapMutations(["editarEnderecos"]),
-    editarEndereco(id) {
-      let status = this.verificaPreenchimento();
-      this.editarEnderecos({
-        id: id,
-        status: status,
-        tipoEndereco: this.tipoEndereco,
-        nomeEndereco: this.nomeEndereco,
-        cep: this.cep,
-        logradouro: this.logradouro,
-        complemento: this.complemento,
-        numero: this.numero,
-        bairro: this.bairro,
-        cidade: this.cidade,
-        uf: this.uf,
-        pais: this.pais,
-      });
-    },
-    ...mapMutations(["removeEnderecos"]),
-    remove(id) {
-      this.removeEnderecos(id);
-    },
-    salvarEndereco() {
-      if (this.idEndereco == null) this.addEndereco();
-      else this.editarEndereco(this.idEndereco);
-
-      this.limparEndereco();
-      this.idEndereco = null;
-    },
-    verificaPreenchimento() {
-      //Parei aqui, proximo passo é validar os campos e ver se está tudo certo
-      if (
-        this.cep != "" &&
-        this.logradouro != "" &&
-        this.pais != "" &&
-        this.numero != "" &&
-        this.bairro != "" &&
-        this.cidade != "" &&
-        this.uf != "" &&
-        this.nomeEndereco != "" &&
-        this.tipoEndereco != ""
-      ) {
-        return true;
-      }
-      return false;
-    },
     ...mapMutations(["editarEmailUsuario"]),
     salvarEmailAlterado() {
       if (this.emailNovoAlteracao != this.emailNovoConfirmacaoAlteracao) {
-        this.snackbarColor = "#b38b57";
-        this.mensagem =
-          "Os campos email e confirmação de email devem ser iguais";
-        this.snackbar = true;
+        this.funcaoSnackBar(
+          "#b38b57",
+          "Os campos email e confirmação de email devem ser iguais"
+        );
         return false;
       }
       if (this.senhaConfirmacao != this.$store.state.usuario[1].senha) {
-        this.snackbarColor = "#b38b57";
-        this.mensagem = "A senha digitada não corresponde";
-        this.snackbar = true;
+        this.funcaoSnackBar("#b38b57", "A senha digitada não corresponde");
         return false;
       }
       this.editarEmailUsuario(this.emailNovoAlteracao);
@@ -913,55 +619,25 @@ export default {
     ...mapMutations(["editarSenhaUsuario"]),
     salvarSenhaAlterado() {
       if (this.senhaNovoAlteracao != this.senhaNovoConfirmacaoAlteracao) {
-        this.snackbarColor = "#b38b57";
-        this.mensagem =
-          "Os campos senha e confirmação de senha devem ser iguais";
-        this.snackbar = true;
+        this.funcaoSnackBar(
+          "#b38b57",
+          "Os campos senha e confirmação de senha devem ser iguais"
+        );
         return false;
       }
       if (
         this.senhaConfirmacaoParaSenhaNova != this.$store.state.usuario[1].senha
       ) {
-        this.snackbarColor = "#b38b57";
-        this.mensagem = "A senha atual digitada não corresponde";
-        this.snackbar = true;
+        this.funcaoSnackBar(
+          "#b38b57",
+          "A senha atual digitada não corresponde"
+        );
         return false;
       }
       this.editarSenhaUsuario(this.senhaNovoAlteracao);
       this.senha = this.senhaNovoAlteracao;
       this.confirmacaoSenha = this.senhaNovoAlteracao;
-      console.log("Alteroioooooou", this.$store.state.usuario[1].senha);
       this.editarSenha = false;
-    },
-    limparEndereco() {
-      this.cep = "";
-      this.logradouro = "";
-      this.pais = "";
-      this.complemento = "";
-      this.numero = "";
-      this.bairro = "";
-      this.cidade = "";
-      this.uf = "";
-      this.nomeEndereco = "";
-      this.tipoEndereco = "";
-    },
-    getEndereco(id) {
-      this.idEndereco = id;
-
-      let endereco = this.$store.state.enderecos.filter(
-        (endereco) => endereco.id == id
-      );
-      endereco = endereco[0];
-      this.cep = endereco.cep;
-      this.logradouro = endereco.logradouro;
-      this.pais = endereco.pais;
-      this.complemento = endereco.complemento;
-      this.numero = endereco.numero;
-      this.bairro = endereco.bairro;
-      this.cidade = endereco.cidade;
-      this.uf = endereco.uf;
-      this.nomeEndereco = endereco.nomeEndereco;
-      this.tipoEndereco = endereco.tipoEndereco;
     },
     save(date) {
       this.$refs.menu.save(date);
@@ -981,34 +657,16 @@ export default {
         this.faseCadastro++;
       }
     },
-    pesquisarCep() {
-      this.$http
-        .get(`https://viacep.com.br/ws/${this.cep}/json/unicode/`)
-        .then((res) => {
-          this.logradouro = res.data.logradouro;
-          this.bairro = res.data.bairro;
-          this.cidade = res.data.localidade;
-          this.uf = res.data.uf;
-
-          if (this.logradouro.split(" ", 1)[0].length > 3) {
-            this.tipoLogradouro = "Avenida";
-          } else {
-            this.tipoLogradouro = "Rua";
-          }
-        });
-    },
-    async salvar() {
-      this.clickNoSalvar = true;
-      if (await !this.validacaoDePreenchimentoCompleto()) {
-        this.snackbarColor = "#b38b57";
-        this.mensagem = "Todos os dados deverão ser preenchidos";
-        this.snackbar = true;
+    salvar() {
+      // this.clickNoSalvar = true;
+      if (!this.validacaoDePreenchimentoCompleto()) {
+        this.funcaoSnackBar(
+          "#b38b57",
+          "Todos os dados deverão ser preenchidos"
+        );
         return false;
       }
-      
-      // if (this.verificaPreenchimento()) {
-      //   this.addEndereco();
-      // }
+      console.log("AAAAAAAAAAAA", this.validacaoDePreenchimentoCompleto())
       let frm = {
         perfl: "usuario",
         nome: this.nome,
@@ -1027,27 +685,18 @@ export default {
       this.enderecoValido = false;
       this.$store.state.cadastro = true;
       this.$store.state.nome = this.apelido;
-      this.$router.push(`/`);
+      //this.$router.push(`/`);
     },
     ...mapMutations(["editarInformacoesCliente"]),
     async editarInformacoes() {
-      this.clickNoSalvar = true;
-      if (await !this.validacaoDePreenchimentoCompleto()) {
-        this.snackbarColor = "#b38b57";
-        this.mensagem = "Todos os dados deverão ser preenchidos";
-        this.snackbar = true;
+      // this.clickNoSalvar = true;
+      if (!this.validacaoDePreenchimentoCompleto()) {
+        this.funcaoSnackBar(
+          "#b38b57",
+          "Todos os dados deverão ser preenchidos"
+        );
         return false;
       }
-      // if (this.idEndereco != null) {
-      //   if (this.verificaPreenchimento()) {
-      //     this.editarEndereco(this.idEndereco);
-      //   }
-      // }else{
-      //   if (this.verificaPreenchimento()) {
-      //     this.addEndereco();
-      //   }
-      // }
-
       let frm = {
         perfl: "usuario",
         nome: this.nome,
@@ -1064,14 +713,12 @@ export default {
       this.editarInformacoesCliente(frm);
       this.$store.state.cadastro = true;
       this.$store.state.nome = this.apelido;
-      this.snackbarColor = "green";
-      this.mensagem = "Informações editadas com sucesso!";
-      this.snackbar = true;
+      this.funcaoSnackBar("green", "Informações editadas com sucesso!");
       this.clickNoSalvar = false;
       this.enderecoValido = false;
       this.faseCadastro = 0;
     },
-    async validacaoDePreenchimentoCompleto() {
+    validacaoDePreenchimentoCompleto() {
       if (
         this.nome != "" &&
         this.cpf != "" &&
@@ -1109,12 +756,6 @@ export default {
     verificacaoCpfValido() {
       return jsFunctions.validacaoCpf(this.cpf);
     },
-    parseDate(date) {
-      if (!date) return null;
-
-      const [month, day, year] = date.split("/");
-      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
-    },
     ...mapMutations(["addUsuario"]),
     addDadosUsuario(value) {
       this.addUsuario(value);
@@ -1122,10 +763,14 @@ export default {
     verificacaoSenhaForte(value) {
       return (this.forca = jsFunctions.validacaoSenha(value, 0));
     },
+    funcaoSnackBar(color, mensagem) {
+      this.snackbarColor = color;
+      this.mensagem = mensagem;
+      this.snackbar = true;
+    },
   },
 };
 </script>
-
 <style scoped>
 .image {
   border-radius: 50%;

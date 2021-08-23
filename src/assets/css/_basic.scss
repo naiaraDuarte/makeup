@@ -2,11 +2,11 @@
 // $secondary-color: #3bae71;
 // $title-color: #4c4c4c;
 
-*{
-    font-family: 'PT Sans', sans-serif;
+* {
+    font-family: "PT Sans", sans-serif;
 }
 
-.v-icon{
+.v-icon {
     color: white;
 }
 
@@ -14,10 +14,15 @@
     display: flex;
     justify-content: center;
     align-items: center;
-  }
+}
 
-.espacamentoEntreEl{
+.espacamentoEntreEl {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.image {
+    border-radius: 50%;
+    color: white;
 }
