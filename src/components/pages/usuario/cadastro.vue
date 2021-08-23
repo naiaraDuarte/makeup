@@ -426,7 +426,7 @@
                         >
                       </v-col>
                       <v-col lg="4">
-                        <v-btn elevation="0" icon @click="remove(item.id)"
+                        <v-btn elevation="0" v-if="$store.state.enderecos.length > 1" icon @click="remove(item.id)"
                           ><v-icon>mdi-delete-empty</v-icon></v-btn
                         >
                       </v-col>
@@ -1026,6 +1026,10 @@ export default {
         if (this.verificaPreenchimento()) {
           this.editarEndereco(this.idEndereco);
         }
+      }else{
+        if (this.verificaPreenchimento()) {
+          this.addEndereco();
+        }
       }
 
       let frm = {
@@ -1044,9 +1048,9 @@ export default {
       this.editarInformacoesCliente(frm);
       this.$store.state.cadastro = true;
       this.$store.state.nome = this.apelido;
-       this.snackbarColor = "green";
-        this.mensagem = "Informações editadas com sucesso!";
-        this.snackbar = true;
+      this.snackbarColor = "green";
+      this.mensagem = "Informações editadas com sucesso!";
+      this.snackbar = true;
       this.faseCadastro = 0;
     },
     validacaoDePreenchimentoCompleto() {
