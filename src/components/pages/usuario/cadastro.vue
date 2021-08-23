@@ -96,6 +96,8 @@
                 v-model="cpf"
                 v-mask="['###.###.###-##']"
                 label="CPF"
+                :rules="rulesCpf"
+                :disabled="$store.state.usuario.length > 1"
                 id="cpf"
                 required
               ></v-text-field>
@@ -215,6 +217,7 @@
               <v-text-field
                 v-model="email"
                 :disabled="$store.state.usuario.length > 1"
+                :rules="rulesEmail"
                 label="Email"
                 id="email"
                 required
@@ -242,7 +245,7 @@
                 ref="corDoInput"
                 :disabled="$store.state.usuario.length > 1"
                 :type="show3 ? 'text' : 'password'"
-                @keyup="verificacaoSenhaForte()"
+                @keyup="verificacaoSenhaForte(senha)"
                 :rules="rulesSenha"
                 :counter="30"
                 label="Senha"
@@ -271,7 +274,11 @@
               class="mt-3 text-center"
               v-if="$store.state.usuario[1]"
             >
-              <v-btn elevation="0" color="white" class="btnSubmit" @click="editarSenha = true"
+              <v-btn
+                elevation="0"
+                color="white"
+                class="btnSubmit"
+                @click="editarSenha = true"
                 >Alterar senha</v-btn
               >
             </v-col>
@@ -521,6 +528,7 @@
             <v-text-field
               v-model="emailNovoAlteracao"
               label="Email novo"
+              :rules="rulesEmailNovoAlteracao"
               id="emailNovoAlteracao"
               required
             ></v-text-field>
@@ -558,20 +566,33 @@
         <v-card-text>
           <v-container v-if="$store.state.usuario.length > 0">
             <v-text-field
+              :append-icon="show3 ? 'mdi-eye' : 'mdi-eye-off'"
               v-model="senhaNovoAlteracao"
               label="Senha nova"
+              @keyup="verificacaoSenhaForte(senhaNovoAlteracao)"
+              :rules="rulesSenha"
+              class="input-group--focused"
+              @click:append="show3 = !show3"
               id="senhaNovoAlteracao"
               required
             ></v-text-field>
             <v-text-field
+              :append-icon="show3 ? 'mdi-eye' : 'mdi-eye-off'"
               v-model="senhaNovoConfirmacaoAlteracao"
+              :type="show3 ? 'text' : 'password'"
+              class="input-group--focused"
+              @click:append="show3 = !show3"
               label="Confirme sua nova senha"
               id="senhaNovoConfirmacaoAlteracao"
               required
             ></v-text-field>
             <v-text-field
+              :append-icon="show3 ? 'mdi-eye' : 'mdi-eye-off'"
               v-model="senhaConfirmacaoParaSenhaNova"
               label="Senha atual"
+              :type="show3 ? 'text' : 'password'"
+              class="input-group--focused"
+              @click:append="show3 = !show3"
               id="senha"
               required
             ></v-text-field>
@@ -594,11 +615,8 @@
 <script>
 import { validationMixin } from "vuelidate";
 import { mapMutations } from "vuex";
-import {
-  required,
-  minLength,
-  maxLength,
-} from "vuelidate/lib/validators";
+import jsFunctions from "../../../assets/js/jsFunctions";
+import { required, minLength, maxLength } from "vuelidate/lib/validators";
 export default {
   mixins: [validationMixin],
   components: {},
@@ -705,15 +723,14 @@ export default {
     },
     rulesSenha() {
       let rules = [];
-
       if (this.forca < 30) {
         rules.push("Senha fraca");
       } else if (this.forca >= 30 && this.forca < 50) {
         rules.push("Senha média");
-      } else if (this.forca >= 50 && this.forca < 70) {
+      } else if (this.forca >= 50 && this.forca <= 75) {
         rules.push("Senha forte");
       } else {
-        rules.push("Senha excelente");
+        rules.push("Senha muito forte");
       }
       return rules;
     },
@@ -722,6 +739,33 @@ export default {
 
       if (this.senha != this.confirmacaoSenha) {
         rules.push("As senhas não conferem!");
+      }
+      return rules;
+    },
+    rulesEmail() {
+      let rules = [];
+      let valor = this.verificacaoEmailValido(this.email);
+      console.log(valor);
+      if (!valor) {
+        rules.push("Email inválido");
+      }
+      return rules;
+    },
+    rulesEmailNovoAlteracao() {
+      let rules = [];
+      let valor = this.verificacaoEmailValido(this.emailNovoAlteracao);
+      console.log(valor);
+      if (!valor) {
+        rules.push("Email inválido");
+      }
+      return rules;
+    },
+    rulesCpf() {
+      let rules = [];
+      let valor = this.verificacaoCpfValido();
+      console.log(valor);
+      if (!valor) {
+        rules.push("CPF inválido");
       }
       return rules;
     },
@@ -830,7 +874,8 @@ export default {
     salvarEmailAlterado() {
       if (this.emailNovoAlteracao != this.emailNovoConfirmacaoAlteracao) {
         this.snackbarColor = "#b38b57";
-        this.mensagem ="Os campos email e confirmação de email devem ser iguais";
+        this.mensagem =
+          "Os campos email e confirmação de email devem ser iguais";
         this.snackbar = true;
         return false;
       }
@@ -845,14 +890,17 @@ export default {
       this.editarEmail = false;
     },
     ...mapMutations(["editarSenhaUsuario"]),
-    salvarSenhaAlterado(){
+    salvarSenhaAlterado() {
       if (this.senhaNovoAlteracao != this.senhaNovoConfirmacaoAlteracao) {
         this.snackbarColor = "#b38b57";
-        this.mensagem ="Os campos senha e confirmação de senha devem ser iguais";
+        this.mensagem =
+          "Os campos senha e confirmação de senha devem ser iguais";
         this.snackbar = true;
         return false;
       }
-      if (this.senhaConfirmacaoParaSenhaNova != this.$store.state.usuario[1].senha) {
+      if (
+        this.senhaConfirmacaoParaSenhaNova != this.$store.state.usuario[1].senha
+      ) {
         this.snackbarColor = "#b38b57";
         this.mensagem = "A senha atual digitada não corresponde";
         this.snackbar = true;
@@ -972,7 +1020,7 @@ export default {
         this.cidade != "" &&
         this.uf != "" &&
         this.nomeEndereco != "" &&
-        this.forca >= 70 &&
+        this.forca > 75 &&
         this.tipoEndereco != "" &&
         this.confirmacaoSenha != "" &&
         this.confirmacaoSenha == this.senha
@@ -987,13 +1035,19 @@ export default {
         this.email != "" &&
         this.senha != "" &&
         this.$store.state.enderecos.length > 0 &&
-        this.forca >= 70 &&
+        this.forca > 75 &&
         this.confirmacaoSenha != "" &&
         this.confirmacaoSenha == this.senha
       ) {
         return true;
       }
       return false;
+    },
+    verificacaoEmailValido(value) {
+      return jsFunctions.validacaoEmail(value);
+    },
+    verificacaoCpfValido() {
+      return jsFunctions.validacaoCpf(this.cpf);
     },
     parseDate(date) {
       if (!date) return null;
@@ -1005,29 +1059,8 @@ export default {
     addDadosUsuario(value) {
       this.addUsuario(value);
     },
-    verificacaoSenhaForte() {
-      this.forca = 0;
-      if (this.senha.length >= 4 && this.senha.length <= 7) {
-        this.forca += 10;
-      } else if (this.senha.length > 7) {
-        this.forca += 20;
-      }
-
-      if (this.senha.length >= 5 && this.senha.match(/[a-z]+/)) {
-        this.forca += 10;
-      }
-
-      if (this.senha.length >= 6 && this.senha.match(/[A-Z]+/)) {
-        this.forca += 20;
-      }
-
-      if (this.senha.length >= 7 && this.senha.match(/[@#$%&;*]/)) {
-        this.forca += 25;
-      }
-
-      if (this.senha.match(/([1-9]+)\1{1,}/)) {
-        this.forca += 25;
-      }
+    verificacaoSenhaForte(value) {
+      return (this.forca = jsFunctions.validacaoSenha(value, 0));
     },
   },
 };
