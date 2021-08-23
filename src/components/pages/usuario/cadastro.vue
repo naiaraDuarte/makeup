@@ -286,6 +286,9 @@
         </v-col>
       </v-row>
     </v-card>
+    <!-- <v-card elevation="0" v-if="faseCadastro == 2">
+      <endereco @verificacaoEndereco="enderecoValido = $event"></endereco>
+    </v-card> -->
     <v-card elevation="0" v-if="faseCadastro == 2">
       <h2 class="cor-letra text-center mt-5 pt-5">
         Agora preciso que você me informe um endereço...
@@ -625,15 +628,19 @@
 import { validationMixin } from "vuelidate";
 import { mapMutations } from "vuex";
 import jsFunctions from "../../../assets/js/jsFunctions";
+//import endereco from "../usuario/endereco.vue"
 import { required, minLength, maxLength } from "vuelidate/lib/validators";
 export default {
   mixins: [validationMixin],
-  components: {},
+  components: {
+    
+  },
   validations: {
     street: { required, minLength: minLength(4), maxLength: maxLength(50) },
   },
   data() {
     return {
+      enderecoValido: true,
       senhaNovoAlteracao: "",
       senhaNovoConfirmacaoAlteracao: "",
       senhaConfirmacaoParaSenhaNova: "",
@@ -919,6 +926,7 @@ export default {
       }
       this.editarSenhaUsuario(this.senhaNovoAlteracao);
       this.senha = this.senhaNovoAlteracao;
+      this.confirmacaoSenha = this.senhaNovoAlteracao;
       console.log("Alteroioooooou", this.$store.state.usuario[1].senha);
       this.editarSenha = false;
     },
@@ -1062,16 +1070,8 @@ export default {
         this.sexo != "" &&
         this.email != "" &&
         this.senha != "" &&
-        this.cep != "" &&
-        this.logradouro != "" &&
-        this.pais != "" &&
-        this.numero != "" &&
-        this.bairro != "" &&
-        this.cidade != "" &&
-        this.uf != "" &&
-        this.nomeEndereco != "" &&
+        this.enderecoValido == true &&
         this.forca > 75 &&
-        this.tipoEndereco != "" &&
         this.confirmacaoSenha != "" &&
         this.confirmacaoSenha == this.senha
       ) {
