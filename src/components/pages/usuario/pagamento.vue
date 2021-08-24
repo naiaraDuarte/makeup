@@ -1,42 +1,56 @@
 <template>
   <v-container fluid>
     <h1>Pagamento</h1>
-    <v-row class="mt-5 mx-4 pt-5">
-      <v-col lg="6">
-        <v-text-field
-          v-model="numeroCartao"
-          :counter="10"
-          label="Digite o numero do seu cartão de credito"
-          required
-        ></v-text-field>
-      </v-col>
-      <v-col lg="6">
-        <v-text-field
-          v-model="nomeCartao"
-          :counter="10"
-          label="Digite o nome no seu cartão de credito"
-          required
-        ></v-text-field>
-      </v-col>
-    </v-row>
-    <v-row class="mt-5 mx-4 pt-5">
-      <v-col lg="6">
-        <v-text-field
-          v-model="codCartao"
-          :counter="3"
-          label="Digite o codigo de segurança"
-          required
-        ></v-text-field>
-      </v-col>
-      <v-col lg="6">
-        <v-combobox
-          v-model="bandeiraCartao"
-          :items="itensBandeiraCartao"
-          label="Bandeira do cartão"
-          required
-        >
-        </v-combobox>
-      </v-col>
+    <div class="card-wrapper"></div>
+
+    <form>
+      <v-row>
+        <v-col>
+          <v-text-field
+            v-model="numeroCartao"
+            :counter="10"
+            id="cc-number"
+            name="number"
+            label="Digite o numero do seu cartão de credito"
+            required
+          ></v-text-field>
+        </v-col>
+        <v-col>
+          <v-text-field
+            v-model="nomeCartao"
+            :counter="10"
+            id="cc-name"
+            name="first-name"
+            label="Digite o nome no seu cartão de credito"
+            required
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <v-text-field
+            v-model="expCartao"
+            :counter="3"
+            id="cc-expiration"
+            name="expiry"
+            label="Digite o codigo de segurança"
+            required
+          ></v-text-field>
+        </v-col>
+        <v-col>
+          <v-text-field
+            v-model="codCartao"
+            :counter="3"
+            id="cc-cvv"
+            name="cvc"
+            label="Digite o codigo de segurança"
+            required
+          ></v-text-field>
+        </v-col>
+      </v-row>
+    </form>
+    
+    <v-row>
       <v-col class="text-right" lg="12" md="" sm="" col="5">
         <v-btn
           elevation="0"
@@ -66,14 +80,14 @@
           >
             <v-expansion-panel-header>
               <v-row class="centraliza">
-                <v-col lg="4">
+                <v-col lg="3">
                   <p>{{ item.nomeCartao }}</p>
                 </v-col>
-                <v-col lg="2">
-                  <p>{{ item.numeroCartao}}</p>
+                <v-col lg="5">
+                  <p>{{ item.numeroCartao }}</p>
                 </v-col>
-                <v-col lg="3">
-                  <p>{{ item.bandeiraCartao }}</p>
+                <v-col lg="2">
+                  <p>{{ item.expCartao }}</p>
                 </v-col>
                 <v-col lg="2">
                   <v-row>
@@ -99,20 +113,6 @@
                 </v-col>
               </v-row>
             </v-expansion-panel-header>
-            <v-expansion-panel-content>
-              <v-row>
-                <v-col lg="3">
-                  <p>{{ item.nomeCartao }}</p>
-                </v-col>
-                <v-col lg="1">
-                  <p>N° {{ item.numeroCartao }}</p>
-                </v-col>
-                <v-col lg="3">
-                  <p>{{ item.bandeiraCartao }}</p>
-                </v-col>           
-                
-              </v-row>
-            </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
         <v-snackbar v-model="snackbar" :color="snackbarColor">
@@ -131,36 +131,58 @@
 
 <script>
 import { mapMutations } from "vuex";
+import * as Card from "card";
 export default {
+  name: "Form CreditCard",
   data() {
     return {
       nomeCartao: "",
-      bandeiraCartao: "",
+      expCartao: "",
       itensBandeiraCartao: ["MasterCard", "Visa", "Elo"],
       codCartao: "",
       numeroCartao: "",
       idCartaoCliente: null,
       snackbar: false,
       snackbarColor: "",
-      mensagem: ""
+      mensagem: "",
     };
+  },
+  mounted() {
+    new Card({
+      form: "form",
+      container: ".card-wrapper",
+      formSelectors: {
+        numberInput: "input#cc-number",
+        nameInput: "input#cc-name",
+        expiryInput: "input#cc-expiration",
+        cvcInput: "input#cc-cvv",
+      },
+      width: 270,
+      formatting: true,
+      placeholders: {
+        number: "•••• •••• •••• ••••",
+        name: "Nome Completo",
+        expiry: "••/••",
+        cvc: "•••",
+      },
+    });
   },
   methods: {
     ...mapMutations(["addCartao"]),
     addCartoes() {
-      if (!this.verificaPreenchimento()){
+      if (!this.verificaPreenchimento()) {
         this.snackbarColor = "#b38b57";
         this.mensagem = "Todos os dados devem ser preenchidos";
         this.snackbar = true;
         return false;
-    }
+      }
       this.mensagem = "";
       let status = this.verificaPreenchimento();
       this.addCartao({
         id: 0,
         status: status,
         codCartao: this.codCartao,
-        bandeiraCartao: this.bandeiraCartao,
+        expCartao: this.expCartao,
         numeroCartao: this.numeroCartao,
         nomeCartao: this.nomeCartao,
       });
@@ -174,12 +196,11 @@ export default {
         id: id,
         status: status,
         codCartao: this.codCartao,
-        bandeiraCartao: this.bandeiraCartao,
+        expCartao: this.expCartao,
         numeroCartao: this.numeroCartao,
         nomeCartao: this.nomeCartao,
-        
       });
-      console.log("dentro funçao", this.numeroCartao)
+      console.log("dentro funçao", this.numeroCartao);
     },
     ...mapMutations(["removeCartao"]),
     remove(id) {
@@ -205,7 +226,7 @@ export default {
     verificaPreenchimento() {
       if (
         this.codCartao != "" &&
-        this.bandeiraCartao != "" &&
+        this.expCartao != "" &&
         this.numeroCartao != "" &&
         this.nomeCartao != ""
       ) {
@@ -215,7 +236,7 @@ export default {
     },
     limparCartao() {
       this.codCartao = "";
-      this.bandeiraCartao = "";
+      this.expCartao = "";
       this.numeroCartao = "";
       this.nomeCartao = "";
     },
@@ -223,13 +244,15 @@ export default {
       console.log("IDDDDDD RECEBIDO", id);
       this.idCartaoCliente = id;
 
-      let cartao = this.$store.state.cartoes.filter((cartao) => cartao.id == id);
+      let cartao = this.$store.state.cartoes.filter(
+        (cartao) => cartao.id == id
+      );
       console.log("Cartao", cartao);
       cartao = cartao[0];
-      this.codCartao = cartao.codCartao,
-        this.bandeiraCartao = cartao.bandeiraCartao,
-        this.numeroCartao = cartao.numeroCartao,
-        this.nomeCartao = cartao.nomeCartao;
+      (this.codCartao = cartao.codCartao),
+        (this.expCartao = cartao.expCartao),
+        (this.numeroCartao = cartao.numeroCartao),
+        (this.nomeCartao = cartao.nomeCartao);
     },
   },
 };

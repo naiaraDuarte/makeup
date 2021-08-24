@@ -52,7 +52,7 @@ export default new Vuex.Store({
             console.log("salvou", state.cartoes)
         },
         editarCartao(state, payload) {
-            let index = state.cartao.findIndex(cartao => cartao.id == payload.id);
+            let index = state.cartoes.findIndex(cartao => cartao.id == payload.id);
             state.cartoes[index] = payload;
         },
         removeCartao(state, payload) {
