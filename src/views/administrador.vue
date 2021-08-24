@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container>
     <v-row>
       <v-card elevation="3" class="mt-5">
          <listagemUsuario></listagemUsuario>

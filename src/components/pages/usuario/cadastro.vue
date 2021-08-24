@@ -426,7 +426,7 @@
                         >
                       </v-col>
                       <v-col lg="4">
-                        <v-btn elevation="0" v-if="$store.state.enderecos.length > 1" icon @click="remove(item.id)"
+                        <v-btn elevation="0" v-if="$store.state.enderecos.length > 1" icon @click="remove(item.id)" id="excluirEndereco"
                           ><v-icon>mdi-delete-empty</v-icon></v-btn
                         >
                       </v-col>
@@ -478,6 +478,7 @@
               elevation="1"
               class="mr-3"
               icon
+              id="voltar"
               @click="mudaFase('voltar')"
               :disabled="faseCadastro == 0"
               ><v-icon>mdi-chevron-left</v-icon></v-btn
@@ -485,6 +486,7 @@
             <v-btn
               elevation="1"
               icon
+              id="ir"
               @click="mudaFase('ir')"
               :disabled="faseCadastro == 2"
               ><v-icon>mdi-chevron-right</v-icon></v-btn
@@ -924,11 +926,11 @@ export default {
     limparEndereco() {
       this.cep = "";
       this.logradouro = "";
-      this.pais = "";
       this.complemento = "";
       this.numero = "";
       this.bairro = "";
       this.cidade = "";
+      this.tipoLogradouro = "";
       this.uf = "";
       this.nomeEndereco = "";
       this.tipoEndereco = "";

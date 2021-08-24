@@ -37,7 +37,7 @@
     </v-card>
 
     <!-- Depois que o cadastro já foi efetuado -->
-    <v-card style="margin-top: 50px" v-if="$store.state.cadastro">
+    <v-card style="margin-top: 0px" v-if="$store.state.cadastro">
       <v-btn
           @click="$router.push(`/`)"
           target="_blank"
@@ -51,6 +51,7 @@
             class="mx-auto"
             max-width="300"
             tile
+            
           >
             <v-list flat>
               <!-- <v-subheader>REPORTS</v-subheader> --> 
@@ -130,4 +131,11 @@ export default {
   border: 1px solid #b38b57;
   /* box-shadow: 0 0 1em #b38b57 !important;  */
 }
+
+@media (min-width: 1264px){
+    .container {
+        max-width: 1312px !important;
+    }
+}
+
 </style>

@@ -49,7 +49,7 @@
         </v-col>
       </v-row>
     </form>
-    
+
     <v-row>
       <v-col class="text-right" lg="12" md="" sm="" col="5">
         <v-btn
@@ -57,6 +57,7 @@
           v-if="idCartaoCliente == null"
           text
           class="btnSubmit"
+          id="salvarCartao"
           @click="salvarCartao()"
           ><v-icon left> mdi-plus </v-icon> add cartão</v-btn
         >
@@ -68,7 +69,6 @@
           @click="salvarCartao()"
           ><v-icon left> mdi-plus </v-icon> editar cartão</v-btn
         >
-        
       </v-col>
     </v-row>
     <v-row class="mt-1 mx-3 my-3" v-if="this.$store.state.cartoes">
@@ -92,12 +92,16 @@
                 <v-col lg="2">
                   <v-row>
                     <v-col lg="4">
-                      <v-btn elevation="0" icon @click="getCartao(item.id)"
+                      <v-btn
+                        elevation="0"
+                        icon
+                        @click="getCartao(item.id)"
+                        id="editarCartao"
                         ><v-icon>mdi-pencil-outline</v-icon></v-btn
                       >
                     </v-col>
                     <v-col lg="4">
-                      <v-btn elevation="0" icon @click="remove(item.id)"
+                      <v-btn elevation="0" icon @click="remove(item.id)" id="excluirCartao"
                         ><v-icon>mdi-delete-empty</v-icon></v-btn
                       >
                     </v-col>

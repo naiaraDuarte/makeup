@@ -3,7 +3,7 @@
     <navbar v-if="$store.state.perfil == 'adm'"></navbar>
     <app-header v-if="$store.state.perfil == 'usuario'"></app-header>
     <v-content>
-      <v-container>
+      <v-container fluid>
         <router-view />
       </v-container>
     </v-content>

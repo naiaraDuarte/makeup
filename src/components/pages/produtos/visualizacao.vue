@@ -186,7 +186,7 @@
   </v-container>
 </template>
 
-<script>
+<s>
 export default {
   name: "App",
   props: {
@@ -321,4 +321,4 @@ export default {
   border: 1px solid #bbb;
   border-radius: 10px;
 }
-</script>
+</style>

@@ -35,6 +35,12 @@
   color: white;
 }
 
+@media (min-width: 1264px) {
+  .container {
+    max-width: 1312px;
+  }
+}
+
 .namePage {
   color: #616161;
   font-family: "Allura", cursive;
