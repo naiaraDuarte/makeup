@@ -15,6 +15,8 @@ export default new Vuex.Store({
         }],
         enderecos: [],
         countId: 0,
+        carrinho: [],
+        carrinhoCountId: 0,
         cartoes: [],
         produtos: []
     },
@@ -72,7 +74,14 @@ export default new Vuex.Store({
         removeProduto(state, payload) {
             let index = state.addProduto.findIndex(produto => produto.id == payload);
             state.produtos.splice(index, 1);
+        },
+        addCarrinho(state, payload){
+            payload.id = state.carrinhoCountId;
+            state.carrinho.push(payload);
+            state.carrinhoCountId++;
+            console.log("Add no carrinho");
         }
+
     },
     getters: {},
     actions: {},

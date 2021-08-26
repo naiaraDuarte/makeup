@@ -18,13 +18,26 @@ const moment = require('moment-timezone');
 Vue.prototype.$moment = moment;
 Vue.use(moment)
 
-
+const numberFormats = {
+  'en': {
+      currency: {
+          style: 'currency',
+          currency: 'USD'
+      }
+  },
+  'pt': {
+      currency: {
+          style: 'currency',
+          currency: 'BRL'
+      }
+  }
+}
 Vue.use(VueI18n)
 var i18n = new VueI18n({
     locale: 'pt',
     fallbackLocale: 'pt',
     // messages,
-    // numberFormats
+     numberFormats
 })
 
 new Vue({

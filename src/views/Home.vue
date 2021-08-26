@@ -25,15 +25,20 @@
                     size="14"
                   ></v-rating>
 
-                  <p class="titulo-card">BASE FEELS CASTANHA 20 - RUBY ROSE</p>
+                  <p class="titulo-card">{{ item.nome }}</p>
                 </v-col>
               </v-row>
             </v-card-title>
 
             <v-card-text>
               <div class="text-center">
-                <h4 class="preco"><b>R$ 49,00</b></h4>
-                <p>Até <b>2x</b> de <b>R$24,95</b></p>
+                <h4 class="preco">
+                  <b>{{ item.preco }}</b>
+                </h4>
+                <p>
+                  Até <b>2x</b> de
+                  <b>{{ $n(parseFloat(item.preco) / 2, "currency") }}</b>
+                </p>
               </div>
             </v-card-text>
             <v-card-actions>
@@ -44,6 +49,7 @@
                     color="#b38b57"
                     class="btnCarrinho"
                     style="width: 100%"
+                    @click="addProduto(item)"
                     ><v-icon color="b38b57" class="pr-3 w-100"
                       >mdi-cart-variant</v-icon
                     >Comprar</v-btn
@@ -55,7 +61,14 @@
         </v-col>
       </v-row>
     </v-container>
-
+    <v-snackbar v-model="snackbar" :color="snackbarColor">
+      <h4 style="font-weight: 100">{{ mensagem }}</h4>
+      <template v-slot:action="{ attrs }">
+        <v-btn text icon v-bind="attrs" @click="snackbar = false">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </template>
+    </v-snackbar>
     <v-speed-dial
       id="create"
       width="800"
@@ -89,19 +102,23 @@
 
           <v-row>
             <v-col lg="12" class="mt-3">
-              <v-card elevation="0">
-                <p>Nome do produto</p>
+              <v-card
+                elevation="0"
+                v-for="(item, i) in $store.state.carrinho"
+                :key="i"
+              >
+                <p>{{ item.nome }}</p>
                 <v-row class="mt-1">
-                  <v-col lg="6">
-                    <p>R$ 49,90</p>
+                  <v-col lg="3">
+                    <p>{{ item.preco }}</p>
                   </v-col>
-                  <v-col lg="6">
+                  <v-col lg="9">
                     <v-btn icon x-small>
-                      <v-icon v-if="fab"> mdi-close </v-icon>
+                      <v-icon v-if="fab"> mdi-plus </v-icon>
                     </v-btn>
                     <input type="text" />
                     <v-btn icon x-small>
-                      <v-icon v-if="fab"> mdi-close </v-icon>
+                      <v-icon v-if="fab"> mdi-minus </v-icon>
                     </v-btn>
                   </v-col>
                 </v-row>
@@ -115,6 +132,7 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 export default {
   name: "Home",
   data() {
@@ -131,7 +149,38 @@ export default {
       right: true,
       bottom: true,
       left: false,
+      snackbar: false,
+      snackbarColor: "",
+      mensagem: "",
       transition: "slide-y-reverse-transition",
+      nomeItens: [
+        "nenhum",
+        "Base Ruby rose",
+        "Rímel áqua ruby rose",
+        "Primer fecha póros - Ruby rose",
+        "kit tratamento pra pele",
+        "hidratante para região dos olhos",
+        "fix plus - ruby rose",
+        "Serum - ruby rose",
+        "Corretivo - mi amor",
+        "pó translucido - luisance",
+        "Delineador ultra fino - Eudora",
+        "lápis de olho - avon",
+      ],
+      precosItens: [
+        "",
+        "25.90",
+        "18.90",
+        "29.90",
+        "59.90",
+        "45.99",
+        "52.90",
+        "17.80",
+        "32.80",
+        "24.20",
+        "17.70",
+        "9.99",
+      ],
     };
   },
   watch: {
@@ -153,13 +202,29 @@ export default {
     for (let index = 0; index < 15; index++) {
       let x = Math.floor(Math.random() * 11 + 1);
       console.log(`../assets/images/produto${x}.jpeg`);
-      this.itens.push({ src: `produto${x}.jpeg` });
+      this.itens.push({
+        cod: index,
+        src: `produto${x}.jpeg`,
+        nome: this.nomeItens[x],
+        preco: this.precosItens[x],
+      });
     }
   },
   methods: {
     getImgUrl(pic) {
       return require("../assets/images/" + pic);
     },
+    ...mapMutations(["addCarrinho"]),
+    addProduto(item) {
+      this.addCarrinho(item);
+      this.exibeSnackBar("#b38b57", "Seu produto foi add ao carrinho");
+      console.log(this.$store.state.carrinho);
+    },
+    exibeSnackBar(cor, msg){
+      this.snackbarColor = cor;
+      this.mensagem = msg;
+      this.snackbar = true;
+    }
   },
 };
 </script>
