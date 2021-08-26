@@ -1,6 +1,6 @@
 <template>
   <div class="teste">
-    <v-container fluid>
+    <v-container>
       <v-row style="margin-top: 0px" v-if="itens.length > 0">
         <v-col class="px-2 custom5cols" v-for="(item, i) in itens" :key="i">
           <v-card class="mx-auto my-12">
@@ -49,130 +49,68 @@
                     >Comprar</v-btn
                   >
                 </v-col>
-                <!-- <v-col lg="3" class="p-0">
-                  <v-btn icon><v-icon color="#b38b57">mdi-heart-outline</v-icon></v-btn>
-                </v-col> -->
               </v-row>
-
-              <!-- <v-btn
-                style="width: 100%"
-                class="btnCarrinho white--text"
-                color="#b38b57"
-              >
-                <v-icon color="white" class="pr-3">mdi-cart-variant</v-icon> Comprar
-              </v-btn> -->
             </v-card-actions>
           </v-card>
         </v-col>
       </v-row>
-      <!-- <v-btn color="pink" dark absolute right fab> -->
-      <!-- <v-hover v-slot="{ hover }">
-        <v-btn class="fixedbutton" color="pink" dark>
-          <v-icon>mdi-plus</v-icon>
-        </v-btn>
-        <v-card
-          v-if="hover"
-          :loading="loading"
-          class="mx-auto my-12"
-          max-width="374"
-        >
-          <template slot="progress">
-            <v-progress-linear
-              color="deep-purple"
-              height="10"
-              indeterminate
-            ></v-progress-linear>
-          </template>
-
-          <v-img
-            height="250"
-            src="https://cdn.vuetifyjs.com/images/cards/cooking.png"
-          ></v-img>
-
-          <v-card-title>Cafe Badilico</v-card-title>
-
-          <v-card-text>
-            <v-row align="center" class="mx-0">
-              <v-rating
-                :value="4.5"
-                color="amber"
-                dense
-                half-increments
-                readonly
-                size="14"
-              ></v-rating>
-
-              <div class="grey--text ms-4">4.5 (413)</div>
-            </v-row>
-
-            <div class="my-4 text-subtitle-1">$ • Italian, Cafe</div>
-
-            <div>
-              Small plates, salads & sandwiches - an intimate setting with 12
-              indoor seats plus patio seating.
-            </div>
-          </v-card-text>
-
-          <v-divider class="mx-4"></v-divider>
-
-          <v-card-title>Tonight's availability</v-card-title>
-
-          <v-card-text>
-            <v-chip-group
-              v-model="selection"
-              active-class="deep-purple accent-4 white--text"
-              column
-            >
-              <v-chip>5:30PM</v-chip>
-
-              <v-chip>7:30PM</v-chip>
-
-              <v-chip>8:00PM</v-chip>
-
-              <v-chip>9:00PM</v-chip>
-            </v-chip-group>
-          </v-card-text>
-
-          <v-card-actions>
-            <v-btn color="deep-purple lighten-2" text @click="reserve">
-              Reserve
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-hover> -->
-      <v-hover v-slot="{ hover }">
-        <v-card class="mx-auto" color="grey lighten-4" max-width="600">
-          <v-btn
-              absolute
-              color="orange"
-              class="white--text"
-              fab
-              large
-              right
-              top
-            >
-              <v-icon>mdi-cart</v-icon>
-            </v-btn>
-            <v-expand-transition>
-              <div
-                v-if="hover"
-                class="
-                  d-flex
-                  transition-fast-in-fast-out
-                  orange
-                  darken-2
-                  v-card--reveal
-                  text-h2
-                  white--text
-                "
-              >
-                $14.99
-              </div>
-            </v-expand-transition>
-            
-        </v-card>
-      </v-hover>
     </v-container>
+
+    <v-speed-dial
+      id="create"
+      width="800"
+      class="fixedbutton"
+      v-model="fab"
+      :top="top"
+      :bottom="bottom"
+      :right="right"
+      :left="left"
+      :direction="direction"
+      :open-on-hover="hover"
+      :transition="transition"
+    >
+      <template v-slot:activator>
+        <v-btn
+          v-model="fab"
+          color="#b38b57"
+          @click="sheet = true"
+          style="float: right"
+          class="fixedbutton"
+          dark
+          fab
+        >
+          <v-icon v-if="fab"> mdi-close </v-icon>
+          <v-icon v-else> mdi-cart </v-icon>
+        </v-btn>
+      </template>
+      <v-bottom-sheet v-model="sheet">
+        <v-card class="carrinho text-center" height="500" width="300">
+          <p class="tituloModalCarrinho mt-2">Produtos escolhidos</p>
+
+          <v-row>
+            <v-col lg="12" class="mt-3">
+              <v-card elevation="0">
+                <p>Nome do produto</p>
+                <v-row class="mt-1">
+                  <v-col lg="6">
+                    <p>R$ 49,90</p>
+                  </v-col>
+                  <v-col lg="6">
+                    <v-btn icon x-small>
+                      <v-icon v-if="fab"> mdi-close </v-icon>
+                    </v-btn>
+                    <input type="text" />
+                    <v-btn icon x-small>
+                      <v-icon v-if="fab"> mdi-close </v-icon>
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-bottom-sheet>
+    </v-speed-dial>
   </div>
 </template>
 
@@ -182,7 +120,33 @@ export default {
   data() {
     return {
       itens: [],
+      eventoDeMouse: false,
+      sheet: false,
+      direction: "top",
+      fab: false,
+      fling: false,
+      hover: false,
+      tabs: null,
+      top: false,
+      right: true,
+      bottom: true,
+      left: false,
+      transition: "slide-y-reverse-transition",
     };
+  },
+  watch: {
+    top(val) {
+      this.bottom = !val;
+    },
+    right(val) {
+      this.left = !val;
+    },
+    bottom(val) {
+      this.top = !val;
+    },
+    left(val) {
+      this.right = !val;
+    },
   },
   components: {},
   created() {
@@ -229,7 +193,54 @@ export default {
 
 .fixedbutton {
   position: fixed;
-  top: 650px;
-  right: 60px;
+  bottom: 40px;
+  right: 40px;
+  transition: 1s;
+}
+.fixedContainer {
+  position: fixed;
+  bottom: 120px;
+  right: 30px;
+  transition: 1s;
+  border: 2px solid #b38b57 !important;
+}
+.carrinho {
+  position: fixed;
+  bottom: 100px;
+  right: 40px;
+  transition: 1s;
+  /* border: 2px solid #b38b57 !important; */
+  border-radius: 10px !important;
+}
+.tituloModalCarrinho {
+  font-size: 20px;
+}
+
+@keyframes fixedContainer {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 650px, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(0, 580px, 0);
+  }
+}
+
+#create .v-speed-dial {
+  /* position: absolute; */
+}
+
+#create .v-btn--floating {
+  position: relative;
+}
+
+.v-card--reveal {
+  align-items: center;
+  bottom: 0;
+  justify-content: center;
+  opacity: 0.5;
+  position: absolute;
+  width: 100%;
 }
 </style>

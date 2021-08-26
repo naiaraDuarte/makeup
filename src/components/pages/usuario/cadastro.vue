@@ -161,7 +161,7 @@
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
-                    v-model="formataDataNasc"
+                    v-model="date"
                     label="Date"
                     hint="MM/DD/YYYY format"
                     persistent-hint
@@ -173,7 +173,7 @@
                     id="dataNasc"
                   ></v-text-field>
                 </template>
-                <v-date-picker
+                <!-- <v-date-picker
                   v-model="date"
                   @input="menu1 = true"
                   :active-picker.sync="activePicker"
@@ -181,7 +181,7 @@
                   min="1950-01-01"
                   @change="save"
                   locale="pt-br"
-                ></v-date-picker>
+                ></v-date-picker> -->
                 <!-- <v-text-field
                     v-model="date"
                     label="Data de nascimento"
@@ -550,9 +550,12 @@
               required
             ></v-text-field>
             <v-text-field
+            :append-icon="show3 ? 'mdi-eye' : 'mdi-eye-off'"
               v-model="senhaConfirmacao"
               label="Senha atual"
-              id="emailNovoConfirmacaoAlteracao"
+              id="senhaAlteracaoEmail"
+              class="input-group--focused"
+              @click:append="show3 = !show3"
               required
             ></v-text-field>
           </v-container>
@@ -636,6 +639,7 @@ export default {
   },
   data() {
     return {
+      verificacaoCpf: "",
       senhaNovoAlteracao: "",
       senhaNovoConfirmacaoAlteracao: "",
       senhaConfirmacaoParaSenhaNova: "",
@@ -1070,7 +1074,8 @@ export default {
         this.forca > 75 &&
         this.tipoEndereco != "" &&
         this.confirmacaoSenha != "" &&
-        this.confirmacaoSenha == this.senha
+        this.confirmacaoSenha == this.senha &&
+        this.verificacaoCpf == true
       ) {
         return true;
       } else if (
@@ -1084,17 +1089,19 @@ export default {
         this.$store.state.enderecos.length > 0 &&
         this.forca > 75 &&
         this.confirmacaoSenha != "" &&
-        this.confirmacaoSenha == this.senha
+        this.confirmacaoSenha == this.senha &&
+        this.verificacaoCpf == true
       ) {
         return true;
       }
       return false;
     },
     verificacaoEmailValido(value) {
-      return jsFunctions.validacaoEmail(value);
+       return jsFunctions.validacaoEmail(value);
     },
     verificacaoCpfValido() {
-      return jsFunctions.validacaoCpf(this.cpf);
+      this.verificacaoCpf = jsFunctions.validacaoCpf(this.cpf);
+      return this.verificacaoCpf;
     },
     parseDate(date) {
       if (!date) return null;
