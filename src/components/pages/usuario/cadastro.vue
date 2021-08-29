@@ -206,9 +206,9 @@
             <v-col lg="6" class="p-0">
               <!-- <span>Sexo:</span> -->
               <v-radio-group v-model="sexo" row>
-                <v-radio label="Masculino" id="m" value="masculino"></v-radio>
-                <v-radio label="Feminino" id="f" value="feminino"></v-radio>
-                <v-radio label="Outros" id="o" value="outros"></v-radio>
+                <v-radio label="Masculino" id="m" value="m"></v-radio>
+                <v-radio label="Feminino" id="f" value="f"></v-radio>
+                <v-radio label="Outros" id="o" value="o"></v-radio>
               </v-radio-group>
             </v-col>
           </v-row>
@@ -426,7 +426,12 @@
                         >
                       </v-col>
                       <v-col lg="4">
-                        <v-btn elevation="0" v-if="$store.state.enderecos.length > 1" icon @click="remove(item.id)" id="excluirEndereco"
+                        <v-btn
+                          elevation="0"
+                          v-if="$store.state.enderecos.length > 1"
+                          icon
+                          @click="remove(item.id)"
+                          id="excluirEndereco"
                           ><v-icon>mdi-delete-empty</v-icon></v-btn
                         >
                       </v-col>
@@ -550,7 +555,7 @@
               required
             ></v-text-field>
             <v-text-field
-            :append-icon="show3 ? 'mdi-eye' : 'mdi-eye-off'"
+              :append-icon="show3 ? 'mdi-eye' : 'mdi-eye-off'"
               v-model="senhaConfirmacao"
               label="Senha atual"
               id="senhaAlteracaoEmail"
@@ -1003,18 +1008,37 @@ export default {
         nome: this.nome,
         cpf: this.cpf,
         apelido: this.apelido,
-        tipoTelefone: this.tipoTelefone,
+        tipo_telefone: this.tipoTelefone,
         telefone: this.telefone,
         sexo: this.sexo,
         email: this.email,
         senha: this.senha,
-        date: this.date,
-        imagem: this.imagem,
+        data_nasc: "2013-06-01T03:00:00.000Z",
+        endereco: [
+          {
+            nome: "Endereco da Nay",
+            cep: "08542110",
+            logradouro: "tsteee",
+            numero: "12",
+            complemento: "12",
+            bairro: "teste",
+            cidade: "teste",
+            uf: "SP",
+            pais: "Brasil",
+            tipo_residencia: "Casa",
+            tipo_logradouro: "Avenida",
+            tipo_endereco: "Cobranca",
+          },
+        ],
       };
-      this.addDadosUsuario(frm);
-      this.$store.state.cadastro = true;
-      this.$store.state.nome = this.apelido;
-      this.$router.push(`/`);
+
+      this.$http.post(`/cliente/`, frm).then((res) => {
+        console.log("FUNCIONOU", res);
+        this.addDadosUsuario(frm);
+        this.$store.state.cadastro = true;
+        this.$store.state.nome = this.apelido;
+        this.$router.push(`/`);
+      });
     },
     ...mapMutations(["editarInformacoesCliente"]),
     editarInformacoes() {
@@ -1028,7 +1052,7 @@ export default {
         if (this.verificaPreenchimento()) {
           this.editarEndereco(this.idEndereco);
         }
-      }else{
+      } else {
         if (this.verificaPreenchimento()) {
           this.addEndereco();
         }
@@ -1097,7 +1121,7 @@ export default {
       return false;
     },
     verificacaoEmailValido(value) {
-       return jsFunctions.validacaoEmail(value);
+      return jsFunctions.validacaoEmail(value);
     },
     verificacaoCpfValido() {
       this.verificacaoCpf = jsFunctions.validacaoCpf(this.cpf);

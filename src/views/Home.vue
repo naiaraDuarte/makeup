@@ -238,9 +238,6 @@ export default {
   font-weight: bold;
   color: black;
 }
-.teste {
-  /* background-image: url("../assets/images/produto2.png"); */
-}
 .v-application p {
   margin-bottom: 0px;
 }
@@ -290,10 +287,6 @@ export default {
     opacity: 0;
     transform: translate3d(0, 580px, 0);
   }
-}
-
-#create .v-speed-dial {
-  /* position: absolute; */
 }
 
 #create .v-btn--floating {

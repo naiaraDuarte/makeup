@@ -6,13 +6,10 @@ import router from './router'
 import './assets/css/main.scss'
 import VueTheMask from 'vue-the-mask'
 import VueI18n from 'vue-i18n'
+import './plugins/axios'
 
 Vue.config.productionTip = false
 Vue.use(VueTheMask);
-
-const axios = require('axios');
-Vue.prototype.$http = axios;
-
 
 const moment = require('moment-timezone');
 Vue.prototype.$moment = moment;
