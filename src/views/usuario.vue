@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <v-row v-if="!$store.state.cadastro">
+    <v-row v-if="!verificaId">
       <v-col>
         <v-btn
           @click="$router.push(`/`)"
@@ -28,7 +28,7 @@
       </v-col>
     </v-row>
     <v-card
-      v-if="!$store.state.cadastro"
+      v-if="!verificaId"
       :class="[componente == 'cadastro' ? 'cadastro' : 'login']"
     >
       <keep-alive>
@@ -37,7 +37,7 @@
     </v-card>
 
     <!-- Depois que o cadastro já foi efetuado -->
-    <v-card style="margin-top: 0px" v-if="$store.state.cadastro">
+    <v-card style="margin-top: 0px" v-if="verificaId">
       <v-btn
           @click="$router.push(`/`)"
           target="_blank"
@@ -97,6 +97,7 @@ export default {
   data() {
     return {
       componente: "cadastro",
+      idUsuario: null,
       selectedItem: 0,
       items: [
         { text: "Conta",  icon: "mdi-account"  },
@@ -105,13 +106,22 @@ export default {
       ],
     };
   },
+  activated(){
+    // return (idUsuario = localStorage.getItem("usuarioId"))
+  },
   watch: {
     selectedItem(newVal, oldVal){
       if (newVal == null) {
         return this.selectedItem = oldVal;
       }
     }
-  }
+  },
+  computed: {
+    verificaId(){
+      if (localStorage.getItem("usuarioId")) return true;
+      else return false;
+    }
+  },
 };
 </script>
 <style scoped>

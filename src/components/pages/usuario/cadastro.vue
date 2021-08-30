@@ -410,10 +410,10 @@
               <v-expansion-panel-header>
                 <v-row class="centraliza">
                   <v-col lg="4">
-                    <p>{{ item.nomeEndereco }}</p>
+                    <p>{{ item.nome }}</p>
                   </v-col>
                   <v-col lg="2">
-                    <p>{{ item.tipoEndereco }}</p>
+                    <p>{{ item.tipo_endereco }}</p>
                   </v-col>
                   <v-col lg="3">
                     <p>{{ item.cep }}</p>
@@ -816,9 +816,49 @@ export default {
         this.date = usuario.date;
         this.image = usuario.image;
       }
+    } else if (localStorage.getItem("usuarioId")) {
+      console.log("Entrou aqui ",localStorage.getItem("usuarioId") );
+      this.$http.get(`/cliente/${localStorage.getItem("usuarioId")}`).then((res) => {
+          let usuario = res.data.cliente[0];
+          console.log("usuaio", usuario)
+          this.nome = usuario.nome;
+          this.cpf = usuario.cpf;
+          this.apelido = usuario.apelido;
+          this.telefone = usuario.telefone;
+          this.sexo = usuario.sexo;
+          this.email = usuario.email;
+          this.senha = usuario.senha;
+          this.confirmacaoSenha = usuario.senha;
+          this.forca = 85;
+          this.tipoTelefone = usuario.tipo_telefone;
+          this.date = usuario.data_nasc;
+          res.data.endereco.forEach(end => {
+            this.addEnderecoMounted(end);
+          });
+      });
     }
   },
   methods: {
+    ...mapMutations(["addEnderecos"]),
+    addEnderecoMounted(end) {
+      console.log(end);
+      this.addEnderecos({
+        id: 0,
+        status: true,
+        tipo_endereco: end.tipoEndereco,
+        nome: end.nomeEndereco,
+        cep: end.cep,
+        logradouro: end.logradouro,
+        complemento: end.complemento,
+        numero: end.numero,
+        bairro: end.bairro,
+        cidade: end.cidade,
+        uf: end.uf,
+        pais: end.pais,
+        tipo_logradouro: end.tipoLogradouro,
+        tipo_residencia: "Casa",
+      });
+    },
     ...mapMutations(["addEnderecos"]),
     addEndereco() {
       if (this.cep == "" && this.nomeEndereco == "") {
@@ -833,8 +873,8 @@ export default {
       this.addEnderecos({
         id: 0,
         status: status,
-        tipoEndereco: this.tipoEndereco,
-        nomeEndereco: this.nomeEndereco,
+        tipo_endereco: this.tipoEndereco,
+        nome: this.nomeEndereco,
         cep: this.cep,
         logradouro: this.logradouro,
         complemento: this.complemento,
@@ -843,6 +883,8 @@ export default {
         cidade: this.cidade,
         uf: this.uf,
         pais: this.pais,
+        tipo_logradouro: this.tipoLogradouro,
+        tipo_residencia: "Casa",
       });
     },
     ...mapMutations(["editarEnderecos"]),
@@ -1013,30 +1055,16 @@ export default {
         sexo: this.sexo,
         email: this.email,
         senha: this.senha,
-        data_nasc: "2013-06-01T03:00:00.000Z",
-        endereco: [
-          {
-            nome: "Endereco da Nay",
-            cep: "08542110",
-            logradouro: "tsteee",
-            numero: "12",
-            complemento: "12",
-            bairro: "teste",
-            cidade: "teste",
-            uf: "SP",
-            pais: "Brasil",
-            tipo_residencia: "Casa",
-            tipo_logradouro: "Avenida",
-            tipo_endereco: "Cobranca",
-          },
-        ],
+        data_nasc: this.date,
+        endereco: this.$store.state.enderecos,
       };
 
       this.$http.post(`/cliente/`, frm).then((res) => {
         console.log("FUNCIONOU", res);
+        frm.id = res.data.dados.id;
         this.addDadosUsuario(frm);
+        localStorage.setItem("usuarioId", frm.id);
         this.$store.state.cadastro = true;
-        this.$store.state.nome = this.apelido;
         this.$router.push(`/`);
       });
     },
