@@ -812,8 +812,8 @@ export default {
         this.senha = usuario.senha;
         this.confirmacaoSenha = usuario.senha;
         this.forca = 85;
-        this.tipoTelefone = usuario.tipoTelefone;
-        this.date = usuario.date;
+        this.tipoTelefone = usuario.tipo_telefone;
+        this.date = usuario.data_nasc;
         this.image = usuario.image;
       }
     } else if (localStorage.getItem("usuarioId")) {
@@ -846,7 +846,7 @@ export default {
         id: 0,
         status: true,
         tipo_endereco: end.tipoEndereco,
-        nome: end.nomeEndereco,
+        nome: end.nome,
         cep: end.cep,
         logradouro: end.logradouro,
         complemento: end.complemento,
@@ -894,7 +894,7 @@ export default {
         id: id,
         status: status,
         tipoEndereco: this.tipoEndereco,
-        nomeEndereco: this.nomeEndereco,
+        nome: this.nomeEndereco,
         cep: this.cep,
         logradouro: this.logradouro,
         complemento: this.complemento,
@@ -1000,7 +1000,7 @@ export default {
       this.bairro = endereco.bairro;
       this.cidade = endereco.cidade;
       this.uf = endereco.uf;
-      this.nomeEndereco = endereco.nomeEndereco;
+      this.nomeEndereco = endereco.nome;
       this.tipoEndereco = endereco.tipoEndereco;
     },
     save(date) {
@@ -1090,12 +1090,12 @@ export default {
         nome: this.nome,
         cpf: this.cpf,
         apelido: this.apelido,
-        tipoTelefone: this.tipoTelefone,
+        tipo_telefone: this.tipoTelefone,
         telefone: this.telefone,
         sexo: this.sexo,
         email: this.email,
         senha: this.senha,
-        date: this.date,
+        data_nasc: this.date,
         imagem: this.imagem,
       };
       this.editarInformacoesCliente(frm);
