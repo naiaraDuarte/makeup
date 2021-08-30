@@ -216,18 +216,14 @@
             <v-col lg="6">
               <v-text-field
                 v-model="email"
-                :disabled="$store.state.usuario.length > 1"
+                :disabled="verificaId"
                 :rules="rulesEmail"
                 label="Email"
                 id="email"
                 required
               ></v-text-field>
             </v-col>
-            <v-col
-              lg="6"
-              class="mt-3 text-center"
-              v-if="$store.state.usuario[1]"
-            >
+            <v-col lg="6" class="mt-3 text-center" v-if="verificaId">
               <v-btn
                 elevation="0"
                 color="white"
@@ -243,7 +239,7 @@
                 :append-icon="show3 ? 'mdi-eye' : 'mdi-eye-off'"
                 v-model="senha"
                 ref="corDoInput"
-                :disabled="$store.state.usuario.length > 1"
+                :disabled="verificaId"
                 :type="show3 ? 'text' : 'password'"
                 @keyup="verificacaoSenhaForte(senha)"
                 :rules="rulesSenha"
@@ -255,7 +251,7 @@
                 required
               ></v-text-field>
             </v-col>
-            <v-col lg="6" class="p-0" v-if="!$store.state.usuario[1]">
+            <v-col lg="6" class="p-0" v-if="!verificaId">
               <v-text-field
                 :append-icon="show3 ? 'mdi-eye' : 'mdi-eye-off'"
                 v-model="confirmacaoSenha"
@@ -269,11 +265,7 @@
                 required
               ></v-text-field>
             </v-col>
-            <v-col
-              lg="6"
-              class="mt-3 text-center"
-              v-if="$store.state.usuario[1]"
-            >
+            <v-col lg="6" class="mt-3 text-center" v-if="verificaId">
               <v-btn
                 elevation="0"
                 color="white"
@@ -499,7 +491,7 @@
           </v-col>
           <v-col class="text-left" v-if="faseCadastro == 2">
             <v-btn
-              v-if="$store.state.usuario.length <= 1"
+              v-if="!verificaId"
               elevation="3"
               color="white"
               class="btnSubmit"
@@ -507,7 +499,7 @@
               >Salvar</v-btn
             >
             <v-btn
-              v-if="$store.state.usuario.length > 1"
+              v-if="verificaId"
               elevation="3"
               color="white"
               class="btnSubmit"
@@ -735,6 +727,10 @@ export default {
     },
   },
   computed: {
+    verificaId() {
+      if (localStorage.getItem("usuarioId")) return true;
+      else return false;
+    },
     formataDataNasc() {
       return this.$moment(this.date, "YYYY-MM-DD").format("DD/MM/YYYY");
     },
@@ -817,10 +813,12 @@ export default {
         this.image = usuario.image;
       }
     } else if (localStorage.getItem("usuarioId")) {
-      console.log("Entrou aqui ",localStorage.getItem("usuarioId") );
-      this.$http.get(`/cliente/${localStorage.getItem("usuarioId")}`).then((res) => {
+      console.log("Entrou aqui ", localStorage.getItem("usuarioId"));
+      this.$http
+        .get(`/cliente/${localStorage.getItem("usuarioId")}`)
+        .then((res) => {
           let usuario = res.data.cliente[0];
-          console.log("usuaio", usuario)
+          console.log("usuaio", usuario);
           this.nome = usuario.nome;
           this.cpf = usuario.cpf;
           this.apelido = usuario.apelido;
@@ -828,22 +826,24 @@ export default {
           this.sexo = usuario.sexo;
           this.email = usuario.email;
           this.senha = usuario.senha;
+          console.log("SENHA", this.senha);
           this.confirmacaoSenha = usuario.senha;
           this.forca = 85;
           this.tipoTelefone = usuario.tipo_telefone;
           this.date = usuario.data_nasc;
-          res.data.endereco.forEach(end => {
+          res.data.endereco.forEach((end) => {
             this.addEnderecoMounted(end);
           });
-      });
+          console.log("STORE CLIENTE", this.$store.state.usuario);
+          console.log("STORE ENDERERCO", this.$store.state.enderecos);
+        });
     }
   },
   methods: {
     ...mapMutations(["addEnderecos"]),
     addEnderecoMounted(end) {
-      console.log(end);
       this.addEnderecos({
-        id: 0,
+        id: end.id,
         status: true,
         tipo_endereco: end.tipoEndereco,
         nome: end.nome,
@@ -870,7 +870,7 @@ export default {
       }
       this.mensagem = "";
       let status = this.verificaPreenchimento();
-      this.addEnderecos({
+      let frm = {
         id: 0,
         status: status,
         tipo_endereco: this.tipoEndereco,
@@ -885,12 +885,20 @@ export default {
         pais: this.pais,
         tipo_logradouro: this.tipoLogradouro,
         tipo_residencia: "Casa",
-      });
+      };
+      if (this.verificaId) {
+        this.$http
+          .post(`/endereco/${localStorage.getItem("usuarioId")}`, frm)
+          .then((res) => {
+            frm.id = res.data.endereco.id;
+            this.addEnderecos(frm);
+          });
+      }
     },
     ...mapMutations(["editarEnderecos"]),
     editarEndereco(id) {
       let status = this.verificaPreenchimento();
-      this.editarEnderecos({
+      let frm = {
         id: id,
         status: status,
         tipoEndereco: this.tipoEndereco,
@@ -903,11 +911,25 @@ export default {
         cidade: this.cidade,
         uf: this.uf,
         pais: this.pais,
-      });
+      };
+      if (this.verificaId) {
+        this.$http
+          .put(`/endereco/${localStorage.getItem("usuarioId")}`, frm)
+          .then((res) => {
+            console.log("DEU BOM", res);
+            this.editarEnderecos(frm);
+          });
+      }
     },
     ...mapMutations(["removeEnderecos"]),
     remove(id) {
-      this.removeEnderecos(id);
+      console.log("id", id);
+      if (this.verificaId) {
+        this.$http.delete(`/endereco/${id}`).then((res) => {
+          console.log(res);
+          this.removeEnderecos(id);
+        });
+      }
     },
     salvarEndereco() {
       if (this.idEndereco == null) this.addEndereco();
@@ -941,15 +963,35 @@ export default {
         this.snackbar = true;
         return false;
       }
-      if (this.senhaConfirmacao != this.$store.state.usuario[1].senha) {
+      if (this.senhaConfirmacao != this.senha) {
         this.snackbarColor = "#b38b57";
         this.mensagem = "A senha digitada não corresponde";
         this.snackbar = true;
         return false;
       }
-      this.editarEmailUsuario(this.emailNovoAlteracao);
-      this.email = this.emailNovoAlteracao;
-      this.editarEmail = false;
+
+      let frm = {
+        perfl: "usuario",
+        nome: this.nome,
+        cpf: this.cpf,
+        apelido: this.apelido,
+        tipo_telefone: this.tipoTelefone,
+        telefone: this.telefone,
+        sexo: this.sexo,
+        email: this.emailNovoAlteracao,
+        senha: this.senha,
+        data_nasc: this.date,
+        endereco: this.$store.state.enderecos,
+      };
+
+      this.$http
+        .put(`/cliente/${localStorage.getItem("usuarioId")}`, frm)
+        .then((res) => {
+          console.log("FUNCIONOU", res);
+          // this.editarEmailUsuario(this.emailNovoAlteracao);
+          this.email = this.emailNovoAlteracao;
+          this.editarEmail = false;
+        });
     },
     ...mapMutations(["editarSenhaUsuario"]),
     salvarSenhaAlterado() {
@@ -960,19 +1002,37 @@ export default {
         this.snackbar = true;
         return false;
       }
-      if (
-        this.senhaConfirmacaoParaSenhaNova != this.$store.state.usuario[1].senha
-      ) {
+      console.log(this.senha, "|||||", this.senhaConfirmacaoParaSenhaNova);
+      if (this.senhaConfirmacaoParaSenhaNova != this.senha) {
         this.snackbarColor = "#b38b57";
         this.mensagem = "A senha atual digitada não corresponde";
         this.snackbar = true;
         return false;
       }
-      this.editarSenhaUsuario(this.senhaNovoAlteracao);
-      this.senha = this.senhaNovoAlteracao;
-      this.confirmacaoSenha = this.senhaNovoAlteracao;
-      console.log("Alteroioooooou", this.$store.state.usuario[1].senha);
-      this.editarSenha = false;
+
+      let frm = {
+        perfl: "usuario",
+        nome: this.nome,
+        cpf: this.cpf,
+        apelido: this.apelido,
+        tipo_telefone: this.tipoTelefone,
+        telefone: this.telefone,
+        sexo: this.sexo,
+        email: this.email,
+        senha: this.senhaNovoAlteracao,
+        data_nasc: this.date,
+        endereco: this.$store.state.enderecos,
+      };
+
+      this.$http
+        .put(`/cliente/${localStorage.getItem("usuarioId")}`, frm)
+        .then((res) => {
+          console.log("FUNCIONOU", res);
+          // this.editarSenhaUsuario(this.senhaNovoAlteracao);
+          this.senha = this.senhaNovoAlteracao;
+          this.confirmacaoSenha = this.senhaNovoAlteracao;
+          this.editarSenha = false;
+        });
     },
     limparEndereco() {
       this.cep = "";
@@ -1098,6 +1158,13 @@ export default {
         data_nasc: this.date,
         imagem: this.imagem,
       };
+
+      this.$http
+        .put(`/cliente/${localStorage.getItem("usuarioId")}`, frm)
+        .then((res) => {
+          console.log("FUNCIONOU", res);
+          // this.editarSenhaUsuario(this.senhaNovoAlteracao);
+        });
       this.editarInformacoesCliente(frm);
       this.$store.state.cadastro = true;
       this.$store.state.nome = this.apelido;

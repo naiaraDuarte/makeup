@@ -35,13 +35,19 @@ export default new Vuex.Store({
             state.usuario[1].senha = payload;
         },
         addEnderecos(state, payload) {
-            payload.id = state.countId;
+            // payload.id = state.countId;
             state.enderecos.push(payload);
-            state.countId++;
+            // state.countId++;
+        },
+        addEnderecosDadosDoBanco(state, payload) {
+            state.enderecos = [];
+            state.enderecos.push(payload);
         },
         editarEnderecos(state, payload) {
+            console.log("PAYLOAD", payload, state.enderecos)
             let index = state.enderecos.findIndex(endereco => endereco.id == payload.id);
             state.enderecos[index] = payload;
+            console.log("INDEX", state.enderecos[index]);
         },
         removeEnderecos(state, payload) {
             let index = state.enderecos.findIndex(endereco => endereco.id == payload);
