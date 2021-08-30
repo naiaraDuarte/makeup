@@ -893,6 +893,8 @@ export default {
             frm.id = res.data.endereco.id;
             this.addEnderecos(frm);
           });
+      }else{
+        this.addEnderecos(frm);
       }
     },
     ...mapMutations(["editarEnderecos"]),
