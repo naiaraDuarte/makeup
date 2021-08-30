@@ -971,24 +971,12 @@ export default {
       }
 
       let frm = {
-        perfl: "usuario",
-        nome: this.nome,
-        cpf: this.cpf,
-        apelido: this.apelido,
-        tipo_telefone: this.tipoTelefone,
-        telefone: this.telefone,
-        sexo: this.sexo,
         email: this.emailNovoAlteracao,
-        senha: this.senha,
-        data_nasc: this.date,
-        endereco: this.$store.state.enderecos,
       };
 
       this.$http
-        .put(`/cliente/${localStorage.getItem("usuarioId")}`, frm)
-        .then((res) => {
-          console.log("FUNCIONOU", res);
-          // this.editarEmailUsuario(this.emailNovoAlteracao);
+        .patch(`/cliente/${localStorage.getItem("usuarioId")}`, frm)
+        .then(() => {
           this.email = this.emailNovoAlteracao;
           this.editarEmail = false;
         });
@@ -1011,21 +999,11 @@ export default {
       }
 
       let frm = {
-        perfl: "usuario",
-        nome: this.nome,
-        cpf: this.cpf,
-        apelido: this.apelido,
-        tipo_telefone: this.tipoTelefone,
-        telefone: this.telefone,
-        sexo: this.sexo,
-        email: this.email,
         senha: this.senhaNovoAlteracao,
-        data_nasc: this.date,
-        endereco: this.$store.state.enderecos,
       };
 
       this.$http
-        .put(`/cliente/${localStorage.getItem("usuarioId")}`, frm)
+        .patch(`/cliente/${localStorage.getItem("usuarioId")}`, frm)
         .then((res) => {
           console.log("FUNCIONOU", res);
           // this.editarSenhaUsuario(this.senhaNovoAlteracao);
