@@ -206,9 +206,9 @@
             <v-col lg="6" class="p-0">
               <!-- <span>Sexo:</span> -->
               <v-radio-group v-model="sexo" row>
-                <v-radio label="Masculino" id="m" value="m"></v-radio>
-                <v-radio label="Feminino" id="f" value="f"></v-radio>
-                <v-radio label="Outros" id="o" value="o"></v-radio>
+                <v-radio label="Masculino" id="m" value="M"></v-radio>
+                <v-radio label="Feminino" id="f" value="F"></v-radio>
+                <v-radio label="Outros" id="o" value="O"></v-radio>
               </v-radio-group>
             </v-col>
           </v-row>
