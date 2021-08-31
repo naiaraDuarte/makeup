@@ -289,6 +289,7 @@
             text
             class="btnSubmit"
             @click="salvarEndereco()"
+            id="addEndereco"
             ><v-icon left> mdi-plus </v-icon> add endereço</v-btn
           >
           <v-btn
@@ -297,6 +298,7 @@
             text
             class="btnSubmit"
             @click="salvarEndereco()"
+            id="editarEndereco"
             ><v-icon left> mdi-pencil-outline </v-icon> Editar endereço</v-btn
           >
         </div>
@@ -604,7 +606,7 @@
               :type="show3 ? 'text' : 'password'"
               class="input-group--focused"
               @click:append="show3 = !show3"
-              id="senha"
+              id="senhaConfirmacao"
               required
             ></v-text-field>
           </v-container>
@@ -886,6 +888,7 @@ export default {
         tipo_logradouro: this.tipoLogradouro,
         tipo_residencia: "Casa",
       };
+
       if (this.verificaId) {
         this.$http
           .post(`/endereco/${localStorage.getItem("usuarioId")}`, frm)
@@ -894,6 +897,7 @@ export default {
             this.addEnderecos(frm);
           });
       }
+      else this.addEnderecos(frm);
     },
     ...mapMutations(["editarEnderecos"]),
     editarEndereco(id) {

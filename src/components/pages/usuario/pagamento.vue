@@ -8,17 +8,17 @@
         <v-col>
           <v-text-field
             v-model="numeroCartao"
-            :counter="10"
+            :counter="16"
             id="cc-number"
             name="number"
             label="Digite o numero do seu cartão de credito"
-            required
+                        required
           ></v-text-field>
         </v-col>
         <v-col>
           <v-text-field
             v-model="nomeCartao"
-            :counter="10"
+            :counter="30"
             id="cc-name"
             name="first-name"
             label="Digite o nome no seu cartão de credito"
@@ -30,10 +30,10 @@
         <v-col>
           <v-text-field
             v-model="expCartao"
-            :counter="3"
+            :counter="6"
             id="cc-expiration"
             name="expiry"
-            label="Digite o codigo de segurança"
+            label="Digite a data de validade"
             required
           ></v-text-field>
         </v-col>
@@ -67,6 +67,7 @@
           text
           class="btnSubmit"
           @click="salvarCartao()"
+          id="salvarEditado"
           ><v-icon left> mdi-plus </v-icon> editar cartão</v-btn
         >
       </v-col>
@@ -81,13 +82,13 @@
             <v-expansion-panel-header>
               <v-row class="centraliza">
                 <v-col lg="3">
-                  <p>{{ item.nomeCartao }}</p>
+                  <p>{{ item.nome }}</p>
                 </v-col>
                 <v-col lg="5">
-                  <p>{{ item.numeroCartao }}</p>
+                  <p>{{ item.numero }}</p>
                 </v-col>
                 <v-col lg="2">
-                  <p>{{ item.expCartao }}</p>
+                  <p>{{ item.data_validade }}</p>
                 </v-col>
                 <v-col lg="2">
                   <v-row>
@@ -171,6 +172,14 @@ export default {
       },
     });
   },
+  computed:{
+    verificaId() {
+      if (localStorage.getItem("usuarioId")) return true;
+      else return false;
+    },
+
+  },
+
   methods: {
     ...mapMutations(["addCartao"]),
     addCartoes() {
@@ -182,34 +191,59 @@ export default {
       }
       this.mensagem = "";
       let status = this.verificaPreenchimento();
-      this.addCartao({
-        id: 0,
+      let frm = {
         status: status,
-        codCartao: this.codCartao,
-        expCartao: this.expCartao,
-        numeroCartao: this.numeroCartao,
-        nomeCartao: this.nomeCartao,
-      });
+        nome: this.nomeCartao,
+        numero: this.numeroCartao,
+        cvv: this.codCartao,
+        data_validade: this.expCartao,
+        bandeira: 2
+    }
+     if (this.verificaId) {
+        this.$http
+          .post(`/cartao/${localStorage.getItem("usuarioId")}`, frm)
+          .then((res) => {
+            console.log("retorno do BD", res);
+            frm.id = res.data.cartao.id;
+            this.addCartao(frm);
+          });
+      }
+       else{
+        this.addCartao(frm);
+      }
     },
     ...mapMutations(["editarCartao"]),
     editarCartoes(id) {
       let status = this.verificaPreenchimento();
-      let cartao = this.verificaIdExistente();
-      console.log(cartao);
-      this.editarCartao({
+      // let cartao = this.verificaIdExistente();
+      let frm = {
         id: id,
         status: status,
-        codCartao: this.codCartao,
-        expCartao: this.expCartao,
-        numeroCartao: this.numeroCartao,
-        nomeCartao: this.nomeCartao,
-      });
-      console.log("dentro funçao", this.numeroCartao);
+        nome: this.nomeCartao,
+        numero: this.numeroCartao,
+        cvv: this.codCartao,
+        data_validade: this.expCartao,
+        bandeira: 2
+    }
+     if (this.verificaId) {
+        this.$http
+          .put(`/cartao/${id}`, frm)
+          .then((res) => {
+            console.log("retorno do BD", res);
+            // frm.id = res.data.cartao.id;
+            this.editarCartao(frm);
+          });
+      }
     },
     ...mapMutations(["removeCartao"]),
     remove(id) {
       console.log("id", id);
-      this.removeCartao(id);
+      if (this.verificaId) {
+        this.$http.delete(`/cartao/${id}`).then((res) => {
+          console.log(res);
+          this.removeCartao(id);
+        });
+      }
     },
     verificaIdExistente() {
       let cartao = this.$store.state.cartoes;
@@ -253,10 +287,10 @@ export default {
       );
       console.log("Cartao", cartao);
       cartao = cartao[0];
-      (this.codCartao = cartao.codCartao),
-        (this.expCartao = cartao.expCartao),
-        (this.numeroCartao = cartao.numeroCartao),
-        (this.nomeCartao = cartao.nomeCartao);
+      (this.codCartao = cartao.cvv),
+        (this.expCartao = cartao.data_validade),
+        (this.numeroCartao = cartao.numero),
+        (this.nomeCartao = cartao.nome);
     },
   },
 };
