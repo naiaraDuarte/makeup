@@ -36,7 +36,9 @@ export default new Vuex.Store({
         },
         addEnderecos(state, payload) {
             // payload.id = state.countId;
+            console.log("Chegou aqui", payload)
             state.enderecos.push(payload);
+            console.log("Chegou aqui", state.enderecos)
             // state.countId++;
         },
         addEnderecosDadosDoBanco(state, payload) {

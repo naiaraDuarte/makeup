@@ -97,7 +97,7 @@
                 v-mask="['###.###.###-##']"
                 label="CPF"
                 :rules="rulesCpf"
-                :disabled="$store.state.usuario.length > 1"
+                :disabled="verificaId"
                 id="cpf"
                 required
               ></v-text-field>
@@ -687,8 +687,8 @@ export default {
       tipoEndereco: "",
       tipoTelefone: "",
       itensTipoTelefone: ["Celular", "Fixo"],
-      itensTipoLogradouro: ["Rua", "Avenida"],
-      itensTipoEndereco: ["Cobrança", "Entrega"],
+      itensTipoLogradouro: ["Avenida", "Rua"],
+      itensTipoEndereco: ["Cobrança", "Entrega", "Cobrança e Entrega"],
       itensUf: [
         "AC",
         "AL",
@@ -820,7 +820,7 @@ export default {
         .get(`/cliente/${localStorage.getItem("usuarioId")}`)
         .then((res) => {
           let usuario = res.data.cliente[0];
-          console.log("usuaio", usuario);
+          console.log("usuaio", res.data);
           this.nome = usuario.nome;
           this.cpf = usuario.cpf;
           this.apelido = usuario.apelido;
@@ -828,11 +828,10 @@ export default {
           this.sexo = usuario.sexo;
           this.email = usuario.email;
           this.senha = usuario.senha;
-          console.log("SENHA", this.senha);
           this.confirmacaoSenha = usuario.senha;
           this.forca = 85;
           this.tipoTelefone = usuario.tipo_telefone;
-          this.date = usuario.data_nasc;
+          this.date = this.$moment(usuario.data_nasc.split("T")[0], "YYYY-MM-DD").format("DD/MM/YYYY"); 
           res.data.endereco.forEach((end) => {
             this.addEnderecoMounted(end);
           });
@@ -847,7 +846,7 @@ export default {
       this.addEnderecos({
         id: end.id,
         status: true,
-        tipo_endereco: end.tipoEndereco,
+        tipo_endereco: this.itensTipoEndereco[(parseInt(end.tipo_endereco) - 1)],
         nome: end.nome,
         cep: end.cep,
         logradouro: end.logradouro,
@@ -855,9 +854,9 @@ export default {
         numero: end.numero,
         bairro: end.bairro,
         cidade: end.cidade,
-        uf: end.uf,
+        uf: this.itensUf[(parseInt(end.uf) - 1)],
         pais: end.pais,
-        tipo_logradouro: end.tipoLogradouro,
+        tipo_logradouro: this.itensTipoLogradouro[(parseInt(end.tipo_logradouro) - 1)],
         tipo_residencia: "Casa",
       });
     },
@@ -896,6 +895,8 @@ export default {
             frm.id = res.data.endereco.id;
             this.addEnderecos(frm);
           });
+      }else{
+        this.addEnderecos(frm);
       }
       else this.addEnderecos(frm);
     },
@@ -1043,7 +1044,8 @@ export default {
       this.cidade = endereco.cidade;
       this.uf = endereco.uf;
       this.nomeEndereco = endereco.nome;
-      this.tipoEndereco = endereco.tipoEndereco;
+      this.tipoEndereco = endereco.tipo_endereco;
+      this.tipoLogradouro = endereco.tipo_logradouro;
     },
     save(date) {
       this.$refs.menu.save(date);
