@@ -12,7 +12,7 @@
             id="cc-number"
             name="number"
             label="Digite o numero do seu cartão de credito"
-                        required
+            required
           ></v-text-field>
         </v-col>
         <v-col>
@@ -102,7 +102,11 @@
                       >
                     </v-col>
                     <v-col lg="4">
-                      <v-btn elevation="0" icon @click="remove(item.id)" id="excluirCartao"
+                      <v-btn
+                        elevation="0"
+                        icon
+                        @click="remove(item.id)"
+                        id="excluirCartao"
                         ><v-icon>mdi-delete-empty</v-icon></v-btn
                       >
                     </v-col>
@@ -171,16 +175,41 @@ export default {
         cvc: "•••",
       },
     });
+    if (localStorage.getItem("usuarioId")) {
+      console.log("Entrou aqui ", localStorage.getItem("usuarioId"));
+      this.$http
+        .get(`/cliente/${localStorage.getItem("usuarioId")}`)
+        .then((res) => {
+          this.$store.state.cadastro = true;
+
+          res.data.cartao.forEach((cart) => {
+            this.addCartaoMounted(cart);
+          });
+          console.log("STORE CLIENTE", this.$store.state.usuario);
+          console.log("STORE ENDERERCO", this.$store.state.enderecos);
+          console.log("STORE Cartao", this.$store.state.cartoes);
+        });
+    }
   },
-  computed:{
+  computed: {
     verificaId() {
       if (localStorage.getItem("usuarioId")) return true;
       else return false;
     },
-
   },
-
   methods: {
+    ...mapMutations(["addCartao"]),
+    addCartaoMounted(cart) {
+      this.addCartao({
+    
+        id: cart.id,
+        nome: cart.nome,
+        numero: cart.numero,
+        cvv: cart.cvv,
+        data_validade: cart.data_validade,
+        bandeira: 2,
+      });
+    },
     ...mapMutations(["addCartao"]),
     addCartoes() {
       if (!this.verificaPreenchimento()) {
@@ -197,9 +226,9 @@ export default {
         numero: this.numeroCartao,
         cvv: this.codCartao,
         data_validade: this.expCartao,
-        bandeira: 2
-    }
-     if (this.verificaId) {
+        bandeira: 2,
+      };
+      if (this.verificaId) {
         this.$http
           .post(`/cartao/${localStorage.getItem("usuarioId")}`, frm)
           .then((res) => {
@@ -207,8 +236,7 @@ export default {
             frm.id = res.data.cartao.id;
             this.addCartao(frm);
           });
-      }
-       else{
+      } else {
         this.addCartao(frm);
       }
     },
@@ -223,16 +251,14 @@ export default {
         numero: this.numeroCartao,
         cvv: this.codCartao,
         data_validade: this.expCartao,
-        bandeira: 2
-    }
-     if (this.verificaId) {
-        this.$http
-          .put(`/cartao/${id}`, frm)
-          .then((res) => {
-            console.log("retorno do BD", res);
-            // frm.id = res.data.cartao.id;
-            this.editarCartao(frm);
-          });
+        bandeira: 2,
+      };
+      if (this.verificaId) {
+        this.$http.put(`/cartao/${id}`, frm).then((res) => {
+          console.log("retorno do BD", res);
+          // frm.id = res.data.cartao.id;
+          this.editarCartao(frm);
+        });
       }
     },
     ...mapMutations(["removeCartao"]),

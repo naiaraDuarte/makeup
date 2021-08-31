@@ -71,7 +71,7 @@ export default {
           (usuario) =>
             usuario.email == this.email && usuario.senha == this.senha
         );
-         console.log(usuario);
+         console.log("usuario", usuario);
         if (usuario[0]) {
          
           if (usuario[0].perfil == "adm") {

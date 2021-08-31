@@ -39,7 +39,7 @@ export default new Vuex.Store({
             console.log("Chegou aqui", payload)
             state.enderecos.push(payload);
             console.log("Chegou aqui", state.enderecos)
-            // state.countId++;
+                // state.countId++;
         },
         addEnderecosDadosDoBanco(state, payload) {
             state.enderecos = [];
@@ -67,7 +67,8 @@ export default new Vuex.Store({
         },
         editarCartao(state, payload) {
             let index = state.cartoes.findIndex(cartao => cartao.id == payload.id);
-            state.cartoes[index] = payload;
+            Vue.set(state.cartoes, index, payload);
+
         },
         removeCartao(state, payload) {
             let index = state.cartoes.findIndex(cartao => cartao.id == payload);
