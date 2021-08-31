@@ -71,19 +71,54 @@ export default {
           (usuario) =>
             usuario.email == this.email && usuario.senha == this.senha
         );
+         console.log(usuario);
         if (usuario[0]) {
-          console.log(usuario);
+         
           if (usuario[0].perfil == "adm") {
             this.$router.push("/adm");
-          } else {
-            this.$store.state.cadastro = true;
-            this.$router.push(`/`);
           }
+        } else if (usuario[0] == null) {
+          let frm = {
+            email: this.email,
+            senha: this.senha,
+          };
+
+          this.$http
+            .post(`/cliente/login`, frm)
+            .then((res) => {
+              console.log("FUNCIONOU", res);
+              frm.id = res.data.cliente[0].id;
+              localStorage.setItem("usuarioId", frm.id);
+              this.$store.state.cadastro = true;
+              this.$router.push(`/`);
+            })
+            .catch((e) => {
+              console.log("Entrou aqui", e);
+            });
         } else {
           this.snackbarColor = "red";
           this.mensagem = "Login ou senha não conferem";
           this.snackbar = true;
         }
+
+        // let usuarios = this.$store.state.usuario;
+        // let usuario = usuarios.filter(
+        //   (usuario) =>
+        //     usuario.email == this.email && usuario.senha == this.senha
+        // );
+        // if (usuario[0]) {
+        //   console.log(usuario);
+        //   if (usuario[0].perfil == "adm") {
+        //     this.$router.push("/adm");
+        //   } else {
+        //     this.$store.state.cadastro = true;
+        //     this.$router.push(`/`);
+        //   }
+        // } else {
+        //   this.snackbarColor = "red";
+        //   this.mensagem = "Login ou senha não conferem";
+        //   this.snackbar = true;
+        // }
       }
     },
   },

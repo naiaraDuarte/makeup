@@ -696,7 +696,7 @@ export default {
       tipoTelefone: "",
       tipoResidencia: "",
       itensTipoTelefone: ["Celular", "Fixo"],
-      itensTipoLogradouro: ["Avenida", "Rua"],
+      itensTipoLogradouro: ["Avenida", "Rua", "Praça"],
       itensTipoEndereco: ["Cobrança", "Entrega", "Cobrança e Entrega"],
       itensTipoResidencia: ["Casa", "Apartamento"],
       itensUf: [
@@ -842,7 +842,10 @@ export default {
           this.confirmacaoSenha = usuario.senha;
           this.forca = 85;
           this.tipoTelefone = usuario.tipo_telefone;
-          this.date = this.$moment(usuario.data_nasc.split("T")[0], "YYYY-MM-DD").format("DD/MM/YYYY"); 
+          this.date = this.$moment(
+            usuario.data_nasc.split("T")[0],
+            "YYYY-MM-DD"
+          ).format("DD/MM/YYYY");
           res.data.endereco.forEach((end) => {
             this.addEnderecoMounted(end);
           });
@@ -857,7 +860,7 @@ export default {
       this.addEnderecos({
         id: end.id,
         status: true,
-        tipo_endereco: this.itensTipoEndereco[(parseInt(end.tipo_endereco) - 1)],
+        tipo_endereco: this.itensTipoEndereco[parseInt(end.tipo_endereco) - 1],
         nome: end.nome,
         cep: end.cep,
         logradouro: end.logradouro,
@@ -865,10 +868,12 @@ export default {
         numero: end.numero,
         bairro: end.bairro,
         cidade: end.cidade,
-        uf: this.itensUf[(parseInt(end.uf) - 1)],
+        uf: this.itensUf[parseInt(end.uf) - 1],
         pais: end.pais,
-        tipo_logradouro: this.itensTipoLogradouro[(parseInt(end.tipo_logradouro) - 1)],
-        tipo_residencia: this.itensTipoResidencia[(parseInt(end.tipo_residencia) - 1)],
+        tipo_logradouro:
+          this.itensTipoLogradouro[parseInt(end.tipo_logradouro) - 1],
+        tipo_residencia:
+          this.itensTipoResidencia[parseInt(end.tipo_residencia) - 1],
       });
     },
     ...mapMutations(["addEnderecos"]),
@@ -906,7 +911,7 @@ export default {
             frm.id = res.data.endereco.id;
             this.addEnderecos(frm);
           });
-      }else{
+      } else {
         this.addEnderecos(frm);
       }
     },
@@ -1086,8 +1091,10 @@ export default {
           this.bairro = res.data.bairro;
           this.cidade = res.data.localidade;
           this.uf = res.data.uf;
-          if (this.logradouro.split(" ", 1)[0].length > 3) {
+          if (this.logradouro.split(" ", 1)[0].length > 5) {
             this.tipoLogradouro = "Avenida";
+          } else if (this.logradouro.split(" ", 1)[0].length == 5) {
+            this.tipoLogradouro = "Praça";
           } else {
             this.tipoLogradouro = "Rua";
           }
