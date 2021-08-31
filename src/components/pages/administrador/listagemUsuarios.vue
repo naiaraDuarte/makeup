@@ -2,7 +2,9 @@
   <v-container style="width: 1200px" fluid>
     <v-card elevation="0">
       <v-card-title>
-        <h2 class="nameTable"><v-icon x-large>mdi-chevron-double-right</v-icon> Clientes</h2>
+        <h2 class="nameTable">
+          <v-icon x-large>mdi-chevron-double-right</v-icon> Clientes
+        </h2>
         <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
@@ -87,7 +89,7 @@
                 <v-col lg="6">
                   <p><b>Histórico de compras</b></p>
                   <v-expansion-panels>
-                    <v-expansion-panel v-for="(item, i) in 10" :key="i">
+                    <v-expansion-panel v-for="(item, i) in 5" :key="i">
                       <v-expansion-panel-header>
                         Item
                       </v-expansion-panel-header>
@@ -148,89 +150,23 @@ export default {
         { text: "Avaliação", value: "avaliacao" },
         { text: "Ações", value: "acoes" },
       ],
-      desserts: [
-        {
-          nome: "Frozen Yogurt",
-          cpf: "475.995.980-73",
-          email: "email@teste.com",
+      desserts: [],
+    };
+  },
+  mounted() {
+    this.$http.get(`/cliente/`).then((res) => {
+      console.log("res", res);
+      res.data.dados.forEach((cliente) => {
+        this.desserts.push({
+          nome: cliente.nome,
+          cpf: cliente.cpf,
+          email: cliente.email,
           cidade: "Mogi-SP",
           avaliacao: 4.0,
-          acoes: 1,
-        },
-        {
-          nome: "Ice cream sandwich",
-          cpf: "000.000.000-00",
-          email: "email@teste.com",
-          cidade: "Itaquaquecetuba-SP",
-          avaliacao: 4.3,
-          acoes: 2,
-        },
-        {
-          nome: "Eclair",
-          cpf: "475.995.980-73",
-          email: "Test@123.com",
-          cidade: "Mogi-SP",
-          avaliacao: 6.0,
-          acoes: 3,
-        },
-        {
-          nome: "Cupcake",
-          cpf: "111.111.111-11",
-          email: "email@teste.com",
-          cidade: "Poá-SP",
-          avaliacao: 4.3,
-          acoes: 4,
-        },
-        {
-          nome: "Gingerbread",
-          cpf: "475.995.980-73",
-          email: "email@teste.com",
-          cidade: "Poá-SP",
-          avaliacao: 3.9,
-          acoes: 5,
-        },
-        {
-          nome: "Jelly bean",
-          cpf: "475.995.980-73",
-          email: "email@teste.com",
-          cidade: "Poá-SP",
-          avaliacao: 0.5,
-          acoes: 6,
-        },
-        {
-          nome: "Lollipop",
-          cpf: "475.995.980-73",
-          email: "email@teste.com",
-          cidade: "Mogi-SP",
-          avaliacao: 5.0,
-          acoes: 7,
-        },
-        {
-          nome: "Honeycomb",
-          cpf: "475.995.980-73",
-          email: "email@teste.com",
-          cidade: "Poá-SP",
-          avaliacao: 6.5,
-          acoes: 8,
-        },
-        {
-          nome: "Donut",
-          cpf: "475.995.980-73",
-          email: "email@teste.com",
-          cidade: "Mogi-SP",
-          avaliacao: 4.9,
-          acoes: 9,
-        },
-        {
-          nome: "KitKat",
-          cpf: "475.995.980-73",
-          email: "email@teste.com",
-          cidade: "Poá-SP",
-          avaliacao: 7,
-          acoes: 10,
-        },
-      ],
-    };
+          acoes: cliente.id,
+        });
+      });
+    });
   },
   methods: {
     verMais(id) {
@@ -248,6 +184,6 @@ export default {
   border: 1px solid #bbb;
   border-radius: 10px;
 }
-.dados{
+.dados {
 }
 </style>

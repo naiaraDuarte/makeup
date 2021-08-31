@@ -118,7 +118,7 @@ export default {
       if(newVal == 3){
         localStorage.setItem("usuarioId", "");
         this.$store.state.enderecos = [];
-        this.$store.state.usuario[1] = null;
+        this.$store.state.usuario.splice(1, 1);
         this.$store.state.cadastro = false;
         this.$router.push(`/`);
       }
