@@ -24,14 +24,14 @@ export default new Vuex.Store({
         addUsuario(state, payload) {
             state.usuario.push(payload);
         },
-        editarInformacoesCliente(state, payload){
+        editarInformacoesCliente(state, payload) {
             state.usuario[1] = payload;
             console.log("Deu certooooo", state.usuario[1])
         },
-        editarEmailUsuario(state, payload){
+        editarEmailUsuario(state, payload) {
             state.usuario[1].email = payload;
         },
-        editarSenhaUsuario(state, payload){
+        editarSenhaUsuario(state, payload) {
             state.usuario[1].senha = payload;
         },
         addEnderecos(state, payload) {
@@ -58,10 +58,12 @@ export default new Vuex.Store({
             state.enderecos.splice(index, 1);
         },
         addCartao(state, payload) {
-            payload.id = state.countId;
+            console.log("dentro", payload)
+                // payload.id = state.countId;
             state.cartoes.push(payload);
-            state.countId++;
-            console.log("salvou", state.cartoes)
+            console.log("fora", payload)
+                // state.countId++;
+
         },
         editarCartao(state, payload) {
             let index = state.cartoes.findIndex(cartao => cartao.id == payload.id);
@@ -85,7 +87,7 @@ export default new Vuex.Store({
             let index = state.addProduto.findIndex(produto => produto.id == payload);
             state.produtos.splice(index, 1);
         },
-        addCarrinho(state, payload){
+        addCarrinho(state, payload) {
             payload.id = state.carrinhoCountId;
             state.carrinho.push(payload);
             state.carrinhoCountId++;
