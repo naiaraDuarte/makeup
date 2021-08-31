@@ -826,11 +826,10 @@ export default {
           this.sexo = usuario.sexo;
           this.email = usuario.email;
           this.senha = usuario.senha;
-          console.log("SENHA", this.senha);
           this.confirmacaoSenha = usuario.senha;
           this.forca = 85;
           this.tipoTelefone = usuario.tipo_telefone;
-          this.date = usuario.data_nasc;
+          this.date = this.$moment(usuario.data_nasc.split("T")[0], "YYYY-MM-DD").format("DD/MM/YYYY"); 
           res.data.endereco.forEach((end) => {
             this.addEnderecoMounted(end);
           });
