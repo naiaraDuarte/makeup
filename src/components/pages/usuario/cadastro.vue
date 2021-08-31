@@ -304,7 +304,7 @@
         </div>
       </h2>
       <v-row class="mt-0 mx-4 pt-3">
-        <v-col lg="4">
+        <v-col lg="3">
           <v-text-field
             v-model="nomeEndereco"
             label="Nome desse endereço"
@@ -312,7 +312,7 @@
             required
           ></v-text-field>
         </v-col>
-        <v-col lg="4">
+        <v-col lg="3">
           <v-combobox
             v-model="tipoEndereco"
             :items="itensTipoEndereco"
@@ -320,7 +320,15 @@
             id="tipoEndereco"
           ></v-combobox>
         </v-col>
-        <v-col lg="4">
+        <v-col lg="3">
+          <v-combobox
+            v-model="tipoResidencia"
+            :items="itensTipoResidencia"
+            label="Tipo de Residência"
+            id="tipoResidencia"
+          ></v-combobox>
+        </v-col>
+        <v-col lg="3">
           <v-text-field
             v-model="cep"
             v-mask="['#####-###']"
@@ -686,9 +694,11 @@ export default {
       },
       tipoEndereco: "",
       tipoTelefone: "",
+      tipoResidencia: "",
       itensTipoTelefone: ["Celular", "Fixo"],
       itensTipoLogradouro: ["Avenida", "Rua"],
       itensTipoEndereco: ["Cobrança", "Entrega", "Cobrança e Entrega"],
+      itensTipoResidencia: ["Casa", "Apartamento"],
       itensUf: [
         "AC",
         "AL",
@@ -858,7 +868,7 @@ export default {
         uf: this.itensUf[(parseInt(end.uf) - 1)],
         pais: end.pais,
         tipo_logradouro: this.itensTipoLogradouro[(parseInt(end.tipo_logradouro) - 1)],
-        tipo_residencia: "Casa",
+        tipo_residencia: this.itensTipoResidencia[(parseInt(end.tipo_residencia) - 1)],
       });
     },
     ...mapMutations(["addEnderecos"]),
@@ -886,7 +896,7 @@ export default {
         uf: this.uf,
         pais: this.pais,
         tipo_logradouro: this.tipoLogradouro,
-        tipo_residencia: "Casa",
+        tipo_residencia: this.tipoResidencia,
       };
 
       if (this.verificaId) {
@@ -899,7 +909,6 @@ export default {
       }else{
         this.addEnderecos(frm);
       }
-      else this.addEnderecos(frm);
     },
     ...mapMutations(["editarEnderecos"]),
     editarEndereco(id) {
@@ -918,7 +927,7 @@ export default {
         uf: this.uf,
         pais: this.pais,
         tipo_logradouro: this.tipoLogradouro,
-        tipo_residencia: "Casa",
+        tipo_residencia: this.tipoResidencia,
       };
       if (this.verificaId) {
         this.$http
@@ -1031,6 +1040,7 @@ export default {
       this.uf = "";
       this.nomeEndereco = "";
       this.tipoEndereco = "";
+      this.tipoResidencia = "";
     },
     getEndereco(id) {
       this.idEndereco = id;
@@ -1049,6 +1059,7 @@ export default {
       this.nomeEndereco = endereco.nome;
       this.tipoEndereco = endereco.tipo_endereco;
       this.tipoLogradouro = endereco.tipo_logradouro;
+      this.tipoResidencia = endereco.tipo_residencia;
     },
     save(date) {
       this.$refs.menu.save(date);
@@ -1176,6 +1187,8 @@ export default {
         this.bairro != "" &&
         this.cidade != "" &&
         this.uf != "" &&
+        this.tipoResidencia != "" &&
+        this.logradouro != "" &&
         this.nomeEndereco != "" &&
         this.forca > 75 &&
         this.tipoEndereco != "" &&
