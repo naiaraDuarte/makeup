@@ -197,6 +197,24 @@ export default {
       this.right = !val;
     },
   },
+  activated() {
+    if (localStorage.getItem("usuarioId")) {
+      this.$store.state.cadastro = true;
+      return true;
+    } else {
+      this.$store.state.cadastro = false;
+      return false;
+    }
+  },
+  mounted() {
+    if (localStorage.getItem("usuarioId")) {
+      this.$store.state.cadastro = true;
+      return true;
+    } else {
+      this.$store.state.cadastro = false;
+      return false;
+    }
+  },
   components: {},
   created() {
     for (let index = 0; index < 15; index++) {
@@ -220,11 +238,11 @@ export default {
       this.exibeSnackBar("#b38b57", "Seu produto foi add ao carrinho");
       console.log(this.$store.state.carrinho);
     },
-    exibeSnackBar(cor, msg){
+    exibeSnackBar(cor, msg) {
       this.snackbarColor = cor;
       this.mensagem = msg;
       this.snackbar = true;
-    }
+    },
   },
 };
 </script>

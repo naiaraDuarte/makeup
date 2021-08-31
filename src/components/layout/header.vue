@@ -22,7 +22,8 @@
         </v-col>
         <v-col lg="4" class="centraliza mb-2">
           <v-row class="w-100" style="max-width: 100%">
-            <v-col lg="4"
+            <v-col
+              lg="4"
               class="text-center retiraPadding"
               v-if="!$store.state.cadastro"
             >
@@ -38,7 +39,8 @@
                 >Entrar
               </v-btn>
             </v-col>
-            <v-col lg="4"
+            <v-col
+              lg="4"
               class="text-center retiraPadding"
               v-if="$store.state.cadastro"
             >
@@ -47,7 +49,7 @@
                 @click="$router.push(`/usuario`)"
                 target="_blank"
                 text
-              ><v-icon color="#b38b57" class="pr-3"
+                ><v-icon color="#b38b57" class="pr-3"
                   >mdi-account-circle-outline</v-icon
                 >Minha conta
               </v-btn>
@@ -84,6 +86,9 @@
 export default {
   data() {
     return {};
+  },
+  computed: {
+    
   },
   watch: {},
 };

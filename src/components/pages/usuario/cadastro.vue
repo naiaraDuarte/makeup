@@ -817,6 +817,7 @@ export default {
       this.$http
         .get(`/cliente/${localStorage.getItem("usuarioId")}`)
         .then((res) => {
+          this.$store.state.cadastro = true;
           let usuario = res.data.cliente[0];
           console.log("usuaio", res.data);
           this.nome = usuario.nome;
@@ -902,7 +903,7 @@ export default {
       let frm = {
         id: id,
         status: status,
-        tipoEndereco: this.tipoEndereco,
+        tipo_endereco: this.tipoEndereco,
         nome: this.nomeEndereco,
         cep: this.cep,
         logradouro: this.logradouro,
@@ -912,6 +913,8 @@ export default {
         cidade: this.cidade,
         uf: this.uf,
         pais: this.pais,
+        tipo_logradouro: this.tipoLogradouro,
+        tipo_residencia: "Casa",
       };
       if (this.verificaId) {
         this.$http
