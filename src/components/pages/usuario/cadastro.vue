@@ -411,13 +411,16 @@
             >
               <v-expansion-panel-header>
                 <v-row class="centraliza">
-                  <v-col lg="4">
+                  <v-col lg="3">
                     <p>{{ item.nome }}</p>
+                  </v-col>
+                  <v-col lg="2">
+                    <p>{{ item.tipo_residencia }}</p>
                   </v-col>
                   <v-col lg="2">
                     <p>{{ item.tipo_endereco }}</p>
                   </v-col>
-                  <v-col lg="3">
+                  <v-col lg="2">
                     <p>{{ item.cep }}</p>
                   </v-col>
                   <v-col lg="2">

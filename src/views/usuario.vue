@@ -103,6 +103,7 @@ export default {
         { text: "Conta",  icon: "mdi-account"  },
         { text: "Pagamento", icon: "mdi-clock" },
         { text: "Compras", icon: "mdi-flag" },
+        { text: "Sair", icon: "mdi-flag" },
       ],
     };
   },
@@ -113,6 +114,12 @@ export default {
     selectedItem(newVal, oldVal){
       if (newVal == null) {
         return this.selectedItem = oldVal;
+      }
+      if(newVal == 3){
+        localStorage.setItem("usuarioId", "");
+        this.$store.state.enderecos = [];
+        this.$store.state.cadastro = false;
+        this.$router.push(`/`);
       }
     }
   },
