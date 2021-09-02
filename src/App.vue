@@ -4,7 +4,7 @@
     <app-header v-if="$store.state.perfil == 'usuario'"></app-header>
     <v-content>
       <v-container fluid>
-        <router-view />
+          <router-view />
       </v-container>
     </v-content>
   </v-app>
@@ -13,7 +13,7 @@
 <script>
 import "./assets/css/main.scss";
 import navbar from "./components/layout/navbar.vue";
-import appHeader from './components/layout/header.vue';
+import appHeader from "./components/layout/header.vue";
 export default {
   name: "App",
   components: {

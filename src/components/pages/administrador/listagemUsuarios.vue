@@ -184,6 +184,4 @@ export default {
   border: 1px solid #bbb;
   border-radius: 10px;
 }
-.dados {
-}
 </style>

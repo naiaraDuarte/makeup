@@ -278,8 +278,14 @@
         </v-col>
       </v-row>
     </v-card>
-    <v-card elevation="0" v-if="faseCadastro == 2">
-      <h2 class="cor-letra text-center mt-5 pt-5">
+    <!-- <v-card elevation="0"> -->
+      <!-- <keep-alive include="endereco" max="5" v-if="faseCadastro == 2"> -->
+        <endereco :clickNoSalvar="clickNoSalvar" v-show="faseCadastro == 2"
+          @verificacaoEndereco="verificaPreenchimentoEndereco = $event.salvo"></endereco>
+        <!-- <component :is="componente"></component> -->
+      <!-- </keep-alive> -->
+
+      <!-- <h2 class="cor-letra text-center mt-5 pt-5">
         Agora preciso que você me informe um endereço...
 
         <div class="mt-2">
@@ -477,8 +483,8 @@
             </v-expansion-panel>
           </v-expansion-panels>
         </v-col>
-      </v-row>
-    </v-card>
+      </v-row> -->
+    <!-- </v-card> -->
     <v-row class="text-right mx-1 mb-3">
       <v-col lg="9"></v-col>
       <v-col lg="3">
@@ -640,15 +646,19 @@
 import { validationMixin } from "vuelidate";
 import { mapMutations } from "vuex";
 import jsFunctions from "../../../assets/js/jsFunctions";
+import endereco from "./endereco.vue";
 import { required, minLength, maxLength } from "vuelidate/lib/validators";
 export default {
+  name: "cadastro",
   mixins: [validationMixin],
-  components: {},
+  components: { endereco },
   validations: {
     street: { required, minLength: minLength(4), maxLength: maxLength(50) },
   },
   data() {
     return {
+      clickNoSalvar: false,
+      verificaPreenchimentoEndereco: false,
       verificacaoCpf: "",
       senhaNovoAlteracao: "",
       senhaNovoConfirmacaoAlteracao: "",
@@ -734,6 +744,14 @@ export default {
     };
   },
   watch: {
+    verificaPreenchimentoEndereco(newVal) {
+      if (newVal == true) {
+        if (this.$store.state.enderecos.length > 0) {
+          console.log("Newval", newVal);
+          this.teste();
+        }
+      }
+    },
     faseCadastro(newVal) {
       newVal == 0 ? (this.valorBarra = 50) : (this.valorBarra = 100);
     },
@@ -1110,9 +1128,12 @@ export default {
         this.snackbar = true;
         return false;
       }
+      this.clickNoSalvar = true;
       if (this.verificaPreenchimento()) {
         this.addEndereco();
       }
+    },
+    teste() {
       let frm = {
         perfl: "usuario",
         nome: this.nome,
@@ -1135,6 +1156,7 @@ export default {
         this.$store.state.cadastro = true;
         this.$router.push(`/`);
       });
+
     },
     ...mapMutations(["editarInformacoesCliente"]),
     editarInformacoes() {
@@ -1191,17 +1213,17 @@ export default {
         this.email != "" &&
         this.senha != "" &&
         this.cep != "" &&
-        this.logradouro != "" &&
-        this.pais != "" &&
-        this.numero != "" &&
-        this.bairro != "" &&
-        this.cidade != "" &&
-        this.uf != "" &&
-        this.tipoResidencia != "" &&
-        this.logradouro != "" &&
+        // this.logradouro != "" &&
+        // this.pais != "" &&
+        // this.numero != "" &&
+        // this.bairro != "" &&
+        // this.cidade != "" &&
+        // this.uf != "" &&
+        // this.tipoResidencia != "" &&
+        // this.logradouro != "" &&
         this.nomeEndereco != "" &&
         this.forca > 75 &&
-        this.tipoEndereco != "" &&
+        // this.tipoEndereco != "" &&
         this.confirmacaoSenha != "" &&
         this.confirmacaoSenha == this.senha &&
         this.verificacaoCpf == true
@@ -1215,7 +1237,7 @@ export default {
         this.sexo != "" &&
         this.email != "" &&
         this.senha != "" &&
-        this.$store.state.enderecos.length > 0 &&
+        // this.$store.state.enderecos.length > 0 &&
         this.forca > 75 &&
         this.confirmacaoSenha != "" &&
         this.confirmacaoSenha == this.senha &&

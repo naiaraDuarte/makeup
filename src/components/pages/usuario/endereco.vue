@@ -9,7 +9,8 @@
           v-if="idEndereco == null"
           text
           class="btnSubmit"
-          @click="salvarEndereco()"
+          @click="addEndereco()"
+          id="addEndereco"
           ><v-icon left> mdi-plus </v-icon> add endereço</v-btn
         >
         <v-btn
@@ -17,13 +18,14 @@
           v-if="idEndereco != null"
           text
           class="btnSubmit"
-          @click="salvarEndereco()"
+          @click="editarEndereco()"
+          id="editarEndereco"
           ><v-icon left> mdi-pencil-outline </v-icon> Editar endereço</v-btn
         >
       </div>
     </h2>
     <v-row class="mt-0 mx-4 pt-3">
-      <v-col lg="4">
+      <v-col lg="3">
         <v-text-field
           v-model="nomeEndereco"
           label="Nome desse endereço"
@@ -31,7 +33,7 @@
           required
         ></v-text-field>
       </v-col>
-      <v-col lg="4">
+      <v-col lg="3">
         <v-combobox
           v-model="tipoEndereco"
           :items="itensTipoEndereco"
@@ -39,7 +41,15 @@
           id="tipoEndereco"
         ></v-combobox>
       </v-col>
-      <v-col lg="4">
+      <v-col lg="3">
+        <v-combobox
+          v-model="tipoResidencia"
+          :items="itensTipoResidencia"
+          label="Tipo de Residência"
+          id="tipoResidencia"
+        ></v-combobox>
+      </v-col>
+      <v-col lg="3">
         <v-text-field
           v-model="cep"
           v-mask="['#####-###']"
@@ -122,13 +132,16 @@
           >
             <v-expansion-panel-header>
               <v-row class="centraliza">
-                <v-col lg="4">
-                  <p>{{ item.nomeEndereco }}</p>
+                <v-col lg="3">
+                  <p>{{ item.nome }}</p>
                 </v-col>
                 <v-col lg="2">
-                  <p>{{ item.tipoEndereco }}</p>
+                  <p>{{ item.tipo_residencia }}</p>
                 </v-col>
-                <v-col lg="3">
+                <v-col lg="2">
+                  <p>{{ item.tipo_endereco }}</p>
+                </v-col>
+                <v-col lg="2">
                   <p>{{ item.cep }}</p>
                 </v-col>
                 <v-col lg="2">
@@ -144,6 +157,7 @@
                         v-if="$store.state.enderecos.length > 1"
                         icon
                         @click="remove(item.id)"
+                        id="excluirEndereco"
                         ><v-icon>mdi-delete-empty</v-icon></v-btn
                       >
                     </v-col>
@@ -194,11 +208,11 @@
       </template>
     </v-snackbar>
   </v-card>
-  
 </template>
 <script>
 import { mapMutations } from "vuex";
 export default {
+  name: "endereco",
   props: {
     clickNoSalvar: Boolean,
   },
@@ -219,8 +233,10 @@ export default {
       snackbarColor: "",
       mensagem: "",
       pais: "Brasil",
+      tipoResidencia: "",
       itensTipoLogradouro: ["Rua", "Avenida"],
-      itensTipoEndereco: ["Cobrança", "Entrega"],
+      itensTipoEndereco: ["Cobrança", "Entrega", "Cobrança e Entrega"],
+      itensTipoResidencia: ["Casa", "Apartamento"],
       itensUf: [
         "AC",
         "AL",
@@ -252,54 +268,60 @@ export default {
       ],
     };
   },
-  watch:{
-    clickNoSalvar(newVal){
-      if(newVal == true){
-        this.salvarEndereco();
+  watch: {
+    clickNoSalvar(newVal) {
+      if (newVal == true) {
+        this.addEndereco(1);
+        this.limparEndereco();
       }
-    }
+    },
+  },
+  computed: {
+    verificaId() {
+      if (localStorage.getItem("usuarioId")) return true;
+      else return false;
+    },
+  },
+  mounted() {
+    console.log("Criou novamente");
+  },
+  activated() {
+    console.log("Só ativou");
   },
   methods: {
     ...mapMutations(["addEnderecos"]),
-    addEndereco(status) {
+    addEnderecoMounted(end) {
       this.addEnderecos({
-        id: 0,
-        status: status,
-        tipoEndereco: this.tipoEndereco,
-        nomeEndereco: this.nomeEndereco,
-        cep: this.cep,
-        logradouro: this.logradouro,
-        complemento: this.complemento,
-        numero: this.numero,
-        bairro: this.bairro,
-        cidade: this.cidade,
-        uf: this.uf,
-        pais: this.pais,
+        id: end.id,
+        status: true,
+        tipo_endereco: this.itensTipoEndereco[parseInt(end.tipo_endereco) - 1],
+        nome: end.nome,
+        cep: end.cep,
+        logradouro: end.logradouro,
+        complemento: end.complemento,
+        numero: end.numero,
+        bairro: end.bairro,
+        cidade: end.cidade,
+        uf: this.itensUf[parseInt(end.uf) - 1],
+        pais: end.pais,
+        tipo_logradouro:
+          this.itensTipoLogradouro[parseInt(end.tipo_logradouro) - 1],
+        tipo_residencia:
+          this.itensTipoResidencia[parseInt(end.tipo_residencia) - 1],
       });
     },
-    ...mapMutations(["editarEnderecos"]),
-    editarEndereco(id, status) {
-      this.editarEnderecos({
-        id: id,
-        status: status,
-        tipoEndereco: this.tipoEndereco,
-        nomeEndereco: this.nomeEndereco,
-        cep: this.cep,
-        logradouro: this.logradouro,
-        complemento: this.complemento,
-        numero: this.numero,
-        bairro: this.bairro,
-        cidade: this.cidade,
-        uf: this.uf,
-        pais: this.pais,
-      });
-    },
-    ...mapMutations(["removeEnderecos"]),
-    remove(id) {
-      this.removeEnderecos(id);
-    },
-    salvarEndereco() {
+    ...mapMutations(["addEnderecos"]),
+    addEndereco(value) {
+      // if (value != null && this.$store.state.enderecos.length > 0) {
+
+      // }
       if (this.cep == "" && this.nomeEndereco == "") {
+        if (this.$store.state.enderecos.length > 0 && value != null) {
+          this.$emit("verificacaoEndereco", {
+            salvo: true,
+          });
+          return false;
+        }
         this.snackbarColor = "#b38b57";
         this.mensagem =
           "Ao menos o nome do endereço ou CEP devem ser preenchidos antes de adicioná-los";
@@ -308,16 +330,116 @@ export default {
       }
       this.mensagem = "";
       let status = this.verificaPreenchimento();
-      if (this.idEndereco == null) this.addEndereco(status);
-      else this.editarEndereco(this.idEndereco, status);
-      this.limparEndereco();
-      if (status == true) {
-         this.$emit("verificacaoEndereco", true);
+      let frm = {
+        id: 0,
+        status: status,
+        tipo_endereco: this.tipoEndereco,
+        nome: this.nomeEndereco,
+        cep: this.cep,
+        logradouro: this.logradouro,
+        complemento: this.complemento,
+        numero: this.numero,
+        bairro: this.bairro,
+        cidade: this.cidade,
+        uf: this.uf,
+        pais: this.pais,
+        tipo_logradouro: this.tipoLogradouro,
+        tipo_residencia: this.tipoResidencia,
+      };
+
+      if (this.verificaId) {
+        this.$http
+          .post(`/endereco/${localStorage.getItem("usuarioId")}`, frm)
+          .then((res) => {
+            frm.id = res.data.endereco.id;
+            this.addEnderecos(frm);
+          });
+      } else {
+        this.addEnderecos(frm);
+        if (value) {
+          this.$emit("verificacaoEndereco", {
+            salvo: true,
+          });
+        }
+      }
+       this.limparEndereco();
+    },
+    ...mapMutations(["editarEnderecos"]),
+    editarEndereco() {
+      let status = this.verificaPreenchimento();
+      let frm = {
+        id: this.idEndereco,
+        status: status,
+        tipo_endereco: this.tipoEndereco,
+        nome: this.nomeEndereco,
+        cep: this.cep,
+        logradouro: this.logradouro,
+        complemento: this.complemento,
+        numero: this.numero,
+        bairro: this.bairro,
+        cidade: this.cidade,
+        uf: this.uf,
+        pais: this.pais,
+        tipo_logradouro: this.tipoLogradouro,
+        tipo_residencia: this.tipoResidencia,
+      };
+      if (this.verificaId) {
+        this.$http
+          .put(`/endereco/${localStorage.getItem("usuarioId")}`, frm)
+          .then((res) => {
+            console.log("DEU BOM", res);
+            this.editarEnderecos(frm);
+          });
+      } else {
+        this.editarEnderecos(frm);
       }
       this.idEndereco = null;
+      this.limparEndereco();
     },
+    ...mapMutations(["removeEnderecos"]),
+    remove(id) {
+      console.log("id", id);
+      if (this.verificaId) {
+        this.$http.delete(`/endereco/${id}`).then((res) => {
+          console.log(res);
+          this.removeEnderecos(id);
+        });
+      }else{
+        this.removeEnderecos(id);
+      }
+    },
+    salvarEndereco(value) {
+      // if (this.idEndereco == null) this.addEndereco(value);
+      this.editarEndereco(this.idEndereco);
+      this.limparEndereco();
+      console.log("VIADOOOOOOOOOOOOOOOOOOOOOOO");
+      //if (status == true) {
+      console.log("Valor", value);
+
+      //}
+      this.idEndereco = null;
+    },
+    // salvarEndereco() {
+    //   if (this.cep == "" && this.nomeEndereco == "") {
+    //     this.snackbarColor = "#b38b57";
+    //     this.mensagem =
+    //       "Ao menos o nome do endereço ou CEP devem ser preenchidos antes de adicioná-los";
+    //     this.snackbar = true;
+    //     return false;
+    //   }
+    //   this.mensagem = "";
+    //   let status = this.verificaPreenchimento();
+    //   if (this.idEndereco == null) this.addEndereco(status);
+    //   else this.editarEndereco(this.idEndereco, status);
+    //   this.limparEndereco();
+    //   if (status == true) {
+    //     this.$emit("verificacaoEndereco", true);
+    //   }
+    //   this.idEndereco = null;
+    // },
     getEndereco(id) {
       this.idEndereco = id;
+      console.log("IIIIIIID", this.idEndereco);
 
       let endereco = this.$store.state.enderecos.filter(
         (endereco) => endereco.id == id
@@ -331,8 +453,10 @@ export default {
       this.bairro = endereco.bairro;
       this.cidade = endereco.cidade;
       this.uf = endereco.uf;
-      this.nomeEndereco = endereco.nomeEndereco;
-      this.tipoEndereco = endereco.tipoEndereco;
+      this.nomeEndereco = endereco.nome;
+      this.tipoEndereco = endereco.tipo_endereco;
+      this.tipoLogradouro = endereco.tipo_logradouro;
+      this.tipoResidencia = endereco.tipo_residencia;
     },
     pesquisarCep() {
       this.$http

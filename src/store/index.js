@@ -35,11 +35,14 @@ export default new Vuex.Store({
             state.usuario[1].senha = payload;
         },
         addEnderecos(state, payload) {
-            // payload.id = state.countId;
-            console.log("Chegou aqui", payload)
-            state.enderecos.push(payload);
-            console.log("Chegou aqui", state.enderecos)
-                // state.countId++;
+            if (!localStorage.getItem("usuarioId")) {
+                payload.id = state.countId;
+                state.enderecos.push(payload);
+                state.countId++;
+            }else{
+                state.enderecos.push(payload);
+            }
+           console.log("Como ficou o endereco", state.enderecos);
         },
         addEnderecosDadosDoBanco(state, payload) {
             state.enderecos = [];
