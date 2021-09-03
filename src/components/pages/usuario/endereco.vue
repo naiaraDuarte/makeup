@@ -215,6 +215,7 @@ export default {
   name: "endereco",
   props: {
     clickNoSalvar: Boolean,
+    dadosEndereco: Array,
   },
   data() {
     return {
@@ -284,9 +285,9 @@ export default {
   },
   mounted() {
     console.log("Criou novamente");
-  },
-  activated() {
-    console.log("Só ativou");
+    this.dadosEndereco.forEach((end) => {
+      this.addEnderecoMounted(end);
+    });
   },
   methods: {
     ...mapMutations(["addEnderecos"]),
@@ -312,9 +313,6 @@ export default {
     },
     ...mapMutations(["addEnderecos"]),
     addEndereco(value) {
-      // if (value != null && this.$store.state.enderecos.length > 0) {
-
-      // }
       if (this.cep == "" && this.nomeEndereco == "") {
         if (this.$store.state.enderecos.length > 0 && value != null) {
           this.$emit("verificacaoEndereco", {
@@ -362,7 +360,7 @@ export default {
           });
         }
       }
-       this.limparEndereco();
+      this.limparEndereco();
     },
     ...mapMutations(["editarEnderecos"]),
     editarEndereco() {
@@ -404,7 +402,7 @@ export default {
           console.log(res);
           this.removeEnderecos(id);
         });
-      }else{
+      } else {
         this.removeEnderecos(id);
       }
     },

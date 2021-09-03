@@ -143,6 +143,9 @@ import { mapMutations } from "vuex";
 import * as Card from "card";
 export default {
   name: "Form CreditCard",
+  props: {
+    dadosCartao: Array
+  },
   data() {
     return {
       nomeCartao: "",
@@ -175,21 +178,9 @@ export default {
         cvc: "•••",
       },
     });
-    if (localStorage.getItem("usuarioId")) {
-      console.log("Entrou aqui ", localStorage.getItem("usuarioId"));
-      this.$http
-        .get(`/cliente/${localStorage.getItem("usuarioId")}`)
-        .then((res) => {
-          this.$store.state.cadastro = true;
-
-          res.data.cartao.forEach((cart) => {
-            this.addCartaoMounted(cart);
-          });
-          console.log("STORE CLIENTE", this.$store.state.usuario);
-          console.log("STORE ENDERERCO", this.$store.state.enderecos);
-          console.log("STORE Cartao", this.$store.state.cartoes);
-        });
-    }
+    this.dadosCartao.forEach((end) => {
+      this.addCartaoMounted(end);
+    });
   },
   computed: {
     verificaId() {
@@ -201,7 +192,6 @@ export default {
     ...mapMutations(["addCartao"]),
     addCartaoMounted(cart) {
       this.addCartao({
-    
         id: cart.id,
         nome: cart.nome,
         numero: cart.numero,
@@ -243,7 +233,6 @@ export default {
     ...mapMutations(["editarCartao"]),
     editarCartoes(id) {
       let status = this.verificaPreenchimento();
-      // let cartao = this.verificaIdExistente();
       let frm = {
         id: id,
         status: status,

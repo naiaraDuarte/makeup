@@ -2,11 +2,7 @@
   <v-container fluid>
     <v-row v-if="!verificaId">
       <v-col>
-        <v-btn
-          @click="$router.push(`/`)"
-          target="_blank"
-          text
-        >
+        <v-btn @click="$router.push(`/`)" target="_blank" text>
           <v-icon color="#ccc">mdi-arrow-left</v-icon>
         </v-btn>
         <v-btn
@@ -38,23 +34,14 @@
 
     <!-- Depois que o cadastro já foi efetuado -->
     <v-card style="margin-top: 0px" v-if="verificaId">
-      <v-btn
-          @click="$router.push(`/`)"
-          target="_blank"
-          text
-        >
-          <v-icon color="#ccc">mdi-arrow-left</v-icon>
-        </v-btn>
+      <v-btn @click="$router.push(`/`)" target="_blank" text>
+        <v-icon color="#ccc">mdi-arrow-left</v-icon>
+      </v-btn>
       <v-row class="">
         <v-col class="text-left" lg="2">
-          <v-card elevation="0"
-            class="mx-auto"
-            max-width="300"
-            tile
-            
-          >
+          <v-card elevation="0" class="mx-auto" max-width="300" tile>
             <v-list flat>
-              <!-- <v-subheader>REPORTS</v-subheader> --> 
+              <!-- <v-subheader>REPORTS</v-subheader> -->
               <v-list-item-group v-model="selectedItem" color="primary">
                 <v-list-item v-for="(item, i) in items" :key="i">
                   <v-list-item-icon>
@@ -69,8 +56,8 @@
           </v-card>
         </v-col>
         <v-col lg="10">
-          <cadastro v-if="selectedItem == 0"></cadastro>
-          <pagamento v-if="selectedItem == 1"></pagamento>
+          <cadastro v-if="selectedItem == 0 && dadosEndereco.length > 0" :dadosCliente="dadosCliente" :dadosEndereco="dadosEndereco"></cadastro>
+          <pagamento v-if="selectedItem == 1" :dadosCartao="dadosCartao"></pagamento>
           <compras v-if="selectedItem == 2"></compras>
           <!-- <cadastro else></cadastro> -->
         </v-col>
@@ -81,54 +68,71 @@
 <script>
 import cadastro from "../components/pages/usuario/cadastro.vue";
 import login from "../components/pages/usuario-e-adm/login.vue";
-import pagamento from '../components/pages/usuario/pagamento.vue';
-import compras from '../components/pages/usuario/compras.vue';
+import pagamento from "../components/pages/usuario/pagamento.vue";
+import compras from "../components/pages/usuario/compras.vue";
 
 export default {
   components: {
     cadastro,
     login,
     pagamento,
-    compras
-  },
-  mounted(){
-    this.$store.state.perfil = "usuario"
+    compras,
   },
   data() {
     return {
       componente: "cadastro",
       idUsuario: null,
       selectedItem: 0,
+      dadosCliente: [],
+      dadosEndereco: [],
+      dadosCartao: [],
       items: [
-        { text: "Conta",  icon: "mdi-account"  },
+        { text: "Conta", icon: "mdi-account" },
         { text: "Pagamento", icon: "mdi-clock" },
         { text: "Compras", icon: "mdi-flag" },
         { text: "Sair", icon: "mdi-flag" },
       ],
     };
   },
-  activated(){
-    // return (idUsuario = localStorage.getItem("usuarioId"))
+  async mounted() {
+    this.$store.state.perfil = "usuario";
+    await this.usuario();
   },
   watch: {
-    selectedItem(newVal, oldVal){
+    selectedItem(newVal, oldVal) {
       if (newVal == null) {
-        return this.selectedItem = oldVal;
+        return (this.selectedItem = oldVal);
       }
-      if(newVal == 3){
+      if (newVal == 3) {
         localStorage.setItem("usuarioId", "");
         this.$store.state.enderecos = [];
         this.$store.state.usuario.splice(1, 1);
         this.$store.state.cadastro = false;
         this.$router.push(`/`);
       }
-    }
+    },
   },
   computed: {
-    verificaId(){
+    verificaId() {
       if (localStorage.getItem("usuarioId")) return true;
       else return false;
-    }
+    },
+  },
+  methods: {
+    usuario() {
+      if (localStorage.getItem("usuarioId")) {
+        this.$http
+          .get(`/cliente/${localStorage.getItem("usuarioId")}`)
+          .then((res) => {
+           
+            this.dadosCliente = res.data.cliente;
+            this.dadosEndereco = res.data.endereco;
+            this.dadosCartao = res.data.cartao;
+
+             console.log("res UAUDKVJNDFKJVDF", this.dadosEndereco);
+          });
+      }
+    },
   },
 };
 </script>
@@ -150,10 +154,9 @@ export default {
   /* box-shadow: 0 0 1em #b38b57 !important;  */
 }
 
-@media (min-width: 1264px){
-    .container {
-        max-width: 1312px !important;
-    }
+@media (min-width: 1264px) {
+  .container {
+    max-width: 1312px !important;
+  }
 }
-
 </style>
