@@ -284,7 +284,6 @@ export default {
     },
   },
   mounted() {
-    console.log("Criou novamente");
     this.dadosEndereco.forEach((end) => {
       this.addEnderecoMounted(end);
     });
@@ -314,11 +313,8 @@ export default {
     ...mapMutations(["addEnderecos"]),
     addEndereco(value) {
       // if (this.cep == "" && this.nomeEndereco == "") {
-        console.log("MInha veridicação", this.verificaPreenchimento())
       if (!this.verificaPreenchimento()) {
-        console.log("Tá caindo aqui vc não tá vendo?");
         if (this.$store.state.enderecos.length > 0 && value != null) {
-          console.log("Será?", this.$store.state.enderecos);
           this.$emit("verificacaoEndereco", {
             salvo: true,
           });
@@ -332,7 +328,6 @@ export default {
         return false;
       }
       this.mensagem = "";
-      console.log("salvaria")
       let status = this.verificaPreenchimento();
       let frm = {
         id: 0,
@@ -390,8 +385,7 @@ export default {
       if (this.verificaId) {
         this.$http
           .put(`/endereco/${localStorage.getItem("usuarioId")}`, frm)
-          .then((res) => {
-            console.log("DEU BOM", res);
+          .then(() => {
             this.editarEnderecos(frm);
           });
       } else {
@@ -402,23 +396,19 @@ export default {
     },
     ...mapMutations(["removeEnderecos"]),
     remove(id) {
-      console.log("id", id);
       if (this.verificaId) {
-        this.$http.delete(`/endereco/${id}`).then((res) => {
-          console.log(res);
+        this.$http.delete(`/endereco/${id}`).then(() => {
           this.removeEnderecos(id);
         });
       } else {
         this.removeEnderecos(id);
       }
     },
-    salvarEndereco(value) {
+    salvarEndereco() {
       // if (this.idEndereco == null) this.addEndereco(value);
       this.editarEndereco(this.idEndereco);
       this.limparEndereco();
-      console.log("VIADOOOOOOOOOOOOOOOOOOOOOOO");
       //if (status == true) {
-      console.log("Valor", value);
 
       //}
       this.idEndereco = null;
@@ -443,7 +433,6 @@ export default {
     // },
     getEndereco(id) {
       this.idEndereco = id;
-      console.log("IIIIIIID", this.idEndereco);
 
       let endereco = this.$store.state.enderecos.filter(
         (endereco) => endereco.id == id

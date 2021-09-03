@@ -219,7 +219,6 @@ export default {
   created() {
     for (let index = 0; index < 15; index++) {
       let x = Math.floor(Math.random() * 11 + 1);
-      console.log(`../assets/images/produto${x}.jpeg`);
       this.itens.push({
         cod: index,
         src: `produto${x}.jpeg`,
@@ -236,7 +235,6 @@ export default {
     addProduto(item) {
       this.addCarrinho(item);
       this.exibeSnackBar("#b38b57", "Seu produto foi add ao carrinho");
-      console.log(this.$store.state.carrinho);
     },
     exibeSnackBar(cor, msg) {
       this.snackbarColor = cor;

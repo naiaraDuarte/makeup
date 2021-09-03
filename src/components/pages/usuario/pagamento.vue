@@ -222,7 +222,6 @@ export default {
         this.$http
           .post(`/cartao/${localStorage.getItem("usuarioId")}`, frm)
           .then((res) => {
-            console.log("retorno do BD", res);
             frm.id = res.data.cartao.id;
             this.addCartao(frm);
           });
@@ -243,8 +242,7 @@ export default {
         bandeira: 2,
       };
       if (this.verificaId) {
-        this.$http.put(`/cartao/${id}`, frm).then((res) => {
-          console.log("retorno do BD", res);
+        this.$http.put(`/cartao/${id}`, frm).then(() => {
           // frm.id = res.data.cartao.id;
           this.editarCartao(frm);
         });
@@ -252,21 +250,17 @@ export default {
     },
     ...mapMutations(["removeCartao"]),
     remove(id) {
-      console.log("id", id);
       if (this.verificaId) {
-        this.$http.delete(`/cartao/${id}`).then((res) => {
-          console.log(res);
+        this.$http.delete(`/cartao/${id}`).then(() => {
           this.removeCartao(id);
         });
       }
     },
     verificaIdExistente() {
       let cartao = this.$store.state.cartoes;
-
-      let encontrou = cartao.filter(
+     cartao.filter(
         (cartao) => cartao.id == this.idCartaoCliente
       );
-      console.log("Achooooooooouuuuuuuuuuuuuu", encontrou);
       return true;
     },
     salvarCartao() {
@@ -294,13 +288,11 @@ export default {
       this.nomeCartao = "";
     },
     getCartao(id) {
-      console.log("IDDDDDD RECEBIDO", id);
       this.idCartaoCliente = id;
 
       let cartao = this.$store.state.cartoes.filter(
         (cartao) => cartao.id == id
       );
-      console.log("Cartao", cartao);
       cartao = cartao[0];
       (this.codCartao = cartao.cvv),
         (this.expCartao = cartao.data_validade),

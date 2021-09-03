@@ -580,7 +580,6 @@ export default {
     rulesEmail() {
       let rules = [];
       let valor = this.verificacaoEmailValido(this.email);
-      console.log(valor);
       if (!valor) {
         rules.push("Email inválido");
       }
@@ -589,7 +588,6 @@ export default {
     rulesEmailNovoAlteracao() {
       let rules = [];
       let valor = this.verificacaoEmailValido(this.emailNovoAlteracao);
-      console.log(valor);
       if (!valor) {
         rules.push("Email inválido");
       }
@@ -598,7 +596,6 @@ export default {
     rulesCpf() {
       let rules = [];
       let valor = this.verificacaoCpfValido();
-      console.log(valor);
       if (!valor) {
         rules.push("CPF inválido");
       }
@@ -615,14 +612,6 @@ export default {
     if (this.verificaId) {
       this.listarDadosCadastrados();
     }
-    
-    //       res.data.endereco.forEach((end) => {
-    //         this.addEnderecoMounted(end);
-    //       });
-    //       console.log("STORE CLIENTE", this.$store.state.usuario);
-    //       console.log("STORE ENDERERCO", this.$store.state.enderecos);
-    //     });
-    // }
   },
   methods: {
     listarDadosCadastrados() {
@@ -725,18 +714,15 @@ export default {
       if (this.verificaId) {
         this.$http
           .put(`/endereco/${localStorage.getItem("usuarioId")}`, frm)
-          .then((res) => {
-            console.log("DEU BOM", res);
+          .then(() => {
             this.editarEnderecos(frm);
           });
       }
     },
     ...mapMutations(["removeEnderecos"]),
     remove(id) {
-      console.log("id", id);
       if (this.verificaId) {
-        this.$http.delete(`/endereco/${id}`).then((res) => {
-          console.log(res);
+        this.$http.delete(`/endereco/${id}`).then(() => {
           this.removeEnderecos(id);
         });
       }
@@ -800,7 +786,6 @@ export default {
         this.snackbar = true;
         return false;
       }
-      console.log(this.senha, "|||||", this.senhaConfirmacaoParaSenhaNova);
       if (this.senhaConfirmacaoParaSenhaNova != this.senha) {
         this.snackbarColor = "#b38b57";
         this.mensagem = "A senha atual digitada não corresponde";
@@ -814,9 +799,7 @@ export default {
 
       this.$http
         .patch(`/cliente/${localStorage.getItem("usuarioId")}`, frm)
-        .then((res) => {
-          console.log("FUNCIONOU", res);
-          // this.editarSenhaUsuario(this.senhaNovoAlteracao);
+        .then(() => {
           this.senha = this.senhaNovoAlteracao;
           this.confirmacaoSenha = this.senhaNovoAlteracao;
           this.editarSenha = false;
@@ -916,7 +899,6 @@ export default {
       };
 
       this.$http.post(`/cliente/`, frm).then((res) => {
-        console.log("FUNCIONOU", res);
         frm.id = res.data.dados.id;
         this.addDadosUsuario(frm);
         localStorage.setItem("usuarioId", frm.id);
@@ -957,9 +939,7 @@ export default {
 
       this.$http
         .put(`/cliente/${localStorage.getItem("usuarioId")}`, frm)
-        .then((res) => {
-          console.log("FUNCIONOU", res);
-          // this.editarSenhaUsuario(this.senhaNovoAlteracao);
+        .then(() => {
         });
       this.editarInformacoesCliente(frm);
       this.$store.state.cadastro = true;

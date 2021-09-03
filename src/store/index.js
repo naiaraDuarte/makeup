@@ -26,7 +26,6 @@ export default new Vuex.Store({
         },
         editarInformacoesCliente(state, payload) {
             state.usuario[1] = payload;
-            console.log("Deu certooooo", state.usuario[1])
         },
         editarEmailUsuario(state, payload) {
             state.usuario[1].email = payload;
@@ -42,31 +41,21 @@ export default new Vuex.Store({
             }else{
                 state.enderecos.push(payload);
             }
-           console.log("Como ficou o endereco", state.enderecos);
         },
         addEnderecosDadosDoBanco(state, payload) {
             state.enderecos = [];
             state.enderecos.push(payload);
         },
         editarEnderecos(state, payload) {
-            console.log("PAYLOAD", payload, state.enderecos)
             let index = state.enderecos.findIndex(endereco => endereco.id == payload.id);
             Vue.set(state.enderecos, index, payload);
-            // state.enderecos[index] = payload;
-
-            console.log("INDEX", state.enderecos[index]);
         },
         removeEnderecos(state, payload) {
             let index = state.enderecos.findIndex(endereco => endereco.id == payload);
             state.enderecos.splice(index, 1);
         },
         addCartao(state, payload) {
-            console.log("dentro", payload)
-                // payload.id = state.countId;
             state.cartoes.push(payload);
-            console.log("fora", payload)
-                // state.countId++;
-
         },
         editarCartao(state, payload) {
             let index = state.cartoes.findIndex(cartao => cartao.id == payload.id);
@@ -81,7 +70,6 @@ export default new Vuex.Store({
             payload.id = state.countId;
             state.produtos.push(payload);
             state.countId++;
-            console.log("cadastrou produto");
         },
         editarProduto(state, payload) {
             let index = state.produto.findIndex(produto => produto.id == payload.id);
@@ -95,7 +83,6 @@ export default new Vuex.Store({
             payload.id = state.carrinhoCountId;
             state.carrinho.push(payload);
             state.carrinhoCountId++;
-            console.log("Add no carrinho");
         }
 
     },

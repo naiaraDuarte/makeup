@@ -335,7 +335,6 @@ export default {
     ...mapMutations(["removeProduto"]),
     remove(id){
       this.removeProduto(id);
-      console.log("id", id);
 
     },
     salvarProduto() {
@@ -365,11 +364,9 @@ export default {
       return false;
     },
     getProduto(id) {
-      console.log("IDDDDDD RECEBIDO", id);
       this.idProduto = id;
 
       let produto = this.$store.state.produtos.filter((produto) => produto.id == id);
-      console.log("produto", produto);
       produto = produto[0];
       this.nomeProduto = produto.nomeProduto,
       this.descProduto = produto.descProduto,

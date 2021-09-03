@@ -128,8 +128,6 @@ export default {
             this.dadosCliente = res.data.cliente;
             this.dadosEndereco = res.data.endereco;
             this.dadosCartao = res.data.cartao;
-
-             console.log("res UAUDKVJNDFKJVDF", this.dadosEndereco);
           });
       }
     },

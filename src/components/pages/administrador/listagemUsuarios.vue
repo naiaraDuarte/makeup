@@ -155,7 +155,6 @@ export default {
   },
   mounted() {
     this.$http.get(`/cliente/`).then((res) => {
-      console.log("res", res);
       res.data.dados.forEach((cliente) => {
         this.desserts.push({
           nome: cliente.nome,
