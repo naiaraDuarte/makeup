@@ -9,7 +9,7 @@
           v-if="idEndereco == null"
           text
           class="btnSubmit"
-          @click="addEndereco()"
+          @click="salvar()"
           id="addEndereco"
           ><v-icon left> mdi-plus </v-icon> add endereço</v-btn
         >
@@ -18,7 +18,7 @@
           v-if="idEndereco != null"
           text
           class="btnSubmit"
-          @click="editarEndereco()"
+          @click="editar()"
           id="editarEndereco"
           ><v-icon left> mdi-pencil-outline </v-icon> Editar endereço</v-btn
         >
@@ -272,8 +272,8 @@ export default {
   watch: {
     clickNoSalvar(newVal) {
       if (newVal == true) {
-        this.addEndereco(1);
-        this.limparEndereco();
+        this.salvar(1);
+        this.limpar();
       }
     },
   },
@@ -286,35 +286,17 @@ export default {
   mounted() {
     this.dadosEndereco.forEach((end) => {
       this.$store.state.enderecos = [];
-      this.addEnderecoMounted(end);
+      this.listarEnderecosCadastrados(end);
     });
   },
   methods: {
     ...mapMutations(["addEnderecos"]),
-    addEnderecoMounted(end) {
-      this.addEnderecos({
-        id: end.id,
-        status: true,
-        tipo_endereco: this.itensTipoEndereco[parseInt(end.tipo_endereco) - 1],
-        nome: end.nome,
-        cep: end.cep,
-        logradouro: end.logradouro,
-        complemento: end.complemento,
-        numero: end.numero,
-        bairro: end.bairro,
-        cidade: end.cidade,
-        uf: this.itensUf[parseInt(end.uf) - 1],
-        pais: end.pais,
-        tipo_logradouro:
-          this.itensTipoLogradouro[parseInt(end.tipo_logradouro) - 1],
-        tipo_residencia:
-          this.itensTipoResidencia[parseInt(end.tipo_residencia) - 1],
-      });
-    },
-    ...mapMutations(["addEnderecos"]),
-    addEndereco(value) {
+    ...mapMutations(["editarEnderecos"]),
+    ...mapMutations(["removeEnderecos"]),
+
+    salvar(value) {
       // if (this.cep == "" && this.nomeEndereco == "") {
-      if (!this.verificaPreenchimento()) {
+      if (!this.validacao()) {
         if (this.$store.state.enderecos.length > 0 && value != null) {
           this.$emit("verificacaoEndereco", {
             salvo: true,
@@ -322,14 +304,14 @@ export default {
           return false;
         }
         this.$emit("falhaEndereco", false);
-        this.snackbarColor = "#b38b57";
-        this.mensagem =
-          "Ao menos o nome do endereço ou CEP devem ser preenchidos antes de adicioná-los";
-        this.snackbar = true;
+        this.exibeSnack(
+          "#b38b57",
+          "Ao menos o nome do endereço ou CEP devem ser preenchidos antes de adicioná-los"
+        );
         return false;
       }
       this.mensagem = "";
-      let status = this.verificaPreenchimento();
+      let status = this.validacao();
       let frm = {
         id: 0,
         status: status,
@@ -362,11 +344,10 @@ export default {
           });
         }
       }
-      this.limparEndereco();
+      this.limpar();
     },
-    ...mapMutations(["editarEnderecos"]),
-    editarEndereco() {
-      let status = this.verificaPreenchimento();
+    editar() {
+      let status = this.validacao();
       let frm = {
         id: this.idEndereco,
         status: status,
@@ -393,9 +374,8 @@ export default {
         this.editarEnderecos(frm);
       }
       this.idEndereco = null;
-      this.limparEndereco();
+      this.limpar();
     },
-    ...mapMutations(["removeEnderecos"]),
     remove(id) {
       if (this.verificaId) {
         this.$http.delete(`/endereco/${id}`).then(() => {
@@ -405,33 +385,26 @@ export default {
         this.removeEnderecos(id);
       }
     },
-    salvarEndereco() {
-      // if (this.idEndereco == null) this.addEndereco(value);
-      this.editarEndereco(this.idEndereco);
-      this.limparEndereco();
-      //if (status == true) {
-
-      //}
-      this.idEndereco = null;
+    listarEnderecosCadastrados(end) {
+      this.addEnderecos({
+        id: end.id,
+        status: true,
+        tipo_endereco: this.itensTipoEndereco[parseInt(end.tipo_endereco) - 1],
+        nome: end.nome,
+        cep: end.cep,
+        logradouro: end.logradouro,
+        complemento: end.complemento,
+        numero: end.numero,
+        bairro: end.bairro,
+        cidade: end.cidade,
+        uf: this.itensUf[parseInt(end.uf) - 1],
+        pais: end.pais,
+        tipo_logradouro:
+          this.itensTipoLogradouro[parseInt(end.tipo_logradouro) - 1],
+        tipo_residencia:
+          this.itensTipoResidencia[parseInt(end.tipo_residencia) - 1],
+      });
     },
-    // salvarEndereco() {
-    //   if (this.cep == "" && this.nomeEndereco == "") {
-    //     this.snackbarColor = "#b38b57";
-    //     this.mensagem =
-    //       "Ao menos o nome do endereço ou CEP devem ser preenchidos antes de adicioná-los";
-    //     this.snackbar = true;
-    //     return false;
-    //   }
-    //   this.mensagem = "";
-    //   let status = this.verificaPreenchimento();
-    //   if (this.idEndereco == null) this.addEndereco(status);
-    //   else this.editarEndereco(this.idEndereco, status);
-    //   this.limparEndereco();
-    //   if (status == true) {
-    //     this.$emit("verificacaoEndereco", true);
-    //   }
-    //   this.idEndereco = null;
-    // },
     getEndereco(id) {
       this.idEndereco = id;
 
@@ -469,7 +442,25 @@ export default {
           }
         });
     },
-    limparEndereco() {
+    validacao() {
+      if (
+        this.cep != "" &&
+        this.logradouro != "" &&
+        this.pais != "" &&
+        this.numero != "" &&
+        this.bairro != "" &&
+        this.cidade != "" &&
+        this.uf != "" &&
+        this.nomeEndereco != "" &&
+        this.tipoEndereco != "" &&
+        this.tipoResidencia != "" &&
+        this.tipoLogradouro != ""
+      ) {
+        return true;
+      }
+      return false;
+    },
+    limpar() {
       this.cep = "";
       this.logradouro = "";
       this.complemento = "";
@@ -482,22 +473,10 @@ export default {
       this.tipoEndereco = "";
       this.tipoResidencia = "";
     },
-    verificaPreenchimento() {
-      //Parei aqui, proximo passo é validar os campos e ver se está tudo certo
-      if (
-        this.cep != "" &&
-        this.logradouro != "" &&
-        this.pais != "" &&
-        this.numero != "" &&
-        this.bairro != "" &&
-        this.cidade != "" &&
-        this.uf != "" &&
-        this.nomeEndereco != "" &&
-        this.tipoEndereco != ""
-      ) {
-        return true;
-      }
-      return false;
+    exibeSnack(color, msg) {
+      this.snackbarColor = color;
+      this.mensagem = msg;
+      this.snackbar = true;
     },
   },
 };
