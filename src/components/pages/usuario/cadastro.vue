@@ -480,7 +480,8 @@ export default {
       forca: 0,
       tipoTelefone: "",
       itensTipoTelefone: ["Celular", "Fixo"],
-      //Alterações 
+      
+      //Alterações
       emailNovoAlteracao: "",
       emailNovoConfirmacaoAlteracao: "",
       senhaConfirmacao: "",
@@ -488,21 +489,17 @@ export default {
       senhaNovoConfirmacaoAlteracao: "",
       senhaConfirmacaoParaSenhaNova: "",
 
+      //funcionalides
+      clickNoSalvar: false,
       verificaPreenchimentoEndereco: false,
       verificacaoCpf: "",
-
-      clickNoSalvar: false,
-
       editarEmail: false,
       editarSenha: false,
       show3: false,
       txtDoBotao: "Continuar",
       faseCadastro: 0,
-
       activePicker: null,
-
       menu: false,
-
       mensagem: "",
       snackbar: false,
       snackbarColor: "",

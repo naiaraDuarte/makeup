@@ -285,6 +285,7 @@ export default {
   },
   mounted() {
     this.dadosEndereco.forEach((end) => {
+      this.$store.state.enderecos = [];
       this.addEnderecoMounted(end);
     });
   },
