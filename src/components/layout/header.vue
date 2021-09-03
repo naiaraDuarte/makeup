@@ -16,6 +16,7 @@
               <v-text-field
                 color="#b38b57"
                 label="O que você está procurando?"
+                v-model="textField"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -85,12 +86,15 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      textField: "",
+    };
   },
-  computed: {
-    
+  watch: {
+    textField(newVal){
+      this.$store.state.busca = newVal;
+    }
   },
-  watch: {},
 };
 </script>
 <style scoped>

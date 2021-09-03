@@ -132,12 +132,14 @@
 </template>
 
 <script>
+import jsFunctions from "../assets/js/jsFunctions";
 import { mapMutations } from "vuex";
 export default {
   name: "Home",
   data() {
     return {
       itens: [],
+      itensBase: [],
       eventoDeMouse: false,
       sheet: false,
       direction: "top",
@@ -184,6 +186,18 @@ export default {
     };
   },
   watch: {
+    "$store.state.busca": function () {
+      console.log("Mudou valor", this.$store.state.busca);
+      let busca = this.$store.state.busca;
+      if (busca == "" || busca == null) {
+        this.itens = this.itensBase;
+      }
+      this.itens = this.itens.filter(function (string) {
+        return jsFunctions
+          .accentsTidy(string.nome)
+          .includes(jsFunctions.accentsTidy(busca));
+      });
+    },
     top(val) {
       this.bottom = !val;
     },
@@ -225,7 +239,9 @@ export default {
         nome: this.nomeItens[x],
         preco: this.precosItens[x],
       });
+      
     }
+    this.itensBase = this.itens;
   },
   methods: {
     getImgUrl(pic) {

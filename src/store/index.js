@@ -18,7 +18,8 @@ export default new Vuex.Store({
         carrinho: [],
         carrinhoCountId: 0,
         cartoes: [],
-        produtos: []
+        produtos: [],
+        busca: "",
     },
     mutations: {
         addUsuario(state, payload) {
