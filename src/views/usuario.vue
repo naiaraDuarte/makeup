@@ -138,25 +138,23 @@ export default {
 </script>
 <style scoped>
 .ativado {
-  background-color: #b38b57;
-  color: white;
-}
-.desativado {
-  background-color: white;
-}
-
-.cadastro {
-  border: 1px solid #b38b57;
-  /* box-shadow: 0 0 1em #b38b57 !important; */
-}
-.login {
-  border: 1px solid #b38b57;
-  /* box-shadow: 0 0 1em #b38b57 !important;  */
-}
-
-@media (min-width: 1264px) {
-  .container {
-    max-width: 1312px !important;
+    background-color: #b38b57;
+    color: white;
   }
-}
+  .desativado {
+    background-color: white;
+  }
+  
+  .cadastro {
+    border: 1px solid #b38b57;
+  }
+  .login {
+    border: 1px solid #b38b57;
+  }
+  
+  @media (min-width: 1264px) {
+    .container {
+      max-width: 1312px !important;
+    }
+  }
 </style>

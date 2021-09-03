@@ -313,13 +313,18 @@ export default {
     },
     ...mapMutations(["addEnderecos"]),
     addEndereco(value) {
-      if (this.cep == "" && this.nomeEndereco == "") {
+      // if (this.cep == "" && this.nomeEndereco == "") {
+        console.log("MInha veridicação", this.verificaPreenchimento())
+      if (!this.verificaPreenchimento()) {
+        console.log("Tá caindo aqui vc não tá vendo?");
         if (this.$store.state.enderecos.length > 0 && value != null) {
+          console.log("Será?", this.$store.state.enderecos);
           this.$emit("verificacaoEndereco", {
             salvo: true,
           });
           return false;
         }
+        this.$emit("falhaEndereco", false);
         this.snackbarColor = "#b38b57";
         this.mensagem =
           "Ao menos o nome do endereço ou CEP devem ser preenchidos antes de adicioná-los";
@@ -327,6 +332,7 @@ export default {
         return false;
       }
       this.mensagem = "";
+      console.log("salvaria")
       let status = this.verificaPreenchimento();
       let frm = {
         id: 0,
@@ -354,7 +360,7 @@ export default {
           });
       } else {
         this.addEnderecos(frm);
-        if (value) {
+        if (this.clickNoSalvar == true) {
           this.$emit("verificacaoEndereco", {
             salvo: true,
           });

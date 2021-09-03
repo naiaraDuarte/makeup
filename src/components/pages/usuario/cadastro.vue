@@ -278,12 +278,20 @@
         </v-col>
       </v-row>
     </v-card>
+    
     <endereco
-      v-if="dadosEndereco.length > 0"
+      v-if="dadosEndereco && dadosEndereco.length > 0"
       :clickNoSalvar="clickNoSalvar"
       :dadosEndereco="dadosEndereco"
       v-show="faseCadastro == 2"
       @verificacaoEndereco="verificaPreenchimentoEndereco = $event.salvo"
+      @falhaEndereco ="clickNoSalvar = $event"
+    ></endereco>
+    <endereco v-else
+      :clickNoSalvar="clickNoSalvar"
+      v-show="faseCadastro == 2"
+      @verificacaoEndereco="verificaPreenchimentoEndereco = $event.salvo"
+      @falhaEndereco ="clickNoSalvar = $event"
     ></endereco>
     <v-row class="text-right mx-1 mb-3">
       <v-col lg="9"></v-col>
@@ -487,6 +495,7 @@ export default {
       mensagem: "",
       snackbar: false,
       snackbarColor: "",
+      tipoTelefone: "",
       itensTipoTelefone: ["Celular", "Fixo"],
       itensTipoLogradouro: ["Avenida", "Rua", "Praça"],
       itensTipoEndereco: ["Cobrança", "Entrega", "Cobrança e Entrega"],
@@ -603,7 +612,10 @@ export default {
     },
   },
   mounted() {
-    this.listarDadosCadastrados();
+    if (this.verificaId) {
+      this.listarDadosCadastrados();
+    }
+    
     //       res.data.endereco.forEach((end) => {
     //         this.addEnderecoMounted(end);
     //       });
@@ -685,10 +697,10 @@ export default {
           .post(`/endereco/${localStorage.getItem("usuarioId")}`, frm)
           .then((res) => {
             frm.id = res.data.endereco.id;
-            this.addEnderecos(frm);
+            // this.addEnderecos(frm);
           });
       } else {
-        this.addEnderecos(frm);
+        // this.addEnderecos(frm);
       }
     },
     ...mapMutations(["editarEnderecos"]),
