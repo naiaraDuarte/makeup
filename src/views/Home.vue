@@ -96,38 +96,70 @@
           <v-icon v-else> mdi-cart </v-icon>
         </v-btn>
       </template>
-      <v-bottom-sheet v-model="sheet">
-        <v-card class="carrinho text-center" height="500" width="300">
-          <p class="tituloModalCarrinho mt-2">Produtos escolhidos</p>
-
-          <v-row>
-            <v-col lg="12" class="mt-3">
-              <v-card
-                elevation="0"
-                v-for="(item, i) in $store.state.carrinho"
-                :key="i"
-              >
-                <p>{{ item.nome }}</p>
-                <v-row class="mt-1">
-                  <v-col lg="3">
-                    <p>{{ item.preco }}</p>
-                  </v-col>
-                  <v-col lg="9">
-                    <v-btn icon x-small>
-                      <v-icon v-if="fab"> mdi-plus </v-icon>
-                    </v-btn>
-                    <input type="text" />
-                    <v-btn icon x-small>
-                      <v-icon v-if="fab"> mdi-minus </v-icon>
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </v-card>
-            </v-col>
-          </v-row>
-        </v-card>
-      </v-bottom-sheet>
     </v-speed-dial>
+
+    <v-bottom-sheet v-model="sheet" v-if="sheet">
+      <v-card class="carrinho text-center" height="500" width="300">
+        <p class="tituloModalCarrinho mt-2">Produtos escolhidos</p>
+
+        <v-row>
+          <v-col lg="12" class="mt-3">
+            <v-card
+              elevation="0"
+              v-for="(item, i) in $store.state.carrinho"
+              :key="i"
+            >
+              <p>{{ item.nome }}</p>
+              <v-row class="mt-1">
+                <v-col lg="3">
+                  <p>{{ item.preco }}</p>
+                </v-col>
+                <v-col lg="9">
+                  <v-btn icon x-small>
+                    <v-icon v-if="fab"> mdi-plus </v-icon>
+                  </v-btn>
+                  <input type="text" />
+                  <v-btn icon x-small>
+                    <v-icon v-if="fab"> mdi-minus </v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-card>
+    </v-bottom-sheet>
+    <!-- <v-bottom-sheet
+        v-model="sheet"
+        inset
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            color="orange"
+            dark
+            v-bind="attrs"
+            v-on="on"
+          >
+            Open Inset
+          </v-btn>
+        </template>
+        <v-sheet
+          class="text-center"
+          height="200px"
+        >
+          <v-btn
+            class="mt-6"
+            text
+            color="error"
+            @click="sheet = !sheet"
+          >
+            close
+          </v-btn>
+          <div class="my-3">
+            This is a bottom sheet using the inset prop
+          </div>
+        </v-sheet>
+      </v-bottom-sheet> -->
   </div>
 </template>
 
@@ -239,7 +271,6 @@ export default {
         nome: this.nomeItens[x],
         preco: this.precosItens[x],
       });
-      
     }
     this.itensBase = this.itens;
   },
