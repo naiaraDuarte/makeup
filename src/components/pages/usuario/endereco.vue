@@ -459,9 +459,10 @@ export default {
           this.bairro = res.data.bairro;
           this.cidade = res.data.localidade;
           this.uf = res.data.uf;
-
-          if (this.logradouro.split(" ", 1)[0].length > 3) {
+          if (this.logradouro.split(" ", 1)[0].length > 5) {
             this.tipoLogradouro = "Avenida";
+          } else if (this.logradouro.split(" ", 1)[0].length == 5) {
+            this.tipoLogradouro = "Praça";
           } else {
             this.tipoLogradouro = "Rua";
           }
@@ -474,10 +475,11 @@ export default {
       this.numero = "";
       this.bairro = "";
       this.cidade = "";
+      this.tipoLogradouro = "";
       this.uf = "";
       this.nomeEndereco = "";
       this.tipoEndereco = "";
-      this.tipoLogradouro = "";
+      this.tipoResidencia = "";
     },
     verificaPreenchimento() {
       //Parei aqui, proximo passo é validar os campos e ver se está tudo certo
