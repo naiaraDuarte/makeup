@@ -104,50 +104,57 @@
 
         <v-row>
           <v-col lg="12" class="mt-3">
-            <v-card
-              elevation="0"
-              v-for="(item, i) in $store.state.carrinho"
-              :key="i"
-            >
-              <p>{{ item.nome }}</p>
-              <v-row class="mt-1">
-                <v-col lg="3">
-                  <p>{{ item.preco }}</p>
-                </v-col>
-                <v-col lg="9">
-                  <v-row>
-                    <v-col col="1">
-                      <v-btn
-                        icon
-                        small
-                        elevation="2"
-                        @click="atualizarCarrinho(item.cod, 'add')"
-                      >
-                        <v-icon> mdi-plus </v-icon>
-                      </v-btn>
+            <v-card elevation="0" class="px-2">
+              <v-row v-for="(item, i) in $store.state.carrinho" :key="i">
+                <v-col>
+                  <p v-if="item.qtd != 0">{{ item.nome }}</p>
+                  <v-row v-if="item.qtd != 0" class="mt-1">
+                    <v-col lg="3">
+                      <p>{{ item.preco }}</p>
                     </v-col>
-                    <v-col col="10">
-                      <p>{{ item.qtd }}</p>
-                      <!-- <v-text-field
+                    <v-col lg="9">
+                      <v-row>
+                        <v-col col="1">
+                          <v-btn
+                            icon
+                            small
+                            elevation="1"
+                            @click="atualizarCarrinho(item.cod, 'add')"
+                          >
+                            <v-icon> mdi-plus </v-icon>
+                          </v-btn>
+                        </v-col>
+                        <v-col col="10">
+                          <p>{{ item.qtd }}</p>
+                          <!-- <v-text-field
                         v-model="qtdProdutos"
                         solo
                         dense
                       ></v-text-field> -->
-                    </v-col>
-                    <v-col col="1">
-                      <v-btn
-                        icon
-                        small
-                        elevation="2"
-                        @click="atualizarCarrinho(item.cod, 'sub')"
-                      >
-                        <v-icon> mdi-minus </v-icon>
-                      </v-btn>
+                        </v-col>
+                        <v-col col="1">
+                          <v-btn
+                            icon
+                            small
+                            elevation="1"
+                            @click="atualizarCarrinho(item.cod, 'sub')"
+                          >
+                            <v-icon> mdi-minus </v-icon>
+                          </v-btn>
+                        </v-col>
+                      </v-row>
                     </v-col>
                   </v-row>
                 </v-col>
               </v-row>
             </v-card>
+          </v-col>
+        </v-row>
+        <v-row class="px-2">
+          <v-col>
+            <v-btn color="#b38b57" class="white--text btn-total">
+              {{ $n(parseFloat(total), "currency") }}
+            </v-btn>
           </v-col>
         </v-row>
       </v-card>
@@ -165,6 +172,7 @@ export default {
       itens: [],
       itensBase: [],
       qtdProdutos: 0,
+      total: 0,
       eventoDeMouse: false,
       sheet: false,
       direction: "top",
@@ -289,8 +297,22 @@ export default {
     },
     ...mapMutations(["addCarrinho"]),
     addProduto(item) {
-      this.addCarrinho(item);
-      this.exibeSnackBar("#b38b57", "Seu produto foi add ao carrinho");
+      if (this.$store.state.carrinho.length > 0) {
+        let index = this.$store.state.carrinho.findIndex(pdt => pdt.cod == item.cod);
+        console.log(index)
+        if (index == -1) {
+          this.total += parseFloat(item.preco);
+          this.addCarrinho(item);
+          this.exibeSnackBar("#b38b57", "Seu produto foi add ao carrinho");
+         
+        } else {
+           this.atualizarCarrinho(item.cod, "add");
+        }
+      } else {
+        this.total += parseFloat(item.preco);
+        this.addCarrinho(item);
+        this.exibeSnackBar("#b38b57", "Seu produto foi add ao carrinho");
+      }
     },
     exibeSnackBar(cor, msg) {
       this.snackbarColor = cor;
@@ -323,6 +345,10 @@ export default {
 }
 .btnCarrinho {
   font-weight: 600;
+}
+.btn-total {
+  width: 100%;
+  font-weight: 500;
 }
 
 .fixedbutton {

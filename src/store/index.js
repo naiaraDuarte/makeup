@@ -91,6 +91,8 @@ export default new Vuex.Store({
         },
         removeItemCarrinho(state, payload) {
             let index = state.carrinho.findIndex(pdt => pdt.cod == payload.cod);
+            // this.$delete(state.produtos, index)
+            // Vue.set(state.produtos, index);
             state.produtos.splice(index, 1);
             console.log(state.produtos)
         },
