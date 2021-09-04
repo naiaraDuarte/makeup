@@ -297,21 +297,15 @@ export default {
     },
     ...mapMutations(["addCarrinho"]),
     addProduto(item) {
-      if (this.$store.state.carrinho.length > 0) {
-        let index = this.$store.state.carrinho.findIndex(pdt => pdt.cod == item.cod);
-        console.log(index)
-        if (index == -1) {
-          this.total += parseFloat(item.preco);
-          this.addCarrinho(item);
-          this.exibeSnackBar("#b38b57", "Seu produto foi add ao carrinho");
-         
-        } else {
-           this.atualizarCarrinho(item.cod, "add");
-        }
-      } else {
+      let index = this.$store.state.carrinho.findIndex(
+        (pdt) => pdt.cod == item.cod
+      );
+      if (this.$store.state.carrinho.length == 0 || index == -1) {
         this.total += parseFloat(item.preco);
         this.addCarrinho(item);
         this.exibeSnackBar("#b38b57", "Seu produto foi add ao carrinho");
+      } else {
+        this.atualizarCarrinho(item.cod, "add");
       }
     },
     exibeSnackBar(cor, msg) {
