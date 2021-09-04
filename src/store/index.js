@@ -84,7 +84,16 @@ export default new Vuex.Store({
             payload.id = state.carrinhoCountId;
             state.carrinho.push(payload);
             state.carrinhoCountId++;
-        }
+        },
+        editarCarrinho(state, payload) {
+            let index = state.carrinho.findIndex(pdt => pdt.cod == payload.cod);
+            state.carrinho[index] = payload;
+        },
+        removeItemCarrinho(state, payload) {
+            let index = state.carrinho.findIndex(pdt => pdt.cod == payload.cod);
+            state.produtos.splice(index, 1);
+            console.log(state.produtos)
+        },
 
     },
     getters: {},

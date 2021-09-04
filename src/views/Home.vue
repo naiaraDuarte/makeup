@@ -115,13 +115,36 @@
                   <p>{{ item.preco }}</p>
                 </v-col>
                 <v-col lg="9">
-                  <v-btn icon x-small>
-                    <v-icon v-if="fab"> mdi-plus </v-icon>
-                  </v-btn>
-                  <input type="text" />
-                  <v-btn icon x-small>
-                    <v-icon v-if="fab"> mdi-minus </v-icon>
-                  </v-btn>
+                  <v-row>
+                    <v-col col="1">
+                      <v-btn
+                        icon
+                        small
+                        elevation="2"
+                        @click="atualizarCarrinho(item.cod, 'add')"
+                      >
+                        <v-icon> mdi-plus </v-icon>
+                      </v-btn>
+                    </v-col>
+                    <v-col col="10">
+                      <p>{{ item.qtd }}</p>
+                      <!-- <v-text-field
+                        v-model="qtdProdutos"
+                        solo
+                        dense
+                      ></v-text-field> -->
+                    </v-col>
+                    <v-col col="1">
+                      <v-btn
+                        icon
+                        small
+                        elevation="2"
+                        @click="atualizarCarrinho(item.cod, 'sub')"
+                      >
+                        <v-icon> mdi-minus </v-icon>
+                      </v-btn>
+                    </v-col>
+                  </v-row>
                 </v-col>
               </v-row>
             </v-card>
@@ -129,37 +152,6 @@
         </v-row>
       </v-card>
     </v-bottom-sheet>
-    <!-- <v-bottom-sheet
-        v-model="sheet"
-        inset
-      >
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            color="orange"
-            dark
-            v-bind="attrs"
-            v-on="on"
-          >
-            Open Inset
-          </v-btn>
-        </template>
-        <v-sheet
-          class="text-center"
-          height="200px"
-        >
-          <v-btn
-            class="mt-6"
-            text
-            color="error"
-            @click="sheet = !sheet"
-          >
-            close
-          </v-btn>
-          <div class="my-3">
-            This is a bottom sheet using the inset prop
-          </div>
-        </v-sheet>
-      </v-bottom-sheet> -->
   </div>
 </template>
 
@@ -172,6 +164,7 @@ export default {
     return {
       itens: [],
       itensBase: [],
+      qtdProdutos: 0,
       eventoDeMouse: false,
       sheet: false,
       direction: "top",
@@ -270,6 +263,7 @@ export default {
         src: `produto${x}.jpeg`,
         nome: this.nomeItens[x],
         preco: this.precosItens[x],
+        qtd: 1,
       });
     }
     this.itensBase = this.itens;
@@ -277,6 +271,21 @@ export default {
   methods: {
     getImgUrl(pic) {
       return require("../assets/images/" + pic);
+    },
+    ...mapMutations(["editarCarrinho"]),
+    ...mapMutations(["removeItemCarrinho"]),
+    atualizarCarrinho(item, tipo) {
+      let pdt = this.$store.state.carrinho.filter((prod) => {
+        if (item == prod.cod) {
+          if (tipo == "add") {
+            prod.qtd += 1;
+          } else {
+            if (prod.qtd == 0) this.removeItemCarrinho(item);
+            else prod.qtd -= 1;
+          }
+        }
+      });
+      this.editarCarrinho(pdt);
     },
     ...mapMutations(["addCarrinho"]),
     addProduto(item) {
