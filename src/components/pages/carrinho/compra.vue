@@ -5,7 +5,7 @@
         <v-card elevation="0">
           <h2>Meu carrinho</h2>
           <v-divider></v-divider>
-          <v-row>
+          <v-row v-if="$store.state.carrinho.length > 0">
             <v-col lg="12" class="px-2">
               <v-row
                 v-for="(item, i) in $store.state.carrinho"
@@ -35,7 +35,7 @@
                       </v-btn>
                     </v-col>
                     <v-col lg="4">
-                      <p>5</p>
+                      <p>{{ item.qtd }}</p>
                     </v-col>
                     <v-col lg="4">
                       <v-btn
@@ -81,17 +81,38 @@
                 </v-col>
                 <v-col lg="4">
                   <v-card class="separa" elevation="0">
-                    <p>03 Produtos</p>
-                    <p><b>R$ 96,00</b></p>
+                    <p>{{ $store.state.carrinho.length + 1 }} Produtos</p>
+                    <p>{{ $n(parseFloat(totalProdutos), "currency") }}</p>
                   </v-card>
                   <v-card class="separa" elevation="0">
                     <p>Frete</p>
-                    <p><b>R$ 96,00</b></p>
+                    <p>{{ $n(parseFloat(totalFrete), "currency") }}</p>
                   </v-card>
                   <v-divider></v-divider>
-                  <h3>Total</h3>
+                  <v-card class="separa" elevation="0">
+                    <h3>Total</h3>
+                    <h3>
+                      {{
+                        $n(parseFloat(totalProdutos + totalFrete), "currency")
+                      }}
+                    </h3>
+                  </v-card>
                 </v-col>
               </v-row>
+            </v-col>
+          </v-row>
+          <v-row v-else>
+            <v-col lg="12" class="mt-5 centraliza">
+              <h4 class="grey--text">
+                Hummm... você não possui itens em seu carrinho, se redirecione
+                para a nossa página de produtos, compre algo e seu produto
+                aparecerá aqui, okay?
+              </h4>
+            </v-col>
+            <v-col lg="12" class="centraliza">
+              <v-btn color="primary" @click="$router.push(`/`)"
+                >Ver produtos</v-btn
+              >
             </v-col>
           </v-row>
         </v-card>
@@ -108,6 +129,8 @@
   </v-container>
 </template>
 <script>
+import { mapMutations } from "vuex";
+
 export default {
   data() {
     return {
@@ -115,7 +138,16 @@ export default {
       mensagem: "",
       snackbarColor: "",
       snackbar: false,
+      totalProdutos: 0,
+      totalFrete: 0,
     };
+  },
+  mounted() {
+    if (this.$store.state.carrinho.length) {
+      this.$store.state.carrinho.forEach((item) => {
+        this.totalProdutos += item.qtd * item.preco;
+      });
+    }
   },
   methods: {
     getImgUrl(pic) {
@@ -123,20 +155,66 @@ export default {
     },
     calculaFrete() {
       if (this.cep == "" || this.cep == null) {
-          this.exibeSnackBar("#b38b57", "O campo CEP deve estar preenchido")
+        this.exibeSnackBar("#b38b57", "O campo CEP deve estar preenchido");
         return false;
       }
       let frm = {
         cep: this.cep.replace("-", ""),
-        peso: 3,
-        comprimento: 80,
+        peso: 1,
+        comprimento: 50,
         altura: 8,
         largura: 10,
-        diametro: 18,
+        diametro: 8,
       };
       this.$http.post(`/frete/`, frm).then((res) => {
+        this.totalFrete = parseFloat(res.data.valor[0].Valor);
         console.log("valor", res);
       });
+    },
+    ...mapMutations(["addCarrinho"]),
+    ...mapMutations(["editarCarrinho"]),
+    ...mapMutations(["removeItemCarrinho"]),
+    removeItem(item) {
+      this.totalProdutos -= parseFloat(item.preco) * item.qtd;
+      item.qtd = 0;
+      this.removeItemCarrinho(item.cod);
+    },
+    atualizarCarrinho(item, tipo) {
+      let totalProdutos = this.totalProdutos;
+      let pdt = this.$store.state.carrinho.filter((prod) => {
+        let preco = parseFloat(prod.preco);
+        if (item.cod == prod.cod) {
+          if (tipo == "add") {
+            totalProdutos -= preco * prod.qtd;
+            prod.qtd += 1;
+            totalProdutos += preco * prod.qtd;
+          } else {
+            if (prod.qtd == 0) {
+              totalProdutos -= preco;
+              this.removeItemCarrinho(item.cod);
+            } else {
+              totalProdutos -= preco;
+              prod.qtd -= 1;
+            }
+          }
+        }
+      });
+      this.totalProdutos = totalProdutos;
+      this.editarCarrinho(pdt);
+    },
+
+    addProduto(item) {
+      let index = this.$store.state.carrinho.findIndex(
+        (pdt) => pdt.cod == item.cod
+      );
+      console.log(index);
+      if (this.$store.state.carrinho.length == 0 || index == -1) {
+        this.totalProdutos += parseFloat(item.preco);
+        this.addCarrinho(item);
+        this.exibeSnackBar("#b38b57", "Seu produto foi add ao carrinho");
+      } else {
+        this.atualizarCarrinho(item, "add");
+      }
     },
     exibeSnackBar(cor, msg) {
       this.snackbarColor = cor;
