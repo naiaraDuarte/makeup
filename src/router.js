@@ -4,6 +4,7 @@ import produtos from './views/produtos.vue'
 import home from './views/Home.vue';
 import usuario from './views/usuario.vue';
 import adm from './views/administrador.vue';
+import carrinho from './views/carrinho.vue';
 
 Vue.use(VueRouter)
 
@@ -27,6 +28,11 @@ const routes = [{
       path: '/adm',
       name: 'adm',
       component: adm
+    },
+    {
+      path: '/carrinho',
+      name: 'carrinho',
+      component: carrinho
     },
     {
       path: "*",

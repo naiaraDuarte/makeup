@@ -100,7 +100,8 @@
 
     <v-bottom-sheet v-model="sheet" v-if="sheet">
       <v-card class="carrinho text-center" height="500" width="300">
-        <p class="tituloModalCarrinho mt-2">Produtos escolhidos</p>
+        <p class="tituloModalCarrinho mt-2" v-if="$store.state.carrinho.length > 0">Produtos escolhidos</p>
+        <p class="tituloModalCarrinho mt-2" v-else >Você ainda não add nenhum produto, mas ó, assim que add ele aparecerá aqui, viu?</p>
 
         <v-row>
           <v-col lg="12" class="mt-3">
@@ -109,22 +110,22 @@
                 <v-col>
                   <p v-if="item.qtd != 0">{{ item.nome }}</p>
                   <v-row v-if="item.qtd != 0" class="mt-1">
-                    <v-col lg="3">
+                    <v-col lg="4">
                       <p>{{ item.preco }}</p>
                     </v-col>
-                    <v-col lg="9">
+                    <v-col lg="8">
                       <v-row>
                         <v-col col="1">
                           <v-btn
                             icon
                             small
                             elevation="1"
-                            @click="atualizarCarrinho(item.cod, 'add')"
+                            @click="atualizarCarrinho(item, 'add')"
                           >
                             <v-icon> mdi-plus </v-icon>
                           </v-btn>
                         </v-col>
-                        <v-col col="10">
+                        <v-col col="4">
                           <p>{{ item.qtd }}</p>
                           <!-- <v-text-field
                         v-model="qtdProdutos"
@@ -137,9 +138,19 @@
                             icon
                             small
                             elevation="1"
-                            @click="atualizarCarrinho(item.cod, 'sub')"
+                            @click="atualizarCarrinho(item, 'sub')"
                           >
                             <v-icon> mdi-minus </v-icon>
+                          </v-btn>
+                        </v-col>
+                        <v-col col="2">
+                          <v-btn
+                            icon
+                            small
+                            elevation="0"
+                            @click="removeItem(item)"
+                          >
+                            <v-icon> mdi-close </v-icon>
                           </v-btn>
                         </v-col>
                       </v-row>
@@ -150,10 +161,10 @@
             </v-card>
           </v-col>
         </v-row>
-        <v-row class="px-2">
+        <v-row class="px-2" v-if="$store.state.carrinho.length > 0">
           <v-col>
-            <v-btn color="#b38b57" class="white--text btn-total">
-              {{ $n(parseFloat(total), "currency") }}
+            <v-btn color="#b38b57" class="white--text btn-total" @click="redireciona">
+              finalizar compra ({{ $n(parseFloat(total), "currency") }})
             </v-btn>
           </v-col>
         </v-row>
@@ -280,33 +291,53 @@ export default {
     getImgUrl(pic) {
       return require("../assets/images/" + pic);
     },
+    ...mapMutations(["addCarrinho"]),
     ...mapMutations(["editarCarrinho"]),
     ...mapMutations(["removeItemCarrinho"]),
+    removeItem(item){
+      this.total -= parseFloat(item.preco) * item.qtd;
+      item.qtd = 0;
+      this.removeItemCarrinho(item.cod);
+    },
     atualizarCarrinho(item, tipo) {
+      let total = this.total;
       let pdt = this.$store.state.carrinho.filter((prod) => {
-        if (item == prod.cod) {
+        let preco = parseFloat(prod.preco);
+        if (item.cod == prod.cod) {
           if (tipo == "add") {
+            total -= preco * prod.qtd;
             prod.qtd += 1;
+            total += preco * prod.qtd;
           } else {
-            if (prod.qtd == 0) this.removeItemCarrinho(item);
-            else prod.qtd -= 1;
+            if (prod.qtd == 0) {
+              total -= preco;
+              this.removeItemCarrinho(item.cod);
+            } else {
+              total -= preco;
+              prod.qtd -= 1;
+            }
           }
         }
       });
+      this.total = total;
       this.editarCarrinho(pdt);
     },
-    ...mapMutations(["addCarrinho"]),
+    
     addProduto(item) {
       let index = this.$store.state.carrinho.findIndex(
         (pdt) => pdt.cod == item.cod
       );
+      console.log(index);
       if (this.$store.state.carrinho.length == 0 || index == -1) {
         this.total += parseFloat(item.preco);
         this.addCarrinho(item);
         this.exibeSnackBar("#b38b57", "Seu produto foi add ao carrinho");
       } else {
-        this.atualizarCarrinho(item.cod, "add");
+        this.atualizarCarrinho(item, "add");
       }
+    },
+    redireciona(){
+      this.$router.push(`/carrinho`);
     },
     exibeSnackBar(cor, msg) {
       this.snackbarColor = cor;
