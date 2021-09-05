@@ -53,7 +53,7 @@
                   <h3>{{ item.preco }}</h3>
                 </v-col>
               </v-row>
-               <v-divider></v-divider>
+              <v-divider></v-divider>
             </v-col>
             <v-col lg="12">
               <v-row>
@@ -68,27 +68,28 @@
                         v-model="cep"
                         v-mask="['#####-###']"
                         label="CEP"
-                        @blur="pesquisarCep"
                         id="cep"
                         required
                       ></v-text-field>
                     </v-col>
                     <v-col lg="4">
-                        <v-btn color="primary"> Calcular </v-btn>
+                      <v-btn color="primary" @click="calculaFrete">
+                        Calcular
+                      </v-btn>
                     </v-col>
                   </v-row>
                 </v-col>
                 <v-col lg="4">
-                    <v-card class="separa" elevation="0">
-                        <p>03 Produtos</p>
-                        <p><b>R$ 96,00</b></p>
-                    </v-card>
-                    <v-card class="separa" elevation="0">
-                        <p>Frete</p>
-                        <p><b>R$ 96,00</b></p>
-                    </v-card>
-                    <v-divider></v-divider>
-                    <h3>Total</h3>
+                  <v-card class="separa" elevation="0">
+                    <p>03 Produtos</p>
+                    <p><b>R$ 96,00</b></p>
+                  </v-card>
+                  <v-card class="separa" elevation="0">
+                    <p>Frete</p>
+                    <p><b>R$ 96,00</b></p>
+                  </v-card>
+                  <v-divider></v-divider>
+                  <h3>Total</h3>
                 </v-col>
               </v-row>
             </v-col>
@@ -96,26 +97,59 @@
         </v-card>
       </v-col>
     </v-row>
+    <v-snackbar v-model="snackbar" :color="snackbarColor">
+      <h4 style="font-weight: 100">{{ mensagem }}</h4>
+      <template v-slot:action="{ attrs }">
+        <v-btn text icon v-bind="attrs" @click="snackbar = false">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-container>
 </template>
 <script>
 export default {
   data() {
     return {
-      pesquisarCep: "",
+      cep: "",
+      mensagem: "",
+      snackbarColor: "",
+      snackbar: false,
     };
   },
   methods: {
     getImgUrl(pic) {
       return require("../../../assets/images/" + pic);
     },
+    calculaFrete() {
+      if (this.cep == "" || this.cep == null) {
+          this.exibeSnackBar("#b38b57", "O campo CEP deve estar preenchido")
+        return false;
+      }
+      let frm = {
+        cep: this.cep.replace("-", ""),
+        peso: 3,
+        comprimento: 80,
+        altura: 8,
+        largura: 10,
+        diametro: 18,
+      };
+      this.$http.post(`/frete/`, frm).then((res) => {
+        console.log("valor", res);
+      });
+    },
+    exibeSnackBar(cor, msg) {
+      this.snackbarColor = cor;
+      this.mensagem = msg;
+      this.snackbar = true;
+    },
   },
 };
 </script>
 <style>
-.separa{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.separa {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>
