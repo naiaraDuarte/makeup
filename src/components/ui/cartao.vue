@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div class="cartao"></div>
+    <div :class="`cartao${id}`" class="cartao"></div>
 
-    <form id="cartao">
-      <input type="text" id="cc-number" name="number" />
-      <input type="text" id="cc-name" name="first-name" />
-      <input type="text" id="cc-expiration" name="expiry" />
+    <form :id="`cartao${id}`" class="esconde">
+      <input type="text" id="cc-number" name="number" :value="numero" />
+      <input type="text" id="cc-name" name="first-name" :value="nome" />
+      <input type="text" id="cc-expiration" name="expiry" :value="data" />
       <input type="text" id="cc-cvv" name="cvc" />
     </form>
   </div>
@@ -13,18 +13,29 @@
 <script>
 import * as Card from "card";
 export default {
+  props: {
+    nome: String,
+    numero: String,
+    data: String,
+    id: String
+  },
   name: "Form",
+  data(){
+    return {
+      n: 0,
+    }
+  },
   mounted() {
     new Card({
-      form: "form#cartao",
-      container: ".cartao",
+      form: `form#cartao${this.id}`,
+      container: `.cartao${this.id}`,
       formSelectors: {
         numberInput: "input#cc-number",
         nameInput: "input#cc-name",
         expiryInput: "input#cc-expiration",
         cvcInput: "input#cc-cvv",
       },
-      width: 270,
+      width: 200,
       formatting: true,
       placeholders: {
         number: "•••• •••• •••• ••••",
@@ -33,6 +44,15 @@ export default {
         cvc: "•••",
       },
     });
+    this.n++;
   },
 };
 </script>
+<style>
+  .esconde{
+    visibility: hidden;
+  }
+  .cartao .jp-card-container{
+    transform: scale(0.771429) !important;
+  }
+</style>

@@ -20,6 +20,7 @@
                     :nome="item.nome"
                     :numero="item.numero"
                     :data="item.data_validade"
+                    :id="i"
                   ></cartao>
                 </v-card>
               </v-col>
