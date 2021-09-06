@@ -1,9 +1,9 @@
 <template>
   <v-container fluid>
     <h1>Pagamento</h1>
-    <div class="card-wrapper"></div>
+    <div class="pagamento"></div>
 
-    <form>
+    <form id="Pagamento">
       <v-row>
         <v-col>
           <v-text-field
@@ -72,7 +72,7 @@
         >
       </v-col>
     </v-row>
-    <v-row class="mt-1 mx-3 my-3" v-if="this.$store.state.cartoes">
+    <v-row class="mt-1 mx-3 my-3" v-if="this.$store.state.cartoes && dadosCartao">
       <v-col lg="12">
         <v-expansion-panels accordion>
           <v-expansion-panel
@@ -142,7 +142,7 @@
 import { mapMutations } from "vuex";
 import * as Card from "card";
 export default {
-  name: "Form CreditCard",
+  name: "Form",
   props: {
     dadosCartao: Array
   },
@@ -161,8 +161,8 @@ export default {
   },
   mounted() {
     new Card({
-      form: "form",
-      container: ".card-wrapper",
+      form: "form#Pagamento",
+      container: ".pagamento",
       formSelectors: {
         numberInput: "input#cc-number",
         nameInput: "input#cc-name",
@@ -178,9 +178,12 @@ export default {
         cvc: "•••",
       },
     });
-    this.dadosCartao.forEach((end) => {
+    if (this.dadosCartao) {
+      this.dadosCartao.forEach((end) => {
       this.addCartaoMounted(end);
     });
+    }
+    
   },
   computed: {
     verificaId() {

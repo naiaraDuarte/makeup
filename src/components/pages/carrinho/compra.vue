@@ -143,7 +143,7 @@ export default {
     };
   },
   mounted() {
-    if (this.$store.state.carrinho.length) {
+    if (this.$store.state.carrinho.length > 0) {
       this.$store.state.carrinho.forEach((item) => {
         this.totalProdutos += item.qtd * item.preco;
       });

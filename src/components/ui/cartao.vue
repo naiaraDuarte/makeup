@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div class="card-wrapper"></div>
+    <div class="cartao"></div>
 
-    <form>
+    <form id="cartao">
       <input type="text" id="cc-number" name="number" />
       <input type="text" id="cc-name" name="first-name" />
       <input type="text" id="cc-expiration" name="expiry" />
@@ -12,13 +12,12 @@
 </template>
 <script>
 import * as Card from "card";
-
 export default {
-  name: "Form CreditCard",
+  name: "Form",
   mounted() {
     new Card({
-      form: "form",
-      container: ".card-wrapper",
+      form: "form#cartao",
+      container: ".cartao",
       formSelectors: {
         numberInput: "input#cc-number",
         nameInput: "input#cc-name",

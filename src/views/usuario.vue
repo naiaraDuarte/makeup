@@ -57,7 +57,7 @@
         </v-col>
         <v-col lg="10">
           <cadastro v-if="selectedItem == 0 && dadosEndereco.length > 0" :dadosCliente="dadosCliente" :dadosEndereco="dadosEndereco"></cadastro>
-          <pagamento v-if="selectedItem == 1" :dadosCartao="dadosCartao"></pagamento>
+          <pagamento v-if="selectedItem == 1" :dadosCartao="dadosCartao" :mostra="true"></pagamento>
           <compras v-if="selectedItem == 2"></compras>
           <!-- <cadastro else></cadastro> -->
         </v-col>

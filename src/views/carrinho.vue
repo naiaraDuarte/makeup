@@ -42,7 +42,7 @@
                 </v-row>
               </v-stepper-content>
               <v-stepper-content step="2">
-                <pagamento></pagamento>
+                <pagamento :mostra="false"></pagamento>
 
                 <v-btn color="primary" @click="e1 = 3"> Continue </v-btn>
 
