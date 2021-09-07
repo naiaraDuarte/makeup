@@ -17,7 +17,7 @@ export default {
     nome: String,
     numero: String,
     data: String,
-    id: String
+    id: Number
   },
   name: "Form",
   mounted() {
