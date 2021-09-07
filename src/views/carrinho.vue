@@ -44,9 +44,26 @@
               <v-stepper-content step="2">
                 <pagamento :mostra="false"></pagamento>
 
-                <v-btn color="primary" @click="e1 = 3"> Continue </v-btn>
-
-                <v-btn text @click="e1 = 1"> Cancel </v-btn>
+                <v-row class="text-right mx-1 mb-3">
+                  <v-col lg="9"></v-col>
+                  <v-col lg="3">
+                    <v-row class="text-right">
+                      <v-col class="pl-5 text-center">
+                        <v-btn
+                          elevation="1"
+                          class="mr-3"
+                          icon
+                          id="voltar"
+                          @click="e1 = 1"
+                          ><v-icon>mdi-chevron-left</v-icon></v-btn
+                        >
+                        <v-btn elevation="1" icon id="ir" @click="e1 = 3"
+                          ><v-icon>mdi-chevron-right</v-icon></v-btn
+                        >
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                </v-row>
               </v-stepper-content>
               <v-stepper-content step="3">
                 <v-card
@@ -73,6 +90,7 @@
               </v-stepper-content>
             </v-stepper-items>
           </v-stepper>
+
           <v-stepper v-model="e1" alt-labels elevation="0" v-else>
             <v-stepper-header elevation="0" style="box-shadow: none">
               <v-stepper-step :complete="e1 > 1" step="1">

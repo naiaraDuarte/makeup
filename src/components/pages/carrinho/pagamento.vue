@@ -1,17 +1,25 @@
 <template>
   <v-container fluid>
-    <v-card class="px-3">
+    <v-card class="px-3" elevation="0">
       <v-row>
-        <v-col lg="7">
+        <v-col lg="6">
           <h2>Pagamento</h2>
           <p>Você tem um cupom de pagamento <b>Desejo usá-lo agora</b></p>
           <v-card elevation="0" class="mt-3">
             <h4>
-              <v-icon>mdi-credit-card-plus-outline</v-icon>Cartão de crédito
+              <v-icon>mdi-credit-card-plus-outline</v-icon> Cartão de crédito
+              <v-btn
+                elevation="0"
+                text
+                v-if="mostrar == false"
+                class="btnSubmit"
+                @click="mostrar = true"
+                ><v-icon left> mdi-plus </v-icon> add cartão</v-btn
+              >
             </h4>
             <v-row v-if="$store.state.cartoes.length > 0">
               <v-col
-                lg="6"
+                lg="6" class="pl-0"
                 v-for="(item, i) in this.$store.state.cartoes"
                 :key="i"
               >
@@ -24,13 +32,21 @@
                   ></cartao>
                 </v-card>
               </v-col>
+              
+              <v-btn elevation="1" icon id="ir" v-if="mostrar == true" @click="mostrar = false"
+                ><v-icon>mdi-close</v-icon></v-btn
+              >
             </v-row>
             <v-row v-else>
               <v-col>
                 <h4>Você ainda não possui cartões cadastrados</h4>
               </v-col>
             </v-row>
-
+            <v-row v-if="$store.state.cartoes.length > 0 && mostrar == true">
+              <v-col>
+                <addCartao></addCartao>
+              </v-col>
+            </v-row>
             <!-- <v-combobox
               class="mt-3"
               outlined
@@ -40,11 +56,13 @@
               label="Adicionar cartões"
             ></v-combobox> -->
           </v-card>
-          <v-card>
-            <addCartao></addCartao>
-          </v-card>
         </v-col>
-        <v-col lg="5" class="red"></v-col>
+        <v-col lg="1"></v-col>
+        <v-divider vertical></v-divider>
+        <v-col lg="5" class="pl-5">
+          <h2>Resumo do pedido</h2>
+          <p>Você tem um cupom de pagamento <b>Desejo usá-lo agora</b></p>
+        </v-col>
       </v-row>
     </v-card>
   </v-container>
@@ -57,6 +75,7 @@ export default {
   data() {
     return {
       cartoes: "",
+      mostrar: false,
       marcados: [],
       itensDivisoes: [
         "Pagar com 1 cartão",

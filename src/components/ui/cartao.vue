@@ -20,11 +20,6 @@ export default {
     id: String
   },
   name: "Form",
-  data(){
-    return {
-      n: 0,
-    }
-  },
   mounted() {
     new Card({
       form: `form#cartao${this.id}`,
@@ -35,7 +30,7 @@ export default {
         expiryInput: "input#cc-expiration",
         cvcInput: "input#cc-cvv",
       },
-      width: 200,
+      width: 150,
       formatting: true,
       placeholders: {
         number: "•••• •••• •••• ••••",
@@ -51,6 +46,7 @@ export default {
 <style>
   .esconde{
     visibility: hidden;
+    display: none;
   }
   .cartao .jp-card-container{
     transform: scale(0.771429) !important;
