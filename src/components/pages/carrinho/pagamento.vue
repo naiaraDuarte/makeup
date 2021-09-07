@@ -17,6 +17,7 @@
                 ><v-icon left> mdi-plus </v-icon> add cartão</v-btn
               >
             </h4>
+            <p>Selecione os cartões que deseja pagar</p>
             <v-row v-if="$store.state.cartoes.length > 0">
               <v-col
                 lg="6" class="pl-0"
@@ -60,8 +61,7 @@
         <v-col lg="1"></v-col>
         <v-divider vertical></v-divider>
         <v-col lg="5" class="pl-5">
-          <h2>Resumo do pedido</h2>
-          <p>Você tem um cupom de pagamento <b>Desejo usá-lo agora</b></p>
+          <resumoPedido></resumoPedido>
         </v-col>
       </v-row>
     </v-card>
@@ -70,8 +70,9 @@
 <script>
 import addCartao from "../usuario/pagamento.vue";
 import cartao from "../../ui/cartao.vue";
+import resumoPedido from '../carrinho/resumoPedido.vue';
 export default {
-  components: { addCartao, cartao },
+  components: { addCartao, cartao, resumoPedido },
   data() {
     return {
       cartoes: "",
