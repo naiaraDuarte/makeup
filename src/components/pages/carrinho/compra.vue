@@ -29,10 +29,11 @@
                         icon
                         small
                         elevation="1"
-                        @click="atualizarCarrinho(item, 'add')"
+                        @click="atualizarCarrinho(item, 'sub')"
+                        id="menos"
                       >
-                        <v-icon> mdi-plus </v-icon>
-                      </v-btn>
+                        <v-icon> mdi-minus </v-icon>
+                      </v-btn>                      
                     </v-col>
                     <v-col lg="4">
                       <p>{{ item.qtd }}</p>
@@ -42,10 +43,12 @@
                         icon
                         small
                         elevation="1"
-                        @click="atualizarCarrinho(item, 'sub')"
+                        id="mais"
+                        @click="atualizarCarrinho(item, 'add')"
                       >
-                        <v-icon> mdi-minus </v-icon>
+                        <v-icon> mdi-plus </v-icon>
                       </v-btn>
+                      
                     </v-col>
                   </v-row>
                 </v-col>
@@ -73,7 +76,7 @@
                       ></v-text-field>
                     </v-col>
                     <v-col lg="4">
-                      <v-btn color="primary" @click="calculaFrete">
+                      <v-btn color="primary" @click="calculaFrete" id="calcular">
                         Calcular
                       </v-btn>
                     </v-col>

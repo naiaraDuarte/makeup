@@ -33,6 +33,7 @@
                 class="white--text btnLink"
                 @click="$router.push(`/usuario`)"
                 target="_blank"
+                id= "entrar"
                 text
               >
                 <v-icon color="#b38b57" class="pr-3"
@@ -49,6 +50,7 @@
                 class="white--text btnLink"
                 @click="$router.push(`/usuario`)"
                 target="_blank"
+                id= "minhaConta"
                 text
                 ><v-icon color="#b38b57" class="pr-3"
                   >mdi-account-circle-outline</v-icon
@@ -71,6 +73,7 @@
                 class="white--text btnLink"
                 @click="$router.push(`/usuario`)"
                 target="_blank"
+                id="carrinho"
                 text
               >
                 <v-icon color="#b38b57" class="pr-3">mdi-cart-variant</v-icon

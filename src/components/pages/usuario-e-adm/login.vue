@@ -9,6 +9,7 @@
           v-model="email"
           v-on:keyup.enter="entrar"
           label="Digite seu email"
+          id="email"
           required
         ></v-text-field>
 
@@ -18,6 +19,7 @@
           :append-icon="show3 ? 'mdi-eye' : 'mdi-eye-off'"
           :type="show3 ? 'text' : 'password'"
           label="Digite sua senha"
+          id="senha"
           @click:append="show3 = !show3"
           required
         ></v-text-field>
@@ -25,7 +27,7 @@
     </v-row>
     <v-row>
       <v-col class="text-center mb-5" lg="12" md="" sm="" col="5">
-        <v-btn elevation="0" text class="btnSubmit" @click="entrar">
+        <v-btn elevation="0" text class="btnSubmit" @click="entrar" id= "entrarLogin">
           Entrar</v-btn
         >
       </v-col>

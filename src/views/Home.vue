@@ -120,10 +120,12 @@
                             icon
                             small
                             elevation="1"
-                            @click="atualizarCarrinho(item, 'add')"
+                            id="menos"
+                            @click="atualizarCarrinho(item, 'sub')"
                           >
-                            <v-icon> mdi-plus </v-icon>
+                            <v-icon> mdi-minus </v-icon>
                           </v-btn>
+                          
                         </v-col>
                         <v-col col="4">
                           <p>{{ item.qtd }}</p>
@@ -138,10 +140,12 @@
                             icon
                             small
                             elevation="1"
-                            @click="atualizarCarrinho(item, 'sub')"
+                            id="mais"
+                            @click="atualizarCarrinho(item, 'add')"
                           >
-                            <v-icon> mdi-minus </v-icon>
+                            <v-icon> mdi-plus </v-icon>
                           </v-btn>
+                          
                         </v-col>
                         <v-col col="2">
                           <v-btn
