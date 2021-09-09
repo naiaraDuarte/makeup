@@ -33,7 +33,7 @@
                   <v-col lg="3">
                     <v-row class="text-right">
                       <v-col class="pl-5 text-center">
-                        <v-btn elevation="1" icon id="ir" @click="e1 = 2"
+                        <v-btn elevation="1" icon id="ir" @click="e1 = 2" :disabled="verificaId == false || $store.state.carrinho.length == 0"
                           ><v-icon>mdi-chevron-right</v-icon></v-btn
                         >
                       </v-col>
@@ -147,7 +147,7 @@
                           @click="e1 = 1"
                           ><v-icon>mdi-chevron-left</v-icon></v-btn
                         >
-                        <v-btn elevation="1" icon id="ir" @click="e1 = 3"
+                        <v-btn elevation="1" icon id="ir" @click="e1 = 3" :disabled="verificaId == true && $store.state.carrinho.length > 0"
                           ><v-icon>mdi-chevron-right</v-icon></v-btn
                         >
                       </v-col>

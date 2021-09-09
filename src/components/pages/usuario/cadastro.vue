@@ -518,10 +518,6 @@ export default {
     menu(val) {
       val && setTimeout(() => (this.activePicker = "YEAR"));
     },
-    "$store.state.valorChegou": function () {
-      console.log("MUDOU ESSA PORRA")
-        this.listarDadosCadastrados();
-    }
   },
   computed: {
     verificaId() {

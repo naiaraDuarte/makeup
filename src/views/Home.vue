@@ -266,6 +266,11 @@ export default {
     }
   },
   mounted() {
+    if (this.$store.state.carrinho.length > 0) {
+      this.$store.state.carrinho.forEach((item) => {
+        this.total += item.qtd * item.preco;
+      });
+    }
     if (localStorage.getItem("usuarioId")) {
       this.$store.state.cadastro = true;
       return true;

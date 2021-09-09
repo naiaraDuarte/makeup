@@ -111,6 +111,7 @@ export default {
       this.$store.state.dadosEndereco = data;
     },
     salvaCartao(data) {
+      this.$store.state.cartoes = [];
       data.forEach((cart) => {
         this.addCartao({
           id: cart.id,
