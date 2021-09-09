@@ -56,8 +56,8 @@
           </v-card>
         </v-col>
         <v-col lg="10">
-          <cadastro v-if="selectedItem == 0 && dadosEndereco.length > 0" :dadosCliente="dadosCliente" :dadosEndereco="dadosEndereco"></cadastro>
-          <pagamento v-if="selectedItem == 1" :dadosCartao="dadosCartao" :mostra="true"></pagamento>
+          <cadastro v-if="selectedItem == 0"></cadastro>
+          <pagamento v-if="selectedItem == 1" :mostra="true"></pagamento>
           <compras v-if="selectedItem == 2"></compras>
           <!-- <cadastro else></cadastro> -->
         </v-col>
@@ -83,9 +83,6 @@ export default {
       componente: "cadastro",
       idUsuario: null,
       selectedItem: 0,
-      dadosCliente: [],
-      dadosEndereco: [],
-      dadosCartao: [],
       items: [
         { text: "Conta", icon: "mdi-account" },
         { text: "Pagamento", icon: "mdi-clock" },
@@ -96,7 +93,6 @@ export default {
   },
   async mounted() {
     this.$store.state.perfil = "usuario";
-    await this.usuario();
   },
   watch: {
     selectedItem(newVal, oldVal) {
@@ -116,20 +112,6 @@ export default {
     verificaId() {
       if (localStorage.getItem("usuarioId")) return true;
       else return false;
-    },
-  },
-  methods: {
-    usuario() {
-      if (localStorage.getItem("usuarioId")) {
-        this.$http
-          .get(`/cliente/${localStorage.getItem("usuarioId")}`)
-          .then((res) => {
-           
-            this.dadosCliente = res.data.cliente;
-            this.dadosEndereco = res.data.endereco;
-            this.dadosCartao = res.data.cartao;
-          });
-      }
     },
   },
 };

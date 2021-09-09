@@ -278,7 +278,6 @@
     <endereco
       v-if="dadosEndereco && dadosEndereco.length > 0"
       :clickNoSalvar="clickNoSalvar"
-      :dadosEndereco="dadosEndereco"
       v-show="faseCadastro == 2"
       @verificacaoEndereco="verificaPreenchimentoEndereco = $event.salvo"
       @falhaEndereco="clickNoSalvar = $event"
@@ -640,7 +639,7 @@ export default {
     },
     listarDadosCadastrados() {
       this.$store.state.cadastro = true;
-      let usuario = this.dadosCliente[0];
+      let usuario = this.$store.state.usuario[1];
       this.nome = usuario.nome;
       this.cpf = usuario.cpf;
       this.apelido = usuario.apelido;

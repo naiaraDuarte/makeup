@@ -176,6 +176,7 @@
 <script>
 import jsFunctions from "../assets/js/jsFunctions";
 import { mapMutations } from "vuex";
+
 export default {
   name: "Home",
   data() {

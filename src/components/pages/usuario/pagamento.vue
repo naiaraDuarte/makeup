@@ -72,7 +72,7 @@
         >
       </v-col>
     </v-row>
-    <v-row class="mt-1 mx-3 my-3" v-if="this.$store.state.cartoes && dadosCartao">
+    <v-row class="mt-1 mx-3 my-3" v-if="this.$store.state.cartoes">
       <v-col lg="12">
         <v-expansion-panels accordion>
           <v-expansion-panel
@@ -144,7 +144,7 @@ import * as Card from "card";
 export default {
   name: "Form",
   props: {
-    dadosCartao: Array
+    dadosCartao: Array,
   },
   data() {
     return {
@@ -178,12 +178,6 @@ export default {
         cvc: "•••",
       },
     });
-    if (this.dadosCartao) {
-      this.dadosCartao.forEach((end) => {
-      this.addCartaoMounted(end);
-    });
-    }
-    
   },
   computed: {
     verificaId() {
@@ -192,17 +186,6 @@ export default {
     },
   },
   methods: {
-    ...mapMutations(["addCartao"]),
-    addCartaoMounted(cart) {
-      this.addCartao({
-        id: cart.id,
-        nome: cart.nome,
-        numero: cart.numero,
-        cvv: cart.cvv,
-        data_validade: cart.data_validade,
-        bandeira: 2,
-      });
-    },
     ...mapMutations(["addCartao"]),
     addCartoes() {
       if (!this.verificaPreenchimento()) {
@@ -261,9 +244,7 @@ export default {
     },
     verificaIdExistente() {
       let cartao = this.$store.state.cartoes;
-     cartao.filter(
-        (cartao) => cartao.id == this.idCartaoCliente
-      );
+      cartao.filter((cartao) => cartao.id == this.idCartaoCliente);
       return true;
     },
     salvarCartao() {

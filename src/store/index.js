@@ -19,6 +19,8 @@ export default new Vuex.Store({
         carrinhoCountId: 0,
         cartoes: [],
         produtos: [],
+        dadosEndereco: [],
+        dadosCartao: [],
         busca: "",
     },
     mutations: {
@@ -61,7 +63,6 @@ export default new Vuex.Store({
         editarCartao(state, payload) {
             let index = state.cartoes.findIndex(cartao => cartao.id == payload.id);
             Vue.set(state.cartoes, index, payload);
-
         },
         removeCartao(state, payload) {
             let index = state.cartoes.findIndex(cartao => cartao.id == payload);

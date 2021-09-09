@@ -156,7 +156,7 @@
                 </v-row>
               </v-stepper-content>
               <v-stepper-content step="3">
-                <pagamento></pagamento>
+                <pagamento :dadosEndereco="dadosEndereco" :dadosCartao="dadosCartao"></pagamento>
                 <v-row class="text-right mx-1 mb-3">
                   <v-col lg="9"></v-col>
                   <v-col lg="3">
@@ -202,6 +202,11 @@ import compras from "../components/pages/carrinho/compra.vue";
 import entrar from "../components/pages/usuario-e-adm/login.vue";
 import pagamento from "../components/pages/carrinho/pagamento.vue";
 export default {
+  props: {
+    dadosCliente: Array,
+    dadosEndereco: Array,
+    dadosCartao: Array
+  },
   components: {
     compras,
     entrar,
