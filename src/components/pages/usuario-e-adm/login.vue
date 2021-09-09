@@ -42,6 +42,7 @@
   </v-container>
 </template>
 <script>
+import { mapMutations } from "vuex";
 export default {
   data() {
     return {
@@ -54,6 +55,8 @@ export default {
     };
   },
   methods: {
+    ...mapMutations(["addUsuario"]),
+    ...mapMutations(["addCartao"]),
     validacaoDePreenchimento() {
       if (this.email != "" && this.senha != "") {
         this.mensage = "";
@@ -72,7 +75,6 @@ export default {
             usuario.email == this.email && usuario.senha == this.senha
         );
         if (usuario[0]) {
-         
           if (usuario[0].perfil == "adm") {
             this.$router.push("/adm");
           }
@@ -82,20 +84,43 @@ export default {
             senha: this.senha,
           };
 
-          this.$http
-            .post(`/cliente/login`, frm)
-            .then((res) => {
-              frm.id = res.data.cliente[0].id;
-              localStorage.setItem("usuarioId", frm.id);
-              this.$store.state.cadastro = true;
-              this.$router.push(`/`);
-            })
+          this.$http.post(`/cliente/login`, frm).then((res) => {
+            frm.id = res.data.cliente[0].id;
+            localStorage.setItem("usuarioId", frm.id);
+            console.log("AAAAAAAAAAAAA", res)
+            // this.$store.state.usuario.push(res.data.cliente[0]);
+            this.salvaUsuario(res.data.cliente[0]);
+            this.salvaEndereco(res.data.endereco);
+            this.salvaCartao(res.data.cartao);
+            this.$store.state.cadastro = true;
+            this.$router.push(`/`);
+          });
         } else {
           this.snackbarColor = "red";
           this.mensagem = "Login ou senha não conferem";
           this.snackbar = true;
         }
       }
+    },
+    salvaUsuario(data) {
+      this.addUsuario(data);
+      console.log("User", this.$store.state.usuario)
+    },
+    salvaEndereco(data) {
+      console.log(data)
+      this.$store.state.dadosEndereco = data;
+    },
+    salvaCartao(data) {
+      data.forEach((cart) => {
+        this.addCartao({
+          id: cart.id,
+          nome: cart.nome,
+          numero: cart.numero,
+          cvv: cart.cvv,
+          data_validade: cart.data_validade,
+          bandeira: 2,
+        });
+      });
     },
   },
 };

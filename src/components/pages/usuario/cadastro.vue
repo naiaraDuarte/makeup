@@ -518,6 +518,10 @@ export default {
     menu(val) {
       val && setTimeout(() => (this.activePicker = "YEAR"));
     },
+    "$store.state.valorChegou": function () {
+      console.log("MUDOU ESSA PORRA")
+        this.listarDadosCadastrados();
+    }
   },
   computed: {
     verificaId() {
@@ -637,9 +641,9 @@ export default {
           this.faseCadastro = 0;
         });
     },
-    listarDadosCadastrados() {
+    async listarDadosCadastrados() {
       this.$store.state.cadastro = true;
-      let usuario = this.$store.state.usuario[1];
+      let usuario = await this.$store.state.usuario[1];
       this.nome = usuario.nome;
       this.cpf = usuario.cpf;
       this.apelido = usuario.apelido;

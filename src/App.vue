@@ -3,7 +3,7 @@
     <navbar v-if="$store.state.perfil == 'adm'"></navbar>
     <app-header v-if="$store.state.perfil == 'usuario'"></app-header>
     <v-content>
-      <v-container fluid v-if="$store.state.usuario[1]">
+      <v-container fluid>
         <router-view />
       </v-container>
     </v-content>
@@ -38,6 +38,7 @@ export default {
       if (localStorage.getItem("usuarioId")) return true;
       else return false;
     },
+   
   },
   methods: {
     ...mapMutations(["addUsuario"]),
@@ -54,7 +55,6 @@ export default {
       }
     },
     salvaUsuario(data) {
-      
       this.addUsuario(data);
       console.log("User", this.$store.state.usuario)
     },

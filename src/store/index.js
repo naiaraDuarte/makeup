@@ -22,10 +22,15 @@ export default new Vuex.Store({
         dadosEndereco: [],
         dadosCartao: [],
         busca: "",
+        valorChegou: 0,
     },
     mutations: {
         addUsuario(state, payload) {
             state.usuario.push(payload);
+            if (state.usuario.length == 2) {
+                state.valorChegou = 1;
+                console.log("CEGO")
+            }
         },
         editarInformacoesCliente(state, payload) {
             state.usuario[1] = payload;
@@ -41,7 +46,7 @@ export default new Vuex.Store({
                 payload.id = state.countId;
                 state.enderecos.push(payload);
                 state.countId++;
-            }else{
+            } else {
                 state.enderecos.push(payload);
             }
         },
