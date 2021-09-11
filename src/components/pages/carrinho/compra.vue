@@ -6,10 +6,9 @@
           <h2>Meu carrinho</h2>
           <v-divider></v-divider>
           <v-row v-if="$store.state.carrinho.length > 0">
-            <v-col lg="12" class="px-2">
-              <v-row
-                v-for="(item, i) in $store.state.carrinho"
-                :key="i"
+            <v-col lg="12" class="px-2" v-for="(item, i) in $store.state.carrinho"
+                :key="i">
+              <v-row v-if="item.qtd > 0"
                 class="centraliza"
               >
                 <v-col lg="3">
@@ -19,7 +18,7 @@
                     :src="getImgUrl(item.src)"
                   ></v-img>
                 </v-col>
-                <v-col lg="5">
+                <v-col lg="4">
                   <p>{{ item.nome }}</p>
                 </v-col>
                 <v-col lg="2">
@@ -33,7 +32,7 @@
                         id="menos"
                       >
                         <v-icon> mdi-minus </v-icon>
-                      </v-btn>                      
+                      </v-btn>
                     </v-col>
                     <v-col lg="4">
                       <p>{{ item.qtd }}</p>
@@ -48,12 +47,16 @@
                       >
                         <v-icon> mdi-plus </v-icon>
                       </v-btn>
-                      
                     </v-col>
                   </v-row>
                 </v-col>
                 <v-col lg="2">
                   <h3>{{ item.preco }}</h3>
+                </v-col>
+                <v-col lg="1">
+                  <v-btn icon small elevation="0" @click="removeItem(item)">
+                    <v-icon> mdi-close </v-icon>
+                  </v-btn>
                 </v-col>
               </v-row>
               <v-divider></v-divider>
@@ -76,7 +79,11 @@
                       ></v-text-field>
                     </v-col>
                     <v-col lg="4">
-                      <v-btn color="primary" @click="calculaFrete" id="calcular">
+                      <v-btn
+                        color="primary"
+                        @click="calculaFrete"
+                        id="calcular"
+                      >
                         Calcular
                       </v-btn>
                     </v-col>

@@ -33,7 +33,15 @@
                   <v-col lg="3">
                     <v-row class="text-right">
                       <v-col class="pl-5 text-center">
-                        <v-btn elevation="1" icon id="ir" @click="e1 = 2" :disabled="verificaId == false || $store.state.carrinho.length == 0"
+                        <v-btn
+                          elevation="1"
+                          icon
+                          id="ir"
+                          @click="e1 = 2"
+                          :disabled="
+                            verificaId == false ||
+                            $store.state.carrinho.length == 0
+                          "
                           ><v-icon>mdi-chevron-right</v-icon></v-btn
                         >
                       </v-col>
@@ -66,27 +74,7 @@
                 </v-row>
               </v-stepper-content>
               <v-stepper-content step="3">
-                <v-card
-                  class="mb-12"
-                  color="grey lighten-1"
-                  height="200px"
-                ></v-card>
-
-                <v-btn color="primary" @click="e1 = 4"> Continue </v-btn>
-
-                <v-btn text> Cancel </v-btn>
-              </v-stepper-content>
-
-              <v-stepper-content step="4">
-                <v-card
-                  class="mb-12"
-                  color="grey lighten-1"
-                  height="200px"
-                ></v-card>
-
-                <v-btn color="primary" @click="e1 = 1"> Continue </v-btn>
-
-                <v-btn text> Cancel </v-btn>
+                 <confirmacao></confirmacao>
               </v-stepper-content>
             </v-stepper-items>
           </v-stepper>
@@ -147,7 +135,15 @@
                           @click="e1 = 1"
                           ><v-icon>mdi-chevron-left</v-icon></v-btn
                         >
-                        <v-btn elevation="1" icon id="ir" @click="e1 = 3" :disabled="verificaId == true && $store.state.carrinho.length > 0"
+                        <v-btn
+                          elevation="1"
+                          icon
+                          id="ir"
+                          @click="e1 = 3"
+                          :disabled="
+                            verificaId == true &&
+                            $store.state.carrinho.length > 0
+                          "
                           ><v-icon>mdi-chevron-right</v-icon></v-btn
                         >
                       </v-col>
@@ -156,7 +152,10 @@
                 </v-row>
               </v-stepper-content>
               <v-stepper-content step="3">
-                <pagamento :dadosEndereco="dadosEndereco" :dadosCartao="dadosCartao"></pagamento>
+                <pagamento
+                  :dadosEndereco="dadosEndereco"
+                  :dadosCartao="dadosCartao"
+                ></pagamento>
                 <v-row class="text-right mx-1 mb-3">
                   <v-col lg="9"></v-col>
                   <v-col lg="3">
@@ -170,9 +169,6 @@
                           @click="e1 = 2"
                           ><v-icon>mdi-chevron-left</v-icon></v-btn
                         >
-                        <v-btn elevation="1" icon id="ir" @click="e1 = 4"
-                          ><v-icon>mdi-chevron-right</v-icon></v-btn
-                        >
                       </v-col>
                     </v-row>
                   </v-col>
@@ -180,15 +176,7 @@
               </v-stepper-content>
 
               <v-stepper-content step="4">
-                <v-card
-                  class="mb-12"
-                  color="grey lighten-1"
-                  height="200px"
-                ></v-card>
-
-                <v-btn color="primary" @click="e1 = 1"> Continue </v-btn>
-
-                <v-btn text> Cancel </v-btn>
+                <confirmacao></confirmacao>
               </v-stepper-content>
             </v-stepper-items>
           </v-stepper>
@@ -201,16 +189,19 @@
 import compras from "../components/pages/carrinho/compra.vue";
 import entrar from "../components/pages/usuario-e-adm/login.vue";
 import pagamento from "../components/pages/carrinho/pagamento.vue";
+import confirmacao from "../components/pages/carrinho/confirmacao.vue";
+
 export default {
   props: {
     dadosCliente: Array,
     dadosEndereco: Array,
-    dadosCartao: Array
+    dadosCartao: Array,
   },
   components: {
     compras,
     entrar,
     pagamento,
+    confirmacao,
   },
   data() {
     return {
@@ -240,6 +231,16 @@ export default {
     verificaId() {
       if (localStorage.getItem("usuarioId")) return true;
       return false;
+    },
+  },
+  watch: {
+    "$store.state.concluir": function () {
+      if (this.$store.state.concluir == true) {
+        this.e1 += 1;
+        // this.$store.state.concluir = false;
+      }else {
+        this.e1 -= 1;
+      }
     },
   },
   methods: {

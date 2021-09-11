@@ -30,15 +30,32 @@
             </v-card>
             <v-card class="separa" elevation="0">
               <p>Frete</p>
-              <p>{{ $n(parseFloat(totalFrete), "currency") }}</p>
+              <p>{{ $n(parseFloat(frete), "currency") }}</p>
             </v-card>
             <v-divider></v-divider>
             <v-card class="separa" elevation="0">
               <h3>Total</h3>
               <h3>
-                {{ $n(parseFloat(totalProdutos + totalFrete), "currency") }}
+                {{
+                  $n(parseFloat(totalProdutos + parseFloat(frete)), "currency")
+                }}
               </h3>
             </v-card>
+          </v-col>
+          <v-col lg="12">
+            <v-btn v-if="pag == 'confirmacao'"
+              color="primary"
+              class="ampliarBtn"
+              @click="prox()"
+              >Tem algo errado, desejo voltar e arrumar</v-btn
+            >
+            <v-btn v-else
+              color="primary"
+              :disabled="!habilitaBotao"
+              class="ampliarBtn"
+              @click="prox()"
+              >Finalizar compra</v-btn
+            >
           </v-col>
         </v-row>
       </v-col>
@@ -47,6 +64,11 @@
 </template>
 <script>
 export default {
+  props: {
+    frete: String,
+    habilitaBotao: Boolean,
+    pag: String
+  },
   data() {
     return {
       totalProdutos: 0,
@@ -64,6 +86,18 @@ export default {
     getImgUrl(pic) {
       return require("../../../assets/images/" + pic);
     },
+    prox() {
+      if (this.pag == "confirmacao") {
+        this.$store.state.concluir = false;
+        return null;
+      }
+      this.$store.state.concluir = true;
+    },
   },
 };
 </script>
+<style>
+.ampliarBtn {
+  width: 100% !important;
+}
+</style>

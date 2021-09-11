@@ -22,6 +22,7 @@ export default new Vuex.Store({
         dadosEndereco: [],
         dadosCartao: [],
         busca: "",
+        concluir: false,
         // valorChegou: 0,
     },
     mutations: {

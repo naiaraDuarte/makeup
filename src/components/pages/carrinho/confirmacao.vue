@@ -4,18 +4,9 @@
       <v-row>
         <v-col lg="6">
           <h2>Pagamento</h2>
-          <p>Você tem um cupom? <b>Desejo usá-lo agora</b></p>
           <v-card elevation="0" class="mt-3">
             <h4>
               <v-icon>mdi-credit-card-plus-outline</v-icon> Cartão de crédito
-              <v-btn
-                elevation="0"
-                text
-                v-if="mostrar == false"
-                class="btnSubmit"
-                @click="mostrar = true"
-                ><v-icon left> mdi-plus </v-icon> add cartão</v-btn
-              >
             </h4>
             <p>Selecione os cartões que deseja pagar</p>
             <v-row v-if="$store.state.cartoes.length > 0">
@@ -25,33 +16,7 @@
                 v-for="(item, i) in this.$store.state.cartoes"
                 :key="i"
               >
-                <v-card elevation="0" @click="marca(item.id)">
-                  <cartao
-                    :nome="item.nome"
-                    :numero="item.numero"
-                    :data="item.data_validade"
-                    :id="i"
-                  ></cartao>
-                </v-card>
-              </v-col>
-
-              <v-btn
-                elevation="1"
-                icon
-                id="ir"
-                v-if="mostrar == true"
-                @click="mostrar = false"
-                ><v-icon>mdi-close</v-icon></v-btn
-              >
-            </v-row>
-            <v-row v-else>
-              <v-col>
-                <h4>Você ainda não possui cartões cadastrados</h4>
-              </v-col>
-            </v-row>
-            <v-row v-if="$store.state.cartoes.length > 0 && mostrar == true">
-              <v-col>
-                <addCartao></addCartao>
+              {{ item }}
               </v-col>
             </v-row>
             <v-row>
@@ -121,18 +86,16 @@
         <v-col lg="1"></v-col>
         <v-divider vertical></v-divider>
         <v-col lg="5" class="pl-5">
-          <resumoPedido :frete="frete" :habilitaBotao="habilitaBotao" pag="pagamento"></resumoPedido>
+          <resumoPedido :frete="frete" :habilitaBotao="habilitaBotao" pag="confirmacao"></resumoPedido>
         </v-col>
       </v-row>
     </v-card>
   </v-container>
 </template>
 <script>
-import addCartao from "../usuario/pagamento.vue";
-import cartao from "../../ui/cartao.vue";
 import resumoPedido from "../carrinho/resumoPedido.vue";
 export default {
-  components: { addCartao, cartao, resumoPedido },
+  components: { resumoPedido },
   data() {
     return {
       cartoes: "",

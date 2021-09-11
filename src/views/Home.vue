@@ -236,10 +236,10 @@ export default {
   },
   watch: {
     "$store.state.busca": function () {
-      console.log("Mudou valor", this.$store.state.busca);
       let busca = this.$store.state.busca;
       if (busca == "" || busca == null) {
         this.itens = this.itensBase;
+        return null;
       }
       this.itens = this.itens.filter(function (string) {
         return jsFunctions
