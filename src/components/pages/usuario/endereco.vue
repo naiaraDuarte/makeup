@@ -1,7 +1,7 @@
 <template>
   <v-card elevation="0">
     <h2 class="cor-letra text-center mt-5 pt-5">
-      Agora preciso que você me informe um endereço...
+      <p v-show="mostra">Agora preciso que você me informe um endereço...</p>
 
       <div class="mt-2">
         <v-btn
@@ -123,7 +123,7 @@
         ></v-text-field>
       </v-col>
     </v-row>
-    <v-row class="mt-1 mx-3 my-3" v-if="this.$store.state.enderecos">
+    <v-row class="mt-1 mx-3 my-3" v-if="this.$store.state.enderecos && mostra == true">
       <v-col lg="12">
         <v-expansion-panels accordion>
           <v-expansion-panel
@@ -216,6 +216,7 @@ export default {
   props: {
     clickNoSalvar: Boolean,
     dadosEndereco: Array,
+    mostra: Boolean
   },
   data() {
     return {

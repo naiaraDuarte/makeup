@@ -281,6 +281,7 @@
       v-show="faseCadastro == 2"
       @verificacaoEndereco="verificaPreenchimentoEndereco = $event.salvo"
       @falhaEndereco="clickNoSalvar = $event"
+      :mostra="true"
     ></endereco>
     <endereco
       v-else
@@ -288,6 +289,7 @@
       v-show="faseCadastro == 2"
       @verificacaoEndereco="verificaPreenchimentoEndereco = $event.salvo"
       @falhaEndereco="clickNoSalvar = $event"
+      :mostra="true"
     ></endereco>
     <v-row class="text-right mx-1 mb-3">
       <v-col lg="9"></v-col>

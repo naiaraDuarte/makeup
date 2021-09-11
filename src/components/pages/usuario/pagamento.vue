@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1>Pagamento</h1>
+    <h2 v-show="mostra">Pagamento</h2>
     <div class="pagamento"></div>
 
     <form id="Pagamento">
@@ -72,7 +72,7 @@
         >
       </v-col>
     </v-row>
-    <v-row class="mt-1 mx-3 my-3" v-if="this.$store.state.cartoes">
+    <v-row class="mt-1 mx-3 my-3" v-if="this.$store.state.cartoes && mostra == true">
       <v-col lg="12">
         <v-expansion-panels accordion>
           <v-expansion-panel
@@ -145,6 +145,7 @@ export default {
   name: "Form",
   props: {
     dadosCartao: Array,
+    mostra: Boolean
   },
   data() {
     return {
@@ -169,7 +170,7 @@ export default {
         expiryInput: "input#cc-expiration",
         cvcInput: "input#cc-cvv",
       },
-      width: 270,
+      width: 200,
       formatting: true,
       placeholders: {
         number: "•••• •••• •••• ••••",

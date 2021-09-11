@@ -10,14 +10,19 @@
               <v-btn
                 elevation="0"
                 text
-                v-if="mostrar == false"
+                v-if="mostrarCartao == false"
                 class="btnSubmit"
-                @click="mostrar = true"
+                @click="mostrarCartao = true"
                 ><v-icon left> mdi-plus </v-icon> add cartão</v-btn
               >
             </h4>
-            <p>Selecione os cartões que deseja pagar</p>
-            <v-row v-if="$store.state.cartoes.length > 0">
+            <p v-show="mostrarCartao == false">
+              Selecione os cartões que deseja pagar
+            </p>
+            <v-row
+              v-if="$store.state.cartoes.length > 0"
+              v-show="mostrarCartao == false"
+            >
               <v-col
                 lg="6"
                 class="pl-0"
@@ -33,24 +38,27 @@
                   ></cartao>
                 </v-card>
               </v-col>
-
-              <v-btn
-                elevation="1"
-                icon
-                id="ir"
-                v-if="mostrar == true"
-                @click="mostrar = false"
-                ><v-icon>mdi-close</v-icon></v-btn
-              >
             </v-row>
             <v-row v-else>
               <v-col>
-                <h4>Você ainda não possui cartões cadastrados</h4>
+                <p>Você ainda não possui cartões cadastrados</p>
               </v-col>
             </v-row>
-            <v-row v-if="$store.state.cartoes.length > 0 && mostrar == true">
-              <v-col>
-                <addCartao></addCartao>
+            <v-row
+              v-if="$store.state.cartoes.length > 0 && mostrarCartao == true"
+            >
+              <v-col lg="12" class="alinhamento">
+                <v-btn
+                  elevation="1"
+                  icon
+                  id="ir"
+                  v-if="mostrarCartao == true"
+                  @click="mostrarCartao = false"
+                  ><v-icon>mdi-close</v-icon></v-btn
+                ></v-col
+              >
+              <v-col lg="12">
+                <addCartao :mostra="false"></addCartao>
               </v-col>
             </v-row>
             <v-row>
@@ -74,10 +82,30 @@
               </v-col>
             </v-row>
             <v-row>
+              <v-col lg="12" class="alinhamento">
+                <v-btn
+                  elevation="1"
+                  icon
+                  v-if="mostrarEndereco == true"
+                  @click="mostrarEndereco = false"
+                  ><v-icon>mdi-close</v-icon></v-btn
+                >
+              </v-col>
               <v-col lg="12">
+                <endereco v-show="mostrarEndereco" :mostra="false"></endereco>
+              </v-col>
+              <v-col lg="12" v-show="mostrarEndereco == false">
                 <h4>
                   <v-icon>mdi-map-marker-radius-outline</v-icon> Endereço de
                   entrega
+                  <v-btn
+                    elevation="0"
+                    text
+                    v-if="mostrarEndereco == false"
+                    class="btnSubmit"
+                    @click="mostrarEndereco = true"
+                    ><v-icon left> mdi-plus </v-icon> Add endereco</v-btn
+                  >
                 </h4>
                 <v-row
                   class="mt-3"
@@ -109,14 +137,6 @@
                 </v-row>
               </v-col>
             </v-row>
-            <!-- <v-combobox
-              class="mt-3"
-              outlined
-              dense
-              v-model="cartoes"
-              :items="itensDivisoes"
-              label="Adicionar cartões"
-            ></v-combobox> -->
           </v-card>
         </v-col>
         <v-col lg="1"></v-col>
@@ -145,15 +165,18 @@
 import addCartao from "../usuario/pagamento.vue";
 import cartao from "../../ui/cartao.vue";
 import resumoPedido from "../carrinho/resumoPedido.vue";
+import endereco from "../usuario/endereco.vue";
+
 export default {
-  components: { addCartao, cartao, resumoPedido },
+  components: { addCartao, cartao, resumoPedido, endereco },
   data() {
     return {
       cartoes: "",
-      mostrar: false,
       cupom: "",
       enderecoEntrega: "",
       pagConfirmacao: false,
+      mostrarCartao: false,
+      mostrarEndereco: false,
       marcados: [],
       frete: "0",
       snackbarColor: "",
@@ -200,9 +223,9 @@ export default {
         });
       }
       if (this.$store.state.cupomUtilizado.tipo == "frete") {
-        return (frete * (porcen / 100));
+        return frete * (porcen / 100);
       } else {
-        return (total * (porcen / 100));
+        return total * (porcen / 100);
       }
     },
   },
@@ -210,7 +233,7 @@ export default {
     marca(val) {
       let index = this.marcados.findIndex((valor) => valor == val);
       if (index == -1) {
-        this.marcados.push(val)
+        this.marcados.push(val);
         this.$store.state.cartoes.filter((cartao) => {
           this.marcados.some((item) => {
             if (cartao.id == item) {
@@ -224,16 +247,16 @@ export default {
       }
       console.log(this.marcados);
     },
-    usarCupom(){
-      if (this.cupom == '' || this.cupom == null) {
+    usarCupom() {
+      if (this.cupom == "" || this.cupom == null) {
         this.exibeSnackBar("#b38b57", "Não é possivel usar um cupom vazio");
         return false;
       }
       let frm = {
-         cod: this.cupom,
-         porcen: 5,
-         tipo: 'frete',
-      }
+        cod: this.cupom,
+        porcen: 5,
+        tipo: "frete",
+      };
       this.$store.state.cupomUtilizado = frm;
       this.exibeSnackBar("green", "Cupom utilizado");
     },
@@ -263,10 +286,6 @@ export default {
 <style>
 .card-endereco {
   border: 2px solid #bbb !important;
-  /* display: flex; */
-  /* flex-direction: column;
-  justify-content: center;
-  align-items: center; */
 }
 .marcado {
   border: 2px solid #b38b57 !important;
@@ -274,10 +293,11 @@ export default {
 .desmarcado {
   border: 2px solid #bbb !important;
 }
-.cupom-input input{
-  text-transform: uppercase
+.cupom-input input {
+  text-transform: uppercase;
 }
-/* .p-0{
-  padding: 0 !important;
-} */
+.alinhamento {
+  display: flex;
+  justify-content: flex-end;
+}
 </style>

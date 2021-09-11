@@ -30,7 +30,7 @@ export default {
         expiryInput: "input#cc-expiration",
         cvcInput: "input#cc-cvv",
       },
-      width: 150,
+      width: 200,
       formatting: true,
       placeholders: {
         number: "•••• •••• •••• ••••",
