@@ -34,16 +34,24 @@
             </v-row>
             <v-row v-if="Object.keys($store.state.cupomUtilizado).length != 0">
               <v-col lg="12">
-                <h4><v-icon>mdi-ticket-percent-outline</v-icon> Cupom Utilizado</h4>
+                <h4>
+                  <v-icon>mdi-ticket-percent-outline</v-icon> Cupom Utilizado
+                </h4>
                 <v-row>
                   <v-col lg="4">
-                    <p><b>Código do cupom: </b> {{ $store.state.cupomUtilizado.cod }}</p>
+                    <p>
+                      <b>Código do cupom: </b>
+                      {{ $store.state.cupomUtilizado.cod }}
+                    </p>
                   </v-col>
                   <v-col lg="4">
-                    <p><b>Porcentagem de desconto: </b> {{ $store.state.cupomUtilizado.porcen }}</p>
+                    <p>
+                      <b>Porcentagem de desconto: </b>
+                      {{ $store.state.cupomUtilizado.porcen }} %
+                    </p>
                   </v-col>
                   <v-col lg="4">
-                    <p><b>Valor de desconto: </b> {{ $store.state.cupomUtilizado.valor }}</p>
+                    <p><b>Valor de desconto: </b> {{ $n( desconto, "currency")  }}</p>
                   </v-col>
                 </v-row>
               </v-col>
@@ -56,9 +64,7 @@
                 </h4>
                 <v-row class="mt-3">
                   <v-col lg="6">
-                    <v-card
-                      elevation="0"
-                      class="card-endereco p-2">
+                    <v-card elevation="0" class="card-endereco p-2">
                       <v-row>
                         <v-col lg="12" class="centraliza">
                           <h4>{{ $store.state.enderecoDeEntrega.nome }}</h4>
@@ -89,7 +95,7 @@
         <v-divider vertical></v-divider>
         <v-col lg="5" class="pl-5">
           <resumoPedido
-            :frete="frete"
+            :frete="this.$store.state.freteCalculado"
             :habilitaBotao="habilitaBotao"
             pag="confirmacao"
           ></resumoPedido>
@@ -110,7 +116,6 @@ export default {
       enderecoEntrega: "",
       pagConfirmacao: false,
       marcados: [],
-      frete: this.$store.state.freteCalculado,
       itensDivisoes: [
         "Pagar com 1 cartão",
         "Pagar com 2 cartões",
@@ -136,6 +141,22 @@ export default {
         return true;
       }
       return false;
+    },
+    desconto() {
+      let frete = this.$store.state.freteCalculado;
+      frete = parseFloat(frete);
+      let total = 0;
+      let porcen = this.$store.state.cupomUtilizado.porcen;
+      if (this.$store.state.carrinho.length > 0) {
+        this.$store.state.carrinho.forEach((item) => {
+          total += item.qtd * item.preco;
+        });
+      }
+      if (this.$store.state.cupomUtilizado.tipo == "frete") {
+        return (frete * (porcen / 100));
+      } else {
+        return (total * porcen / 100);
+      }
     },
   },
   methods: {

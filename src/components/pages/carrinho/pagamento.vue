@@ -4,7 +4,6 @@
       <v-row>
         <v-col lg="6">
           <h2>Pagamento</h2>
-          <p>Você tem um cupom? <b>Desejo usá-lo agora</b></p>
           <v-card elevation="0" class="mt-3">
             <h4>
               <v-icon>mdi-credit-card-plus-outline</v-icon> Cartão de crédito
@@ -57,11 +56,13 @@
             <v-row>
               <v-col lg="12">
                 <h4><v-icon>mdi-ticket-percent-outline</v-icon> Cupom</h4>
+                <p>Você tem um cupom? <b>Desejo usá-lo agora</b></p>
                 <v-row>
                   <v-col lg="10">
                     <v-text-field
                       v-model="cupom"
                       label="Cupom"
+                      class="cupom-input"
                       id="cupom"
                       required
                     ></v-text-field>
@@ -123,12 +124,21 @@
         <v-col lg="5" class="pl-5">
           <resumoPedido
             :frete="frete"
+            :desconto="desconto"
             :habilitaBotao="habilitaBotao"
             pag="pagamento"
           ></resumoPedido>
         </v-col>
       </v-row>
     </v-card>
+    <v-snackbar v-model="snackbar" :color="snackbarColor">
+      <h4 style="font-weight: 100">{{ mensagem }}</h4>
+      <template v-slot:action="{ attrs }">
+        <v-btn text icon v-bind="attrs" @click="snackbar = false">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-container>
 </template>
 <script>
@@ -145,7 +155,10 @@ export default {
       enderecoEntrega: "",
       pagConfirmacao: false,
       marcados: [],
-      frete: "",
+      frete: "0",
+      snackbarColor: "",
+      mensagem: "",
+      snackbar: false,
       itensDivisoes: [
         "Pagar com 1 cartão",
         "Pagar com 2 cartões",
@@ -177,6 +190,21 @@ export default {
       }
       return false;
     },
+    desconto() {
+      let frete = parseFloat(this.frete);
+      let total = 0;
+      let porcen = this.$store.state.cupomUtilizado.porcen;
+      if (this.$store.state.carrinho.length > 0) {
+        this.$store.state.carrinho.forEach((item) => {
+          total += item.qtd * item.preco;
+        });
+      }
+      if (this.$store.state.cupomUtilizado.tipo == "frete") {
+        return (frete * (porcen / 100));
+      } else {
+        return (total * (porcen / 100));
+      }
+    },
   },
   methods: {
     marca(val) {
@@ -197,12 +225,17 @@ export default {
       console.log(this.marcados);
     },
     usarCupom(){
+      if (this.cupom == '' || this.cupom == null) {
+        this.exibeSnackBar("#b38b57", "Não é possivel usar um cupom vazio");
+        return false;
+      }
       let frm = {
          cod: this.cupom,
-         porcen: '5%',
-         valor: '15,00'
+         porcen: 5,
+         tipo: 'frete',
       }
       this.$store.state.cupomUtilizado = frm;
+      this.exibeSnackBar("green", "Cupom utilizado");
     },
     calculaFrete(cep) {
       let frm = {
@@ -218,6 +251,11 @@ export default {
         this.$store.state.freteCalculado = this.frete;
         console.log("valor", res);
       });
+    },
+    exibeSnackBar(cor, msg) {
+      this.snackbarColor = cor;
+      this.mensagem = msg;
+      this.snackbar = true;
     },
   },
 };
@@ -235,6 +273,9 @@ export default {
 }
 .desmarcado {
   border: 2px solid #bbb !important;
+}
+.cupom-input input{
+  text-transform: uppercase
 }
 /* .p-0{
   padding: 0 !important;

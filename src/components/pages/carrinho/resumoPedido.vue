@@ -25,19 +25,23 @@
         <v-row>
           <v-col lg="12">
             <v-card class="separa" elevation="0">
-              <p>{{ $store.state.carrinho.length + 1 }} Produtos</p>
+              <p>Total dos Produtos</p>
               <p>{{ $n(parseFloat(totalProdutos), "currency") }}</p>
             </v-card>
             <v-card class="separa" elevation="0">
               <p>Frete</p>
               <p>{{ $n(parseFloat(frete), "currency") }}</p>
             </v-card>
+             <v-card class="separa" elevation="0" v-if="desconto > 0">
+              <p>Desconto</p>
+              <p>{{ $n(parseFloat(desconto), "currency") }}</p>
+            </v-card>
             <v-divider></v-divider>
             <v-card class="separa" elevation="0">
-              <h3>Total </h3>
+              <h3>Total {{ desconto }}</h3>
               <h3>
                 {{
-                  $n(parseFloat(totalProdutos + parseFloat(frete)), "currency")
+                  $n(parseFloat(totalProdutos + (parseFloat(frete) - desconto)), "currency")
                 }}
               </h3>
             </v-card>
@@ -67,7 +71,8 @@ export default {
   props: {
     frete: String,
     habilitaBotao: Boolean,
-    pag: String
+    pag: String,
+    desconto: Number
   },
   data() {
     return {
