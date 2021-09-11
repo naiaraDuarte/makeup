@@ -67,7 +67,7 @@
                     ></v-text-field>
                   </v-col>
                   <v-col lg="2">
-                    <v-btn color="primary">Utilizar</v-btn>
+                    <v-btn color="primary" @click="usarCupom">Utilizar</v-btn>
                   </v-col>
                 </v-row>
               </v-col>
@@ -121,7 +121,11 @@
         <v-col lg="1"></v-col>
         <v-divider vertical></v-divider>
         <v-col lg="5" class="pl-5">
-          <resumoPedido :frete="frete" :habilitaBotao="habilitaBotao" pag="pagamento"></resumoPedido>
+          <resumoPedido
+            :frete="frete"
+            :habilitaBotao="habilitaBotao"
+            pag="pagamento"
+          ></resumoPedido>
         </v-col>
       </v-row>
     </v-card>
@@ -141,7 +145,7 @@ export default {
       enderecoEntrega: "",
       pagConfirmacao: false,
       marcados: [],
-      frete: "0",
+      frete: "",
       itensDivisoes: [
         "Pagar com 1 cartão",
         "Pagar com 2 cartões",
@@ -159,20 +163,46 @@ export default {
           this.calculaFrete(endereco.cep);
         }
       });
+      this.$store.state.enderecos.filter((endereco) => {
+        if (endereco.id == newVal) {
+          this.$store.state.enderecoDeEntrega = endereco;
+        }
+      });
     },
   },
   computed: {
-    habilitaBotao(){
+    habilitaBotao() {
       if (this.frete != "" && this.marcados.length > 0) {
         return true;
       }
       return false;
-    }
+    },
   },
   methods: {
     marca(val) {
-      this.marcados.push(val);
+      let index = this.marcados.findIndex((valor) => valor == val);
+      if (index == -1) {
+        this.marcados.push(val)
+        this.$store.state.cartoes.filter((cartao) => {
+          this.marcados.some((item) => {
+            if (cartao.id == item) {
+              this.$store.state.cartoesEscolhidos.push(cartao);
+            }
+          });
+        });
+      } else {
+        this.marcados.splice(index, 1);
+        this.$store.state.cartoesEscolhidos = this.marcados;
+      }
       console.log(this.marcados);
+    },
+    usarCupom(){
+      let frm = {
+         cod: this.cupom,
+         porcen: '5%',
+         valor: '15,00'
+      }
+      this.$store.state.cupomUtilizado = frm;
     },
     calculaFrete(cep) {
       let frm = {

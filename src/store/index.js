@@ -23,6 +23,9 @@ export default new Vuex.Store({
         dadosCartao: [],
         busca: "",
         concluir: false,
+        cartoesEscolhidos: [],
+        enderecoDeEntrega: '',
+        cupomUtilizado: {},
         // valorChegou: 0,
     },
     mutations: {

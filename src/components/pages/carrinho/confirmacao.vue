@@ -9,30 +9,41 @@
               <v-icon>mdi-credit-card-plus-outline</v-icon> Cartão de crédito
             </h4>
             <p>Selecione os cartões que deseja pagar</p>
-            <v-row v-if="$store.state.cartoes.length > 0">
+            <v-row v-if="$store.state.cartoesEscolhidos.length > 0">
               <v-col
-                lg="6"
+                lg="12"
                 class="pl-0"
-                v-for="(item, i) in this.$store.state.cartoes"
+                v-for="(item, i) in $store.state.cartoesEscolhidos"
                 :key="i"
               >
-              {{ item }}
+                <div class="mt-2 px-5">
+                  <v-card class="p-3 pl-2">
+                    <v-row>
+                      <v-col lg="6">
+                        <p>
+                          <b>{{ item.nome }}</b>
+                        </p>
+                      </v-col>
+                      <v-col lg="6">
+                        <p>{{ item.numero }}</p>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+                </div>
               </v-col>
             </v-row>
-            <v-row>
+            <v-row v-if="Object.keys($store.state.cupomUtilizado).length != 0">
               <v-col lg="12">
-                <h4><v-icon>mdi-ticket-percent-outline</v-icon> Cupom</h4>
+                <h4><v-icon>mdi-ticket-percent-outline</v-icon> Cupom Utilizado</h4>
                 <v-row>
-                  <v-col lg="10">
-                    <v-text-field
-                      v-model="cupom"
-                      label="Cupom"
-                      id="cupom"
-                      required
-                    ></v-text-field>
+                  <v-col lg="4">
+                    <p><b>Código do cupom: </b> {{ $store.state.cupomUtilizado.cod }}</p>
                   </v-col>
-                  <v-col lg="2">
-                    <v-btn color="primary">Utilizar</v-btn>
+                  <v-col lg="4">
+                    <p><b>Porcentagem de desconto: </b> {{ $store.state.cupomUtilizado.porcen }}</p>
+                  </v-col>
+                  <v-col lg="4">
+                    <p><b>Valor de desconto: </b> {{ $store.state.cupomUtilizado.valor }}</p>
                   </v-col>
                 </v-row>
               </v-col>
@@ -43,29 +54,20 @@
                   <v-icon>mdi-map-marker-radius-outline</v-icon> Endereço de
                   entrega
                 </h4>
-                <v-row
-                  class="mt-3"
-                  v-for="(item, i) in this.$store.state.enderecos"
-                  :key="i"
-                >
-                  <v-col lg="6" v-if="item.tipo_endereco == 'Entrega'">
+                <v-row class="mt-3">
+                  <v-col lg="6">
                     <v-card
                       elevation="0"
-                      class="card-endereco p-2"
-                      :class="[
-                        enderecoEntrega == item.id ? 'marcado' : 'desmarcado',
-                      ]"
-                      @click="enderecoEntrega = item.id"
-                    >
+                      class="card-endereco p-2">
                       <v-row>
                         <v-col lg="12" class="centraliza">
-                          <h4>{{ item.nome }}</h4>
+                          <h4>{{ $store.state.enderecoDeEntrega.nome }}</h4>
                         </v-col>
                         <v-col lg="6" class="p-0 centraliza">
-                          <p>{{ item.cep }}</p>
+                          <p>{{ $store.state.enderecoDeEntrega.cep }}</p>
                         </v-col>
                         <v-col lg="6" class="p-0 centraliza">
-                          <p>N° {{ item.numero }}</p>
+                          <p>N° {{ $store.state.enderecoDeEntrega.numero }}</p>
                         </v-col>
                       </v-row>
                     </v-card>
@@ -86,7 +88,11 @@
         <v-col lg="1"></v-col>
         <v-divider vertical></v-divider>
         <v-col lg="5" class="pl-5">
-          <resumoPedido :frete="frete" :habilitaBotao="habilitaBotao" pag="confirmacao"></resumoPedido>
+          <resumoPedido
+            :frete="frete"
+            :habilitaBotao="habilitaBotao"
+            pag="confirmacao"
+          ></resumoPedido>
         </v-col>
       </v-row>
     </v-card>
@@ -125,12 +131,12 @@ export default {
     },
   },
   computed: {
-    habilitaBotao(){
+    habilitaBotao() {
       if (this.frete != "" && this.marcados.length > 0) {
         return true;
       }
       return false;
-    }
+    },
   },
   methods: {
     marca(val) {
