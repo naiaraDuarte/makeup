@@ -2,11 +2,11 @@
   <v-container>
     <h2>Resumo do pedido</h2>
     <v-row v-if="$store.state.carrinho.length > 0">
-      <v-col lg="12" class="px-2">
+      <v-col lg="12" class="px-2 mt-1">
         <v-row
           v-for="(item, i) in $store.state.carrinho"
           :key="i"
-          class="centraliza"
+          class="centraliza mt-1"
         >
           <v-col lg="3">
             <v-img height="50" width="50" :src="getImgUrl(item.src)"></v-img>
@@ -38,7 +38,7 @@
             </v-card>
             <v-divider></v-divider>
             <v-card class="separa" elevation="0">
-              <h3>Total {{ desconto }}</h3>
+              <h3>Total </h3>
               <h3>
                 {{
                   $n(parseFloat(totalProdutos + (parseFloat(frete) - desconto)), "currency")

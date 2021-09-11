@@ -96,6 +96,7 @@
         <v-col lg="5" class="pl-5">
           <resumoPedido
             :frete="this.$store.state.freteCalculado"
+            :desconto="desconto"
             :habilitaBotao="habilitaBotao"
             pag="confirmacao"
           ></resumoPedido>
@@ -143,8 +144,7 @@ export default {
       return false;
     },
     desconto() {
-      let frete = this.$store.state.freteCalculado;
-      frete = parseFloat(frete);
+      let frete = parseFloat(this.$store.state.freteCalculado);
       let total = 0;
       let porcen = this.$store.state.cupomUtilizado.porcen;
       if (this.$store.state.carrinho.length > 0) {
@@ -155,7 +155,7 @@ export default {
       if (this.$store.state.cupomUtilizado.tipo == "frete") {
         return (frete * (porcen / 100));
       } else {
-        return (total * porcen / 100);
+        return (total * (porcen / 100));
       }
     },
   },
