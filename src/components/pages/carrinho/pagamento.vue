@@ -215,6 +215,7 @@ export default {
       };
       this.$http.post(`/frete/`, frm).then((res) => {
         this.frete = res.data.valor[0].Valor;
+        this.$store.state.freteCalculado = this.frete;
         console.log("valor", res);
       });
     },

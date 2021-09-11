@@ -34,7 +34,7 @@
             </v-card>
             <v-divider></v-divider>
             <v-card class="separa" elevation="0">
-              <h3>Total {{ frete }} </h3>
+              <h3>Total </h3>
               <h3>
                 {{
                   $n(parseFloat(totalProdutos + parseFloat(frete)), "currency")

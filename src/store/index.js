@@ -26,6 +26,7 @@ export default new Vuex.Store({
         cartoesEscolhidos: [],
         enderecoDeEntrega: '',
         cupomUtilizado: {},
+        freteCalculado: '',
         // valorChegou: 0,
     },
     mutations: {

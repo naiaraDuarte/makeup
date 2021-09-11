@@ -110,7 +110,7 @@ export default {
       enderecoEntrega: "",
       pagConfirmacao: false,
       marcados: [],
-      frete: "0",
+      frete: this.$store.state.freteCalculado,
       itensDivisoes: [
         "Pagar com 1 cartão",
         "Pagar com 2 cartões",
