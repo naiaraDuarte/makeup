@@ -5,7 +5,7 @@
         <v-icon x-large>mdi-chevron-double-right</v-icon> Cupons
       </h1>
       <v-row class="mt-5 mx-5">
-        <v-col lg="6">
+        <v-col lg="3">
           <v-text-field
             v-model="cupom"
             class="cupom-input"
@@ -31,11 +31,29 @@
             required
           ></v-text-field>
         </v-col>
+        <v-col lg="3">
+          <v-text-field
+            v-model="quant"
+            label="Quantidade de cupons"
+            v-mask="['######']"
+            type="number"
+            id="quant"
+            required
+          ></v-text-field>
+        </v-col>
         <v-col lg="12" class="mb-2 alinhamento">
           <v-btn color="primary mr-5" @click="gerar"> Gerar Cupom </v-btn>
         </v-col>
       </v-row>
     </v-card>
+    <v-snackbar v-model="snackbar" :color="snackbarColor">
+      <h4 style="font-weight: 100">{{ mensagem }}</h4>
+      <template v-slot:action="{ attrs }">
+        <v-btn text icon v-bind="attrs" @click="snackbar = false">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-container>
 </template>
 <script>
@@ -47,19 +65,34 @@ export default {
       cupom: "",
       porcen: "",
       tipoDesconto: "",
+      snackbarColor: "",
+      mensagem: "",
+      snackbar: "",
+      quant: 0,
       itensTipoDesconto: ["Na compra", "Frete"],
     };
   },
   methods: {
     ...mapMutations(["addCupons"]),
     gerar() {
+      if (this.cupom == "" || this.porcen == "" || this.tipoDesconto == "" || this.quant == null || this.quant == 0) {
+        this.exibeSnackBar("#b38b57", "Todos os campos devem ser preechidos");
+        return false;
+      }
       let frm = {
         cod: this.cupom.toUpperCase(),
         porcen: parseInt(this.porcen.replace("%", "")),
         tipo: this.tipoDesconto,
+        quant: this.quant
       };
       this.addCupons(frm);
-      console.log(this.$store.state.cupons)
+      this.exibeSnackBar("green", "Cupom adicionado");
+      console.log(this.$store.state.cupons);
+    },
+    exibeSnackBar(cor, msg) {
+      this.snackbarColor = cor;
+      this.mensagem = msg;
+      this.snackbar = true;
     },
   },
 };

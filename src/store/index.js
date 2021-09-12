@@ -90,11 +90,11 @@ export default new Vuex.Store({
             state.cupons.push(payload);
         },
         editarCupons(state, payload) {
-            let index = state.cupons.findIndex(cartao => cartao.id == payload.id);
+            let index = state.cupons.findIndex(cupons => cupons.cod == payload.cod);
             Vue.set(state.cupons, index, payload);
         },
         removeCupons(state, payload) {
-            let index = state.cupons.findIndex(cartao => cartao.id == payload);
+            let index = state.cupons.findIndex(cupons => cupons.cod == payload);
             state.cupons.splice(index, 1);
         },
 

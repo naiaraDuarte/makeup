@@ -65,9 +65,6 @@
                           @click="e1 = 1"
                           ><v-icon>mdi-chevron-left</v-icon></v-btn
                         >
-                        <v-btn elevation="1" icon id="ir" @click="e1 = 3"
-                          ><v-icon>mdi-chevron-right</v-icon></v-btn
-                        >
                       </v-col>
                     </v-row>
                   </v-col>

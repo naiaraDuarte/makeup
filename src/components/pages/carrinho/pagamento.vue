@@ -76,7 +76,18 @@
                     ></v-text-field>
                   </v-col>
                   <v-col lg="2">
-                    <v-btn color="primary" @click="usarCupom">Utilizar</v-btn>
+                    <v-btn
+                      color="primary"
+                      v-if="cupomUtilizado == false"
+                      @click="usarCupom"
+                      >Utilizar</v-btn
+                    >
+                    <v-btn
+                      color="primary"
+                      v-if="cupomUtilizado == true"
+                      @click="removerCupom"
+                      >Remover</v-btn
+                    >
                   </v-col>
                 </v-row>
               </v-col>
@@ -166,6 +177,7 @@ import addCartao from "../usuario/pagamento.vue";
 import cartao from "../../ui/cartao.vue";
 import resumoPedido from "../carrinho/resumoPedido.vue";
 import endereco from "../usuario/endereco.vue";
+import { mapMutations } from "vuex";
 
 export default {
   components: { addCartao, cartao, resumoPedido, endereco },
@@ -173,6 +185,7 @@ export default {
     return {
       cartoes: "",
       cupom: "",
+      cupomUtilizado: false,
       enderecoEntrega: "",
       pagConfirmacao: false,
       mostrarCartao: false,
@@ -230,6 +243,8 @@ export default {
     },
   },
   methods: {
+    ...mapMutations(["editarCupons"]),
+    ...mapMutations(["removeCupons"]),
     marca(val) {
       let index = this.marcados.findIndex((valor) => valor == val);
       if (index == -1) {
@@ -252,21 +267,50 @@ export default {
         this.exibeSnackBar("#b38b57", "Não é possivel usar um cupom vazio");
         return false;
       }
-      console.log("TEVHFBDJK", this.$store.state.cupons, '||', this.cupom)
+      this.cupom = this.cupom.toUpperCase();
+      if (this.$store.state.cupons.length == 0) {
+        this.exibeSnackBar("red", "Nenhum cupom cadastrado");
+        return false;
+      }
       this.$store.state.cupons.filter((cupom) => {
-        if (cupom == this.cupom) {
+        if (cupom.cod == this.cupom && cupom.quant > 0) {
           let frm = {
             cod: this.cupom,
             porcen: cupom.porcen,
             tipo: cupom.tipo,
           };
           this.$store.state.cupomUtilizado = frm;
+          cupom.quant -= 1;
+          this.editarCupons(cupom);
+          this.cupomUtilizado = true;
           this.exibeSnackBar("green", "Cupom utilizado");
+          console.log("FUncionaouuu", this.$store.state.cupons);
           return true;
+        } else {
+          this.exibeSnackBar("red", "Cupom inexistente ou esgotado");
+          return false;
         }
       });
-      this.exibeSnackBar("red", "Cupom inexistente");
-      return false;
+      this.cupom = "";
+    },
+    removerCupom() {
+      let cupomUsado = this.$store.state.cupomUtilizado;
+      this.$store.state.cupons.filter((cupom) => {
+        if (cupom.cod == cupomUsado.cod) {
+          cupom.quant += 1;
+          this.editarCupons(cupom);
+          console.log("Valor abatido", this.$store.state.cupons);
+          this.cupomUtilizado = false;
+          (this.$store.state.cupomUtilizado = {
+            porcen: 0,
+          }),
+            this.exibeSnackBar("#b38b57", "Cupom removido");
+          return true;
+        } else {
+          this.exibeSnackBar("red", "falha ao remover cupom");
+          return false;
+        }
+      });
     },
     calculaFrete(cep) {
       let frm = {
