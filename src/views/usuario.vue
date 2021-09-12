@@ -59,6 +59,7 @@
           <cadastro v-if="selectedItem == 0"></cadastro>
           <pagamento v-if="selectedItem == 1" :mostra="true"></pagamento>
           <compras v-if="selectedItem == 2"></compras>
+          <cupons v-if="selectedItem == 3"></cupons>
           <!-- <cadastro else></cadastro> -->
         </v-col>
       </v-row>
@@ -70,6 +71,7 @@ import cadastro from "../components/pages/usuario/cadastro.vue";
 import login from "../components/pages/usuario-e-adm/login.vue";
 import pagamento from "../components/pages/usuario/pagamento.vue";
 import compras from "../components/pages/usuario/compras.vue";
+import cupons from '../components/pages/usuario/cupons.vue';
 
 export default {
   components: {
@@ -77,6 +79,7 @@ export default {
     login,
     pagamento,
     compras,
+    cupons
   },
   data() {
     return {
@@ -85,9 +88,10 @@ export default {
       selectedItem: 0,
       items: [
         { text: "Conta", icon: "mdi-account" },
-        { text: "Pagamento", icon: "mdi-clock" },
-        { text: "Compras", icon: "mdi-flag" },
-        { text: "Sair", icon: "mdi-flag" },
+        { text: "Pagamento", icon: "mdi-currency-usd" },
+        { text: "Compras", icon: "mdi-gift" },
+        { text: "Cupons", icon: "mdi-ticket-percent" },
+        { text: "Sair", icon: "mdi-exit-to-app" },
       ],
     };
   },
@@ -99,7 +103,7 @@ export default {
       if (newVal == null) {
         return (this.selectedItem = oldVal);
       }
-      if (newVal == 3) {
+      if (newVal == 4) {
         localStorage.setItem("usuarioId", "");
         this.$store.state.enderecos = [];
         this.$store.state.usuario.splice(1, 1);
