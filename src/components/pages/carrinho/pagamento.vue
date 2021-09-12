@@ -252,13 +252,21 @@ export default {
         this.exibeSnackBar("#b38b57", "Não é possivel usar um cupom vazio");
         return false;
       }
-      let frm = {
-        cod: this.cupom,
-        porcen: 5,
-        tipo: "frete",
-      };
-      this.$store.state.cupomUtilizado = frm;
-      this.exibeSnackBar("green", "Cupom utilizado");
+      console.log("TEVHFBDJK", this.$store.state.cupons, '||', this.cupom)
+      this.$store.state.cupons.filter((cupom) => {
+        if (cupom == this.cupom) {
+          let frm = {
+            cod: this.cupom,
+            porcen: cupom.porcen,
+            tipo: cupom.tipo,
+          };
+          this.$store.state.cupomUtilizado = frm;
+          this.exibeSnackBar("green", "Cupom utilizado");
+          return true;
+        }
+      });
+      this.exibeSnackBar("red", "Cupom inexistente");
+      return false;
     },
     calculaFrete(cep) {
       let frm = {

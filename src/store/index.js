@@ -19,6 +19,7 @@ export default new Vuex.Store({
         carrinhoCountId: 0,
         cartoes: [],
         produtos: [],
+        cupons:[],
         dadosEndereco: [],
         dadosCartao: [],
         busca: "",
@@ -82,6 +83,19 @@ export default new Vuex.Store({
         removeCartao(state, payload) {
             let index = state.cartoes.findIndex(cartao => cartao.id == payload);
             state.cartoes.splice(index, 1);
+        },
+
+        //Gestao de cupons
+        addCupons(state, payload) {
+            state.cupons.push(payload);
+        },
+        editarCupons(state, payload) {
+            let index = state.cupons.findIndex(cartao => cartao.id == payload.id);
+            Vue.set(state.cupons, index, payload);
+        },
+        removeCupons(state, payload) {
+            let index = state.cupons.findIndex(cartao => cartao.id == payload);
+            state.cupons.splice(index, 1);
         },
 
         //Produto
