@@ -1,15 +1,8 @@
 <template>
     <v-container fluid>
-        <cartao></cartao>
+        <p>{{ $store.state.pedidos}}</p>
     </v-container>
     
 </template>
 <script>
-import cartao from '../../../components/ui/cartao.vue';
-
-export default {
-    components: {
-        cartao
-    }
-}
 </script>

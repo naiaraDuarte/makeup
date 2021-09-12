@@ -29,15 +29,13 @@ export default new Vuex.Store({
             porcen: 0,
         },
         freteCalculado: '',
-        // valorChegou: 0,
+        pedidos: [],
     },
     mutations: {
+
+        //Usuário
         addUsuario(state, payload) {
             state.usuario.push(payload);
-            // if (state.usuario.length == 2) {
-            //     state.valorChegou = 1;
-            //     console.log("CEGO")
-            // }
         },
         editarInformacoesCliente(state, payload) {
             state.usuario[1] = payload;
@@ -57,6 +55,8 @@ export default new Vuex.Store({
                 state.enderecos.push(payload);
             }
         },
+
+        //Endereco
         addEnderecosDadosDoBanco(state, payload) {
             state.enderecos = [];
             state.enderecos.push(payload);
@@ -69,6 +69,8 @@ export default new Vuex.Store({
             let index = state.enderecos.findIndex(endereco => endereco.id == payload);
             state.enderecos.splice(index, 1);
         },
+
+        //Cartão
         addCartao(state, payload) {
             state.cartoes.push(payload);
         },
@@ -80,6 +82,8 @@ export default new Vuex.Store({
             let index = state.cartoes.findIndex(cartao => cartao.id == payload);
             state.cartoes.splice(index, 1);
         },
+
+        //Produto
         addProduto(state, payload) {
             payload.id = state.countId;
             state.produtos.push(payload);
@@ -93,6 +97,8 @@ export default new Vuex.Store({
             let index = state.addProduto.findIndex(produto => produto.id == payload);
             state.produtos.splice(index, 1);
         },
+
+        //Carrinho
         addCarrinho(state, payload) {
             payload.id = state.carrinhoCountId;
             state.carrinho.push(payload);
@@ -106,6 +112,22 @@ export default new Vuex.Store({
             let index = state.carrinho.findIndex(pdt => pdt.cod == payload.cod);
             state.produtos.splice(index, 1);
             console.log(state.produtos)
+        },
+
+        //Pedidos
+        addPedido(state, payload) {
+            payload.id = state.countId;
+            state.pedidos.push(payload);
+            state.countId++;
+        },
+        editarPedido(state, payload) {
+            let index = state.pedidos.findIndex(pdt => pdt.cod == payload.cod);
+            state.pedidos[index] = payload;
+        },
+        removeItemPedido(state, payload) {
+            let index = state.pedidos.findIndex(pdt => pdt.cod == payload.cod);
+            state.pedidos.splice(index, 1);
+            console.log(state.pedidos)
         },
 
     },

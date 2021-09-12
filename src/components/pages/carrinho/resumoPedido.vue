@@ -32,28 +32,42 @@
               <p>Frete</p>
               <p>{{ $n(parseFloat(frete), "currency") }}</p>
             </v-card>
-             <v-card class="separa" elevation="0" v-if="desconto > 0">
+            <v-card class="separa" elevation="0" v-if="desconto > 0">
               <p>Desconto</p>
               <p>{{ $n(parseFloat(desconto), "currency") }}</p>
             </v-card>
             <v-divider></v-divider>
             <v-card class="separa" elevation="0">
-              <h3>Total </h3>
+              <h3>Total</h3>
               <h3>
                 {{
-                  $n(parseFloat(totalProdutos + (parseFloat(frete) - desconto)), "currency")
+                  $n(
+                    parseFloat(totalProdutos + (parseFloat(frete) - desconto)),
+                    "currency"
+                  )
                 }}
               </h3>
             </v-card>
           </v-col>
           <v-col lg="12">
-            <v-btn v-if="pag == 'confirmacao'"
-              color="primary"
-              class="ampliarBtn"
+            <v-btn
+              v-if="pag == 'confirmacao'"
+              class="btnFilter ampliarBtn"
+              elevation="0"
               @click="prox()"
               >Tem algo errado, desejo voltar e arrumar</v-btn
             >
-            <v-btn v-else
+            <v-btn
+              v-if="pag == 'confirmacao'"
+              elevation="0"
+              color="primary"
+              @click="comprar"
+              class="ampliarBtn mt-2"
+            >
+              Finalizar compra
+            </v-btn>
+            <v-btn
+              v-else
               color="primary"
               :disabled="!habilitaBotao"
               class="ampliarBtn"
@@ -67,12 +81,14 @@
   </v-container>
 </template>
 <script>
+import { mapMutations } from "vuex";
+
 export default {
   props: {
     frete: String,
     habilitaBotao: Boolean,
     pag: String,
-    desconto: Number
+    desconto: Number,
   },
   data() {
     return {
@@ -87,10 +103,9 @@ export default {
       });
     }
   },
-  computed:{
-    
-  },
+  computed: {},
   methods: {
+    ...mapMutations(["addPedido"]),
     getImgUrl(pic) {
       return require("../../../assets/images/" + pic);
     },
@@ -101,6 +116,19 @@ export default {
       }
       this.$store.state.concluir = true;
     },
+    comprar(){
+      let frm = {
+        carrinho: this.$store.state.carrinho,
+        cartao: this.$store.state.cartoesEscolhidos,
+        cupom: this.$store.state.cupomUtilizado,
+        enderecoEntrega: this.$store.state.enderecoDeEntrega,
+        freteCobrado: this.$store.state.freteCalculado,
+        totalPago: parseFloat(this.totalProdutos + (parseFloat(this.frete) - this.desconto)),
+      }
+      this.addPedido(frm);
+      console.log("Comprou");
+      this.$router.push(`/`);
+    }
   },
 };
 </script>
