@@ -19,7 +19,7 @@ export default new Vuex.Store({
         carrinhoCountId: 0,
         cartoes: [],
         produtos: [],
-        cupons:[],
+        cupons: [],
         dadosEndereco: [],
         dadosCartao: [],
         busca: "",
@@ -141,7 +141,7 @@ export default new Vuex.Store({
             Vue.set(state.pedidos, index, state.pedidos[index]);
         },
         removeItemPedido(state, payload) {
-            let index = state.pedidos.findIndex(pdt => pdt.cod == payload.cod);
+            let index = state.pedidos.findIndex(prod => prod.id == payload.id);
             state.pedidos.splice(index, 1);
             console.log(state.pedidos)
         },

@@ -177,7 +177,10 @@ export default {
           nome: "EM TRANSPORTE",
           status: "normal",
         },
-
+        {
+          nome: "ENTREGA REALIZADA",
+          status: "normal",
+        },
         {
           nome: "TROCA SOLICITADA",
           status: "troca",
@@ -185,32 +188,12 @@ export default {
         {
           nome: "TROCA AUTORIZADA",
           status: "troca",
+          valor: "aceita",
         },
         {
           nome: "TROCA REJEITADA",
           status: "troca",
           valor: "rejeitada",
-        },
-        {
-          nome: "CANCELAMENTO SOLICITADO",
-          status: "cancelamento",
-        },
-        {
-          nome: "CANCELAMENTO REJEITADO",
-          status: "cancelamento",
-        },
-        {
-          nome: "TROCA ACEITA",
-          status: "troca",
-          valor: "aceita",
-        },
-        {
-          nome: "CANCELAMENTO ACEITO",
-          status: "cancelamento",
-        },
-        {
-          nome: "ENTREGA REALIZADA",
-          status: "normal",
         },
         {
           nome: "EM TRANSPORTE",
@@ -220,6 +203,20 @@ export default {
           nome: "TROCA EFETUADA",
           status: "troca",
         },
+        
+        {
+          nome: "CANCELAMENTO SOLICITADO",
+          status: "cancelamento",
+        },
+        {
+          nome: "CANCELAMENTO REJEITADO",
+          status: "cancelamento",
+        },
+        
+        {
+          nome: "CANCELAMENTO ACEITO",
+          status: "cancelamento",
+        },        
         {
           nome: "CANCELAMENTO EFETUADO",
           status: "cancelamento",
