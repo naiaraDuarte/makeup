@@ -118,13 +118,14 @@ export default {
     },
     comprar(){
       let frm = {
+        cliente: this.$store.state.usuario[1],
         carrinho: this.$store.state.carrinho,
         cartao: this.$store.state.cartoesEscolhidos,
         cupom: this.$store.state.cupomUtilizado,
         enderecoEntrega: this.$store.state.enderecoDeEntrega,
         freteCobrado: this.$store.state.freteCalculado,
         totalPago: parseFloat(this.totalProdutos + (parseFloat(this.frete) - this.desconto)),
-        status: '',
+        status: 'EM PROCESSAMENTO',
       }
       this.addPedido(frm);
       console.log("Comprou");

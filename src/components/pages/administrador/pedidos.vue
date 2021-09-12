@@ -60,48 +60,61 @@
           <v-card-text>
             <v-container>
               <v-row class="espacamentoEntreEl px-2 mt-2">
-                <v-col lg="5" class="dados">
+                <v-col lg="12" class="dados">
                   <v-row>
-                    <p><b>Dados pessoais:</b></p>
-                    <v-col lg="12" class="addBorder">
+                    <v-col lg="4" class="addBorder">
+                      <p><b>Dados pessoais:</b></p>
                       <p><b>CPF:</b> {{ perfilSelecionado[0].cpf }}</p>
                       <p><b>Data nascimento:</b> 20/05/2001</p>
                       <p><b>Telefone:</b> (11) 97854-5212</p>
                     </v-col>
-                  </v-row>
-                  <v-row>
-                    <p><b>Dados de entrega:</b></p>
-                    <v-col lg="12" class="addBorder">
+                    <v-col lg="4" class="addBorder">
+                      <p><b>Endereco da Entrega</b></p>
                       <p><b>CPF:</b> {{ perfilSelecionado[0].cpf }}</p>
                       <p><b>Data nascimento:</b> 20/05/2001</p>
                       <p><b>Telefone:</b> (11) 97854-5212</p>
                     </v-col>
-                  </v-row>
-                  <v-row>
-                    <p><b>Dados de pagamento:</b></p>
-                    <v-col lg="12" class="addBorder">
+                    <v-col lg="4" class="addBorder">
+                      <p><b>Dados de pagamento</b></p>
                       <p><b>CPF:</b> {{ perfilSelecionado[0].cpf }}</p>
                       <p><b>Data nascimento:</b> 20/05/2001</p>
                       <p><b>Telefone:</b> (11) 97854-5212</p>
                     </v-col>
                   </v-row>
                 </v-col>
-                <v-col lg="6">
+                <v-col lg="12">
                   <p><b>Histórico de compras</b></p>
-                  <v-expansion-panels>
-                    <v-expansion-panel v-for="(item, i) in 5" :key="i">
-                      <v-expansion-panel-header>
-                        Item
-                      </v-expansion-panel-header>
-                      <v-expansion-panel-content>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                        sed do eiusmod tempor incididunt ut labore et dolore
-                        magna aliqua. Ut enim ad minim veniam, quis nostrud
-                        exercitation ullamco laboris nisi ut aliquip ex ea
-                        commodo consequat.
-                      </v-expansion-panel-content>
-                    </v-expansion-panel>
-                  </v-expansion-panels>
+                  <v-stepper alt-labels elevation="0">
+                    <v-stepper v-model="e1">
+                      <v-stepper-header elevation="0" style="box-shadow: none">
+                        <template v-for="(item, i) in steps">
+                          <v-stepper-step
+                            :key="`${i}-step`"
+                            :complete="e1 > i"
+                            :step="i"
+                          >
+                            {{ item.nome }}
+                          </v-stepper-step>
+
+                          <v-divider v-if="i !== steps" :key="i"></v-divider>
+                        </template>
+                      </v-stepper-header>
+
+                      <v-stepper-items>
+                        <v-stepper-content
+                          v-for="(item, i) in steps"
+                          :key="`${i}-content`"
+                          :step="i"
+                        >
+                          <v-btn color="primary" @click="nextStep(i)">
+                            Continue
+                          </v-btn>
+
+                          <v-btn text> Cancel </v-btn>
+                        </v-stepper-content>
+                      </v-stepper-items>
+                    </v-stepper>
+                  </v-stepper>
                 </v-col>
               </v-row>
             </v-container>
@@ -139,33 +152,92 @@ export default {
       dialog: false,
       headers: [
         {
-          text: "Nome",
+          text: "N° Pedido",
           align: "start",
           sortable: false,
-          value: "nome",
+          value: "pedido",
         },
+        { text: "Nome", value: "nome" },
         { text: "CPF", value: "cpf" },
-        { text: "Email", value: "email" },
-        { text: "Cidade-UF", value: "cidade" },
-        { text: "Avaliação", value: "avaliacao" },
+        { text: "Status", value: "status" },
         { text: "Ações", value: "acoes" },
       ],
       desserts: [],
+      e1: 1,
+      steps: [
+        {
+          nome: 'EM PROCESSAMENTO'
+        },
+        {
+          nome: 'PAGAMENTO REALIZADO'
+        },
+        {
+          nome: 'EM TRANSPORTE'
+        },
+        {
+          nome: 'TROCA SOLICITADA'
+        },
+        {
+          nome: 'TROCA AUTORIZADA'
+        },
+        {
+          nome: 'TROCA REJEITADA'
+        },
+        {
+          nome: 'CANCELAMENTO SOLICITADO'
+        },
+        {
+          nome: 'CANCELAMENTO REJEITADO'
+        },
+        {
+          nome: 'TROCA ACEITA'
+        },
+        {
+          nome: 'CANCELAMENTO ACEITO'
+        },
+        {
+          nome: 'ENTREGA REALIZADA'
+        },
+        {
+          nome: 'TROCA EFETUADA'
+        },
+        {
+          nome: 'CANCELAMENTO EFETUADO'
+        },
+      ],
     };
   },
   mounted() {
-    this.$http.get(`/cliente/`).then((res) => {
-      res.data.dados.forEach((cliente) => {
-        this.desserts.push({
-          nome: cliente.nome,
-          cpf: cliente.cpf,
-          email: cliente.email,
-          cidade: "Mogi-SP",
-          avaliacao: 4.0,
-          acoes: cliente.id,
-        });
+    console.log(this.$store.state.pedidos);
+
+    this.$store.state.pedidos.forEach((ped) => {
+      this.desserts.push({
+        pedido: ped.id,
+        nome: ped.cliente.nome,
+        cpf: ped.cliente.cpf,
+        status: ped.status,
+        acoes: ped.id,
       });
     });
+    // this.$http.get(`/cliente/`).then((res) => {
+    //   res.data.dados.forEach((cliente) => {
+    //     this.desserts.push({
+    //       nome: cliente.nome,
+    //       cpf: cliente.cpf,
+    //       email: cliente.email,
+    //       cidade: "Mogi-SP",
+    //       avaliacao: 4.0,
+    //       acoes: cliente.id,
+    //     });
+    //   });
+    // });
+  },
+  watch: {
+    steps(val) {
+      if (this.e1 > val) {
+        this.e1 = val;
+      }
+    },
   },
   methods: {
     verMais(id) {
@@ -174,6 +246,13 @@ export default {
       );
       this.dialog = !this.dialog;
       return this.perfilSelecionado;
+    },
+    nextStep(n) {
+      if (n === this.steps) {
+        this.e1 = 1;
+      } else {
+        this.e1 = n + 1;
+      }
     },
   },
 };

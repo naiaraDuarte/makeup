@@ -27,7 +27,13 @@
     </v-row>
     <v-row>
       <v-col class="text-center mb-5" lg="12" md="" sm="" col="5">
-        <v-btn elevation="0" text class="btnSubmit" @click="entrar" id= "entrarLogin">
+        <v-btn
+          elevation="0"
+          text
+          class="btnSubmit"
+          @click="entrar"
+          id="entrarLogin"
+        >
           Entrar</v-btn
         >
       </v-col>
@@ -46,6 +52,9 @@
 <script>
 import { mapMutations } from "vuex";
 export default {
+  props: {
+    carrinho: Boolean,
+  },
   data() {
     return {
       show3: false,
@@ -89,13 +98,17 @@ export default {
           this.$http.post(`/cliente/login`, frm).then((res) => {
             frm.id = res.data.cliente[0].id;
             localStorage.setItem("usuarioId", frm.id);
-            console.log("AAAAAAAAAAAAA", res)
+            console.log("AAAAAAAAAAAAA", res);
             // this.$store.state.usuario.push(res.data.cliente[0]);
             this.salvaUsuario(res.data.cliente[0]);
             this.salvaEndereco(res.data.endereco);
             this.salvaCartao(res.data.cartao);
             this.$store.state.cadastro = true;
-            this.$router.push(`/`);
+            if (this.carrinho == true) {
+              this.$emit("logou", true);
+            } else {
+              this.$router.push(`/`);
+            }
           });
         } else {
           this.snackbarColor = "red";
@@ -106,10 +119,10 @@ export default {
     },
     salvaUsuario(data) {
       this.addUsuario(data);
-      console.log("User", this.$store.state.usuario)
+      console.log("User", this.$store.state.usuario);
     },
     salvaEndereco(data) {
-      console.log(data)
+      console.log(data);
       this.$store.state.dadosEndereco = data;
     },
     salvaCartao(data) {

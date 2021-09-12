@@ -28,7 +28,7 @@
       :class="[componente == 'cadastro' ? 'cadastro' : 'login']"
     >
       <keep-alive>
-        <component :is="componente"></component>
+        <component :is="componente" :carrinho="false"></component>
       </keep-alive>
     </v-card>
 
@@ -80,7 +80,7 @@ export default {
   },
   data() {
     return {
-      componente: "cadastro",
+      componente: "login",
       idUsuario: null,
       selectedItem: 0,
       items: [

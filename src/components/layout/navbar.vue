@@ -1,6 +1,6 @@
 <template>
-<div>
-  <v-card color="grey lighten-4" flat tile>
+  <div>
+    <v-card color="grey lighten-4" flat tile>
       <!-- <v-toolbar dense app class="black white--text px-5">
         <v-app-bar-nav-icon class="white--text" @click="drawer = !drawer"></v-app-bar-nav-icon>
         <v-toolbar-title class="titulo">Title</v-toolbar-title>
@@ -13,15 +13,24 @@
         </v-btn>
       </v-toolbar> -->
 
-    
-      <v-navigation-drawer app v-model="drawer" class="black"
-        permanent flat prepend
-        expand-on-hover clipped hide-overlay :style="{ top: $vuetify.application.top + 'px', zIndex: 6 }"
+      <v-navigation-drawer
+        app
+        v-model="drawer"
+        class="black"
+        permanent
+        flat
+        prepend
+        expand-on-hover
+        clipped
+        hide-overlay
+        :style="{ top: $vuetify.application.top + 'px', zIndex: 6 }"
       >
         <v-list>
           <v-list-item class="px-2">
             <v-list-item-avatar>
-              <v-img src="https://randomuser.me/api/portraits/women/85.jpg"></v-img>
+              <v-img
+                src="https://randomuser.me/api/portraits/women/85.jpg"
+              ></v-img>
             </v-list-item-avatar>
           </v-list-item>
 
@@ -37,10 +46,13 @@
 
         <v-divider></v-divider>
 
-        <v-list
-          nav
-          dense
-        >
+        <v-list nav dense>
+          <v-list-item link @click="troca(0)">
+            <v-list-item-icon>
+              <v-icon class="title">mdi-chart-bar</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title class="white--text">Dashboard</v-list-item-title>
+          </v-list-item>
           <v-list-item link @click="troca(1)">
             <v-list-item-icon>
               <v-icon class="title">mdi-account-group</v-icon>
@@ -59,17 +71,23 @@
             </v-list-item-icon>
             <v-list-item-title class="white--text">Cupons</v-list-item-title>
           </v-list-item>
+          <v-list-item link @click="troca(4)">
+            <v-list-item-icon>
+              <v-icon class="title">mdi-exit-to-app</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title class="white--text">Sair</v-list-item-title>
+          </v-list-item>
         </v-list>
       </v-navigation-drawer>
-    <v-app-bar app clipped-left dark class="navbar" color="black"> <img
-        class="ml-5 pl-5"
-        :src="require('../../assets/images/logocortado.png')"
-        height="43"
-      />
-    </v-app-bar>
+      <v-app-bar app clipped-left dark class="navbar" color="black">
+        <img
+          class="ml-5 pl-5"
+          :src="require('../../assets/images/logocortado.png')"
+          height="43"
+        />
+      </v-app-bar>
     </v-card>
-</div>
-    
+  </div>
 </template>
 
 <script>
@@ -85,12 +103,17 @@ export default {
       right: null,
     };
   },
-  components: {
-  },
+  components: {},
   methods: {
-    troca(val){
-      this.$store.state.trocaDeComponentesAdm = val;
-    }
-  }
+    troca(val) {
+      if (val == 4) {
+        this.$store.state.perfil = "usuario";
+        this.$store.state.trocaDeComponentesAdm = 0;
+        this.$router.push(`/`);
+      } else {
+        this.$store.state.trocaDeComponentesAdm = val;
+      }
+    },
+  },
 };
 </script>

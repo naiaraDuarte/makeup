@@ -120,7 +120,7 @@
                 </v-row>
               </v-stepper-content>
               <v-stepper-content step="2">
-                <entrar></entrar>
+                <entrar :carrinho="true" @logou="e1 = 3"></entrar>
 
                 <v-row class="text-right mx-1 mb-3">
                   <v-col lg="9"></v-col>
