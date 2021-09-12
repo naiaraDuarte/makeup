@@ -51,8 +51,7 @@
           <v-card-title>
             <v-row>
               <v-col lg="12" class="espacamentoEntreEl px-5">
-                <span class="text-h5">{{ perfilSelecionado[0].nome }}</span>
-                <v-switch v-model="situacao"></v-switch>
+                <span class="text-h5">N° do pedido: {{ perfilSelecionado[0].pedido }} </span>
               </v-col>
             </v-row>
           </v-card-title>
@@ -84,6 +83,7 @@
                 </v-col>
                 <v-col lg="12">
                   <p><b>Histórico de compras</b></p>
+                   
                   <v-stepper alt-labels elevation="0">
                     <v-stepper v-model="e1">
                       <v-stepper-header elevation="0" style="box-shadow: none">
@@ -92,6 +92,7 @@
                             :key="`${i}-step`"
                             :complete="e1 > i"
                             :step="i"
+                            class="centraliza letra"
                           >
                             {{ item.nome }}
                           </v-stepper-step>
@@ -99,33 +100,32 @@
                           <v-divider v-if="i !== steps" :key="i"></v-divider>
                         </template>
                       </v-stepper-header>
-
-                      <v-stepper-items>
-                        <v-stepper-content
-                          v-for="(item, i) in steps"
-                          :key="`${i}-content`"
-                          :step="i"
-                        >
-                          <v-btn color="primary" @click="nextStep(i)">
-                            Continue
-                          </v-btn>
-
-                          <v-btn text> Cancel </v-btn>
-                        </v-stepper-content>
-                      </v-stepper-items>
                     </v-stepper>
                   </v-stepper>
+                 
+                  <div class="centraliza mt-5">
+                      <v-btn class="mx-2" text @click="nextStep('sub')"> {{ steps[(e1 - 1)].nome }} </v-btn>
+                      <v-btn class="mx-2" color="primary" @click="nextStep('add')" v-if="e1 != (steps.length - 1)">
+                        {{ steps[(e1 + 1)].nome }}
+                      </v-btn>
+                      <v-btn class="mx-2" color="primary" @click="nextStep('add')" v-else> Finalizado </v-btn>
+                  </div>
                 </v-col>
               </v-row>
             </v-container>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" text @click="dialog = false">
-              Close
+            <v-btn text @click="dialog = false">
+              Cancelar
             </v-btn>
-            <v-btn color="blue darken-1" text @click="dialog = false">
-              Save
+            <v-btn
+              color="#b38b57"
+              class="btnFilter"
+              @click="salvar(perfilSelecionado[0].pedido)"
+              text
+            >
+              Salvar
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -134,17 +134,16 @@
   </v-container>
 </template>
 <script>
+import { mapMutations } from "vuex";
 export default {
   data() {
     return {
       situacao: true,
       perfilSelecionado: [
         {
-          nome: "Ice cream sandwich",
+          pedido: "",
+          nome: "",
           cpf: "000.000.000-00",
-          email: "email@teste.com",
-          cidade: "Itaquaquecetuba-SP",
-          avaliacao: 4.3,
           acoes: 2,
         },
       ],
@@ -164,45 +163,66 @@ export default {
       ],
       desserts: [],
       e1: 1,
-      steps: [
+      steps: [],
+      conteudoSteps: [
         {
-          nome: 'EM PROCESSAMENTO'
+          nome: "EM PROCESSAMENTO",
+          status: "normal",
         },
         {
-          nome: 'PAGAMENTO REALIZADO'
+          nome: "PAGAMENTO REALIZADO",
+          status: "normal",
         },
         {
-          nome: 'EM TRANSPORTE'
+          nome: "EM TRANSPORTE",
+          status: "normal",
+        },
+
+        {
+          nome: "TROCA SOLICITADA",
+          status: "troca",
         },
         {
-          nome: 'TROCA SOLICITADA'
+          nome: "TROCA AUTORIZADA",
+          status: "troca",
         },
         {
-          nome: 'TROCA AUTORIZADA'
+          nome: "TROCA REJEITADA",
+          status: "troca",
+          valor: "rejeitada",
         },
         {
-          nome: 'TROCA REJEITADA'
+          nome: "CANCELAMENTO SOLICITADO",
+          status: "cancelamento",
         },
         {
-          nome: 'CANCELAMENTO SOLICITADO'
+          nome: "CANCELAMENTO REJEITADO",
+          status: "cancelamento",
         },
         {
-          nome: 'CANCELAMENTO REJEITADO'
+          nome: "TROCA ACEITA",
+          status: "troca",
+          valor: "aceita",
         },
         {
-          nome: 'TROCA ACEITA'
+          nome: "CANCELAMENTO ACEITO",
+          status: "cancelamento",
         },
         {
-          nome: 'CANCELAMENTO ACEITO'
+          nome: "ENTREGA REALIZADA",
+          status: "normal",
         },
         {
-          nome: 'ENTREGA REALIZADA'
+          nome: "EM TRANSPORTE",
+          status: "troca",
         },
         {
-          nome: 'TROCA EFETUADA'
+          nome: "TROCA EFETUADA",
+          status: "troca",
         },
         {
-          nome: 'CANCELAMENTO EFETUADO'
+          nome: "CANCELAMENTO EFETUADO",
+          status: "cancelamento",
         },
       ],
     };
@@ -218,6 +238,25 @@ export default {
         status: ped.status,
         acoes: ped.id,
       });
+    });
+    let statusAtual = "normal";
+    let valor = "aceita";
+    this.conteudoSteps.forEach((e) => {
+      if (statusAtual == "troca") {
+        if (e.status == statusAtual) {
+          if (e.valor) {
+            if (e.valor == valor) {
+              this.steps.push(e);
+            }
+          } else {
+            this.steps.push(e);
+          }
+        }
+      } else {
+        if (e.status == statusAtual) {
+          this.steps.push(e);
+        }
+      }
     });
     // this.$http.get(`/cliente/`).then((res) => {
     //   res.data.dados.forEach((cliente) => {
@@ -240,6 +279,14 @@ export default {
     },
   },
   methods: {
+    ...mapMutations(["editarPedido"]),
+    salvar(id){
+      this.editarPedido([id, this.steps[this.e1].nome]);
+      this.desserts[id].status = this.steps[this.e1].nome;
+      // this.$store.state.pedidos[id].status = this.steps[this.e1].nome;
+      console.log("Não funfou", this.$store.state.pedidos)
+      this.dialog = false;
+    },
     verMais(id) {
       this.perfilSelecionado = this.desserts.filter(
         (clientes) => clientes.acoes == id
@@ -247,11 +294,15 @@ export default {
       this.dialog = !this.dialog;
       return this.perfilSelecionado;
     },
-    nextStep(n) {
-      if (n === this.steps) {
-        this.e1 = 1;
-      } else {
-        this.e1 = n + 1;
+    nextStep(op) {
+      if (op == 'add') {
+        if (this.e1 != this.steps.length) {
+          this.e1 += 1;
+        }
+      }else{
+        if (this.e1 != 0) {
+          this.e1 -= 1;
+        }
       }
     },
   },
@@ -261,5 +312,9 @@ export default {
 .addBorder {
   border: 1px solid #bbb;
   border-radius: 10px;
+}
+.letra {
+  font-size: 12px;
+  white-space: nowrap;
 }
 </style>
