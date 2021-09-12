@@ -30,6 +30,7 @@ export default new Vuex.Store({
         },
         freteCalculado: '',
         pedidos: [],
+        trocaDeComponentesAdm: 0,
     },
     mutations: {
 

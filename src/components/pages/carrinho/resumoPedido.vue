@@ -124,6 +124,7 @@ export default {
         enderecoEntrega: this.$store.state.enderecoDeEntrega,
         freteCobrado: this.$store.state.freteCalculado,
         totalPago: parseFloat(this.totalProdutos + (parseFloat(this.frete) - this.desconto)),
+        status: '',
       }
       this.addPedido(frm);
       console.log("Comprou");

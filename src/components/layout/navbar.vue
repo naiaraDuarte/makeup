@@ -41,23 +41,23 @@
           nav
           dense
         >
-          <v-list-item link>
+          <v-list-item link @click="troca(1)">
             <v-list-item-icon>
-              <v-icon class="title">mdi-folder</v-icon>
+              <v-icon class="title">mdi-account-group</v-icon>
             </v-list-item-icon>
-            <v-list-item-title class="white--text">My Files</v-list-item-title>
+            <v-list-item-title class="white--text">Clientes</v-list-item-title>
           </v-list-item>
-          <v-list-item link>
+          <v-list-item link @click="troca(2)">
             <v-list-item-icon>
-              <v-icon class="title">mdi-account-multiple</v-icon>
+              <v-icon class="title">mdi-package-variant-closed</v-icon>
             </v-list-item-icon>
-            <v-list-item-title class="white--text">Shared with me</v-list-item-title>
+            <v-list-item-title class="white--text">Pedidos</v-list-item-title>
           </v-list-item>
-          <v-list-item link>
+          <v-list-item link @click="troca(3)">
             <v-list-item-icon>
-              <v-icon class="title">mdi-star</v-icon>
+              <v-icon class="title">mdi-ticket-percent-outline</v-icon>
             </v-list-item-icon>
-            <v-list-item-title class="white--text">Starred</v-list-item-title>
+            <v-list-item-title class="white--text">Cupons</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-navigation-drawer>
@@ -86,6 +86,11 @@ export default {
     };
   },
   components: {
+  },
+  methods: {
+    troca(val){
+      this.$store.state.trocaDeComponentesAdm = val;
+    }
   }
 };
 </script>
