@@ -221,7 +221,7 @@ export default {
   },
   computed: {
     habilitaBotao() {
-      if (this.frete != "" && this.marcados.length > 0) {
+      if (this.frete != "0" && this.marcados.length > 0) {
         return true;
       }
       return false;

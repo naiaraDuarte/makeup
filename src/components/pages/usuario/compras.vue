@@ -4,7 +4,7 @@
 
     <!-- <div class="compras"></div> -->
     <v-row class="mt-1 mx-3 my-3">
-      <v-col lg="12">
+      <v-col lg="12" v-if="this.$store.state.pedidos.length > 0">
         <v-expansion-panels accordion>
           <v-expansion-panel
             v-for="(item, i) in this.$store.state.pedidos"
@@ -34,7 +34,7 @@
                       >
                     </v-col>
                     <v-col lg="4">
-                      <v-btn elevation="0" icon
+                      <v-btn elevation="0" icon @click="trocarPedido(item.id)"
                         ><v-icon
                           color="#b38b57"
                           v-if="e1 == 4 && troca == false && cancelado == false"
@@ -60,7 +60,8 @@
               <v-row>
                 <v-col>
                   <v-stepper alt-labels elevation="0" v-model="e1">
-                    {{ verificaStatus(status) }}
+                    {{ verificaStatus(item.status) }}
+                    <!-- Troca -->
                     <v-stepper-header
                       elevation="0"
                       style="box-shadow: none"
@@ -82,6 +83,8 @@
                         Concluido
                       </v-stepper-step>
                     </v-stepper-header>
+
+                    <!-- Cancelamento -->
                     <v-stepper-header
                       elevation="0"
                       style="box-shadow: none"
@@ -99,6 +102,8 @@
                         Concluído
                       </v-stepper-step>
                     </v-stepper-header>
+
+                    <!-- Normal -->
                     <v-stepper-header
                       elevation="0"
                       style="box-shadow: none"
@@ -126,6 +131,12 @@
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
+      </v-col>
+      <v-col lg="12" v-else class="centraliza mt-5">
+        <p>
+          Você ainda não efetuou nenhuma compra... Dê uma olhada nos nossos
+          produtos... Tenho certeza que você vai gostar :)
+        </p>
       </v-col>
     </v-row>
     <v-dialog v-model="cancelarPedido" persistent max-width="550px">
@@ -157,7 +168,66 @@
           <v-btn color="blue darken-1" text @click="cancelarPedido = false">
             Fechar
           </v-btn>
-          <v-btn color="blue darken-1" text @click="efetuarCancelamento(perfilSelecionado.id)">
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="efetuarCancelamento(perfilSelecionado.id)"
+          >
+            Cancelar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="trocaModal" persistent max-width="750px">
+      <v-card>
+        <v-card-title class="alinhamento">
+          <span class="text-h5">Trocar produto</span>
+          <span class="status">{{ perfilSelecionado.status }}</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container v-if="$store.state.pedidos.length > 0">
+            <v-card elevation="0">
+              <p><b>Numero do pedido:</b> {{ perfilSelecionado.id }}</p>
+              <p><b>Produtos: </b></p>
+              <v-row class="mt-2">
+                <v-col
+                  class=""
+                  lg="12"
+                  v-for="(prod, i) in perfilSelecionado.carrinho"
+                  :key="i"
+                >
+                    <v-row>
+                      <v-col lg="6">
+                        <p>{{ perfilSelecionado.carrinho[i].nome }}</p>
+                      </v-col>
+                      <v-col lg="4">
+                         <p>{{ perfilSelecionado.carrinho[i].preco }}</p>
+                      </v-col>
+                      <v-col lg="2">
+                        <v-btn elevation="0" icon @click="trocaComId(perfilSelecionado, prod.id)"
+                        ><v-icon
+                          color="#b38b57"
+                          >mdi-sync</v-icon
+                        ></v-btn
+                      >
+                      </v-col>
+                    </v-row>
+                    <v-divider></v-divider>
+                </v-col>
+              </v-row>
+            </v-card>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="trocaModal = false">
+            Fechar
+          </v-btn>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="efetuarCancelamento(perfilSelecionado.id)"
+          >
             Cancelar
           </v-btn>
         </v-card-actions>
@@ -172,7 +242,6 @@
       </template>
     </v-snackbar>
   </v-container>
-
 </template>
 <script>
 import { mapMutations } from "vuex";
@@ -183,8 +252,9 @@ export default {
       cancelado: false,
       e1: 4,
       cancelarPedido: false,
+      trocaModal: false,
       perfilSelecionado: "",
-      mensagem:"",
+      mensagem: "",
       snackbar: false,
       snackbarColor: "",
       status: "CANCELAMENTO REJEITADO",
@@ -195,6 +265,7 @@ export default {
   },
 
   methods: {
+    ...mapMutations(["editaParaTroca"]),
     ...mapMutations(["removeItemPedido"]),
     verMais(id) {
       this.perfilSelecionado = this.$store.state.pedidos.filter(
@@ -234,16 +305,28 @@ export default {
         this.e1 = 4;
       }
     },
-    efetuarCancelamento(id){
+    efetuarCancelamento(id) {
       // if (this.verificaId) {
       //   this.$http.delete(`/endereco/${id}`).then(() => {
       //     this.removeEnderecos(id);
       //   });
       // } else {
-        this.removeItemPedido(id);
-        this.exibeSnackBar("green", "Seu pedido foi cancelado");
-        this.cancelarPedido = false;
-      
+      this.removeItemPedido(id);
+      this.exibeSnackBar("green", "Seu pedido foi cancelado");
+      this.cancelarPedido = false;
+    },
+    trocarPedido(id) {
+      this.perfilSelecionado = this.$store.state.pedidos.filter(
+        (ped) => ped.id == id
+      );
+      this.perfilSelecionado = this.perfilSelecionado[0];
+      this.trocaModal = !this.trocaModal;
+      console.log("perfil", this.perfilSelecionado);
+      return this.perfilSelecionado;
+    },
+    trocaComId(item, idProd){
+      this.editaParaTroca(item, idProd)
+      console.log(idProd)
     },
     exibeSnackBar(cor, msg) {
       this.snackbarColor = cor;
@@ -251,8 +334,6 @@ export default {
       this.snackbar = true;
     },
   },
-  
-  
 };
 </script>
 <style scoped>

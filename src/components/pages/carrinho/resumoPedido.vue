@@ -8,14 +8,14 @@
           :key="i"
           class="centraliza mt-1"
         >
-          <v-col lg="3">
+          <v-col lg="3" v-if="item.qtd > 0">
             <v-img height="50" width="50" :src="getImgUrl(item.src)"></v-img>
           </v-col>
-          <v-col lg="7">
+          <v-col lg="7" v-if="item.qtd > 0">
             <p>{{ item.nome }}</p>
           </v-col>
 
-          <v-col lg="2">
+          <v-col lg="2" v-if="item.qtd > 0">
             <p>{{ item.preco }}</p>
           </v-col>
         </v-row>
