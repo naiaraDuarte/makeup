@@ -78,6 +78,24 @@
         </v-row>
       </v-col>
     </v-row>
+    <v-dialog v-model="dialog" persistent max-width="290">
+      <v-card>
+        <v-card-title class="text-h5 centraliza">
+         Compra realizada
+        </v-card-title>
+        <v-card-text>
+          <v-img width="300" src="../../../assets/images/check1.gif"></v-img>
+          Sua compra foi finalizada com sucesso, você poderá acompranhar o status do seu pedido em: Minha conta > compras. 
+          </v-card-text
+        >
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="green darken-1" text @click="redireciona">
+            Ir pra Home
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 <script>
@@ -94,6 +112,7 @@ export default {
     return {
       totalProdutos: 0,
       totalFrete: 0,
+      dialog: false,
     };
   },
   mounted() {
@@ -110,13 +129,14 @@ export default {
       return require("../../../assets/images/" + pic);
     },
     prox() {
+      console.log("Caindo no PROXIMO");
       if (this.pag == "confirmacao") {
         this.$store.state.concluir = false;
         return null;
       }
       this.$store.state.concluir = true;
     },
-    comprar(){
+    comprar() {
       let frm = {
         cliente: this.$store.state.usuario[1],
         carrinho: this.$store.state.carrinho,
@@ -124,13 +144,26 @@ export default {
         cupom: this.$store.state.cupomUtilizado,
         enderecoEntrega: this.$store.state.enderecoDeEntrega,
         freteCobrado: this.$store.state.freteCalculado,
-        totalPago: parseFloat(this.totalProdutos + (parseFloat(this.frete) - this.desconto)),
-        status: 'EM PROCESSAMENTO',
-      }
+        totalPago: parseFloat(
+          this.totalProdutos + (parseFloat(this.frete) - this.desconto)
+        ),
+        status: "EM PROCESSAMENTO",
+      };
       this.addPedido(frm);
       console.log("Comprou");
+      this.dialog = true;
+    },
+    redireciona() {
+      this.$store.state.carrinho = [];
+      this.$store.state.cartoesEscolhidos = [];
+      this.$store.state.enderecoEntrega = "";
+      this.$store.state.freteCalculado = "";
+      this.$store.state.cupomUtilizado = {
+        porcen: 0,
+      };
+      this.$store.state.concluir = false;
       this.$router.push(`/`);
-    }
+    },
   },
 };
 </script>
