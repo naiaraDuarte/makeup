@@ -191,7 +191,7 @@ export default {
 }
 .alinhamento {
   display: flex;
-  justify-content: flex-end;
+  justify-content: end;
 }
 .card-cartao {
   border: 2px solid #bbb !important;

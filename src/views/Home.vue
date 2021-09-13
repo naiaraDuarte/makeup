@@ -296,6 +296,7 @@ export default {
       });
     }
     this.itensBase = this.itens;
+    this.$store.state.listaProdutos = this.itens;
   },
   methods: {
     getImgUrl(pic) {

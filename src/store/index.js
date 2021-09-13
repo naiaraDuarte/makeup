@@ -16,6 +16,7 @@ export default new Vuex.Store({
         enderecos: [],
         countId: 0,
         carrinho: [],
+        listaProdutos: [],
         carrinhoCountId: 0,
         cartoes: [],
         produtos: [],
@@ -25,6 +26,7 @@ export default new Vuex.Store({
         busca: "",
         concluir: false,
         cartoesEscolhidos: [],
+        valeTroca: [],
         enderecoDeEntrega: '',
         cupomUtilizado: {
             porcen: 0,
@@ -136,12 +138,11 @@ export default new Vuex.Store({
             state.countId++;
         },
         editaParaTroca(state, payload){
-           
             let index = state.pedidos.findIndex(pdt => pdt.id == payload[0].id);
             let indexPedido = state.pedidos[index].carrinho.findIndex(item => item.id == payload[1]);
-
+            console.log("IIIIIIIIIIIIIII", state.produtos)
             state.pedidos[index].carrinho.splice(indexPedido, 1);
-            // Vue.set(state.pedidos, index, state.pedidos[index]);
+
         },
         editarPedido(state, payload) {
             let index = state.pedidos.findIndex(pdt => pdt.id == payload[0]);

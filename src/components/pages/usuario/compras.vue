@@ -196,23 +196,23 @@
                   v-for="(prod, i) in perfilSelecionado.carrinho"
                   :key="i"
                 >
-                    <v-row>
-                      <v-col lg="6">
-                        <p>{{ perfilSelecionado.carrinho[i].nome }}</p>
-                      </v-col>
-                      <v-col lg="4">
-                         <p>{{ perfilSelecionado.carrinho[i].preco }}</p>
-                      </v-col>
-                      <v-col lg="2">
-                        <v-btn elevation="0" icon @click="trocaComId(perfilSelecionado, prod.id)"
-                        ><v-icon
-                          color="#b38b57"
-                          >mdi-sync</v-icon
-                        ></v-btn
+                  <v-row>
+                    <v-col lg="6">
+                      <p>{{ perfilSelecionado.carrinho[i].nome }}</p>
+                    </v-col>
+                    <v-col lg="4">
+                      <p>{{ perfilSelecionado.carrinho[i].preco }}</p>
+                    </v-col>
+                    <v-col lg="2">
+                      <v-btn
+                        elevation="0"
+                        icon
+                        @click="trocaComId(perfilSelecionado, prod.id)"
+                        ><v-icon color="#b38b57">mdi-sync</v-icon></v-btn
                       >
-                      </v-col>
-                    </v-row>
-                    <v-divider></v-divider>
+                    </v-col>
+                  </v-row>
+                  <v-divider></v-divider>
                 </v-col>
               </v-row>
             </v-card>
@@ -267,6 +267,7 @@ export default {
   methods: {
     ...mapMutations(["editaParaTroca"]),
     ...mapMutations(["removeItemPedido"]),
+    ...mapMutations(["editarProduto"]),
     verMais(id) {
       this.perfilSelecionado = this.$store.state.pedidos.filter(
         (ped) => ped.id == id
@@ -324,9 +325,14 @@ export default {
       console.log("perfil", this.perfilSelecionado);
       return this.perfilSelecionado;
     },
-    trocaComId(item, idProd){
-      this.editaParaTroca(item, idProd)
-      console.log(idProd)
+    trocaComId(item, idProd) {
+      this.editaParaTroca([item, idProd]);
+      console.log(this.$store.state.listaProdutos);
+      this.$store.state.listaProdutos.filter((prod) => {
+        if (prod.cod == idProd) {
+          this.$store.state.valeTroca.push(prod.preco);
+        }
+      });
     },
     exibeSnackBar(cor, msg) {
       this.snackbarColor = cor;
