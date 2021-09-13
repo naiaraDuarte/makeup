@@ -1,51 +1,95 @@
 <template>
   <v-container style="width: 1200px" fluid>
     <v-card elevation="0" class="mt-5">
-      <h1 class="nameTable mx-2">
-        <v-icon x-large>mdi-chevron-double-right</v-icon> Cupons
-      </h1>
-      <v-row class="mt-5 mx-5">
-        <v-col lg="3">
-          <v-text-field
-            v-model="cupom"
-            class="cupom-input"
-            label="Cupom"
-            id="cupom"
-            required
-          ></v-text-field>
-        </v-col>
-        <v-col lg="3">
-          <v-combobox
-            v-model="tipoDesconto"
-            :items="itensTipoDesconto"
-            label="Tipo de Desconto"
-            id="tipoDesconto"
-          ></v-combobox>
-        </v-col>
-        <v-col lg="3">
-          <v-text-field
-            v-model="porcen"
-            label="Porcentagem de desconto"
-            v-mask="['#%', '##%', '##,#%', '##,##%']"
-            id="porcen"
-            required
-          ></v-text-field>
-        </v-col>
-        <v-col lg="3">
-          <v-text-field
-            v-model="quant"
-            label="Quantidade de cupons"
-            v-mask="['######']"
-            type="number"
-            id="quant"
-            required
-          ></v-text-field>
-        </v-col>
-        <v-col lg="12" class="mb-2 alinhamento">
-          <v-btn color="primary mr-5" @click="gerar"> Gerar Cupom </v-btn>
-        </v-col>
-      </v-row>
+      <v-dialog v-model="gerarCupom">
+        <v-row class="mt-5 mx-5">
+          <v-col lg="3">
+            <v-text-field
+              v-model="cupom"
+              class="cupom-input"
+              label="Cupom"
+              id="cupom"
+              required
+            ></v-text-field>
+          </v-col>
+          <v-col lg="3">
+            <v-combobox
+              v-model="tipoDesconto"
+              :items="itensTipoDesconto"
+              label="Tipo de Desconto"
+              id="tipoDesconto"
+            ></v-combobox>
+          </v-col>
+          <v-col lg="3">
+            <v-text-field
+              v-model="porcen"
+              label="Porcentagem de desconto"
+              v-mask="['#%', '##%', '##,#%', '##,##%']"
+              id="porcen"
+              required
+            ></v-text-field>
+          </v-col>
+          <v-col lg="3">
+            <v-text-field
+              v-model="quant"
+              label="Quantidade de cupons"
+              v-mask="['######']"
+              type="number"
+              id="quant"
+              required
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col lg="12" class="mb-2 alinhamento">
+            <v-btn color="primary mr-5" @click="salvarCupom"> Salvar </v-btn>
+          </v-col>
+          <v-col lg="12" class="mb-2 alinhamento">
+            <v-btn color="primary mr-5" @click="gerarCupom = false">
+              Cancelar
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-dialog>
+      <v-btn color="primary mr-5"  @click="gerar"> Gerar Cupom </v-btn>
+      
+      <v-card elevation="0">
+        <v-card-title>
+          <h2 class="nameTable">
+            <v-icon x-large>mdi-chevron-double-right</v-icon> Cupons
+          </h2>          
+          <v-spacer></v-spacer>        
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Search"
+          single-line
+          hide-details
+        ></v-text-field>
+      </v-card-title>
+      <v-data-table
+        :headers="headers"
+        :items= this.$store.state.cupons
+        locale="pt-br"
+        :search="search"
+      >        
+
+        <template v-slot:[`item.acoes`]="{ item }">
+          <v-row align="center" class="mx-0">
+            
+            <v-btn @click="verMais(item.acoes)" icon>
+              <v-icon>mdi-dots-horizontal</v-icon>
+            </v-btn>
+          </v-row>
+        </template>
+      </v-data-table>
+        <v-row class="mt-1 mx-3 my-3">
+          <v-col lg="12"> </v-col>
+        </v-row>
+      </v-card>
+      
     </v-card>
+
     <v-snackbar v-model="snackbar" :color="snackbarColor">
       <h4 style="font-weight: 100">{{ mensagem }}</h4>
       <template v-slot:action="{ attrs }">
@@ -69,13 +113,32 @@ export default {
       mensagem: "",
       snackbar: "",
       quant: 0,
+      search: "",
       itensTipoDesconto: ["Na compra", "Frete"],
+      gerarCupom: false,
+      headers: [        
+        { text: "Codigo", value: "cod" },
+        { text: "Tipo Desconto", value: "tipo" },
+        { text: "Percentual", value: "porcen" },
+        { text: "Quantidade", value: "quant"},
+        { text: "Ações", value: "acoes"}
+        
+      ],
     };
   },
   methods: {
     ...mapMutations(["addCupons"]),
     gerar() {
-      if (this.cupom == "" || this.porcen == "" || this.tipoDesconto == "" || this.quant == null || this.quant == 0) {
+      this.gerarCupom = !this.gerarCupom;
+    },
+    salvarCupom() {
+      if (
+        this.cupom == "" ||
+        this.porcen == "" ||
+        this.tipoDesconto == "" ||
+        this.quant == null ||
+        this.quant == 0
+      ) {
         this.exibeSnackBar("#b38b57", "Todos os campos devem ser preechidos");
         return false;
       }
@@ -83,10 +146,11 @@ export default {
         cod: this.cupom.toUpperCase(),
         porcen: parseInt(this.porcen.replace("%", "")),
         tipo: this.tipoDesconto,
-        quant: this.quant
+        quant: this.quant,
       };
       this.addCupons(frm);
       this.exibeSnackBar("green", "Cupom adicionado");
+      this.gerarCupom = !this.gerarCupom;
       console.log(this.$store.state.cupons);
     },
     exibeSnackBar(cor, msg) {
@@ -94,6 +158,10 @@ export default {
       this.mensagem = msg;
       this.snackbar = true;
     },
+    // getCupom(){
+    //   this.cupons
+
+    // },
   },
 };
 </script>
@@ -104,5 +172,14 @@ export default {
 .alinhamento {
   display: flex;
   justify-content: flex-end;
+}
+.card-cartao {
+  border: 2px solid #bbb !important;
+}
+.marcado {
+  border: 2px solid #b38b57 !important;
+}
+.desmarcado {
+  border: 2px solid #bbb !important;
 }
 </style>
