@@ -18,7 +18,7 @@
                   <p>Pedido: {{ item.id }}</p>
                 </v-col>
                 <v-col lg="2">
-                  <p>Data pedido: 12/09</p>
+                  <p>Data pedido: 14/09</p>
                 </v-col>
                 <v-col lg="2">
                   <p></p>

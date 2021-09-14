@@ -32,10 +32,10 @@
         >
           <template v-slot:[`item.acoes`]="{ item }">
             <v-row align="center" class="mx-0 mr-4">
-              <v-btn @click="getCupom(item.cod)" icon>
+              <v-btn  id="editarCupom" @click="getCupom(item.cod)" icon>
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
-              <v-btn @click="removeCupons(item.cod)" icon>
+              <v-btn id="deletarCupom" @click="removeCupom(item.acoes)" icon>
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
             </v-row>
@@ -106,7 +106,7 @@
           <v-btn
             elevation="0"
             color="white"
-            class="btnSubmit"
+            class="btnSubmit"            
             @click="editarCupom"
             v-if="id != null"
           >
@@ -176,6 +176,10 @@ export default {
       this.quant = 0;
       this.porcen = 0;
 
+    },
+    removeCupom(cod){      
+      this.removeCupons(cod);
+      this.exibeSnackBar("green", "Cupom removido");
     },
     salvarCupom() {
       if (
