@@ -3,14 +3,18 @@
     <v-row>
       <v-col>
         <v-card elevation="0">
-          <h2>Meu carrinho</h2>
-          <v-divider></v-divider>
+          <p class="mb-3 tituloModalCarrinho">
+            <v-icon large>mdi-chevron-double-right</v-icon>Meu carrinho
+          </p>
+          <v-divider class="mb-5"></v-divider>
           <v-row v-if="$store.state.carrinho.length > 0">
-            <v-col lg="12" class="px-2" v-for="(item, i) in $store.state.carrinho"
-                :key="i">
-              <v-row v-if="item.qtd > 0"
-                class="centraliza"
-              >
+            <v-col
+              lg="12"
+              class="px-2"
+              v-for="(item, i) in $store.state.carrinho"
+              :key="i"
+            >
+              <v-row v-if="item.qtd > 0" class="centraliza">
                 <v-col lg="3">
                   <v-img
                     height="100"
@@ -106,6 +110,16 @@
                         $n(parseFloat(totalProdutos + totalFrete), "currency")
                       }}
                     </h3>
+                  </v-card>
+                  <v-card class="separa mt-4" elevation="0">
+                    <v-btn class="btnFilter ampliarBtn" elevation="0" @click="$router.push(`/`)"
+                      >Continuar comprando</v-btn
+                    > 
+                  </v-card>
+                  <v-card class="separa mt-2 mb-5" elevation="0">
+                    <v-btn class="ampliarBtn" color="primary" elevation="0" @click="prox"
+                      >Ir para pagamento</v-btn
+                    >
                   </v-card>
                 </v-col>
               </v-row>
@@ -231,6 +245,9 @@ export default {
       this.mensagem = msg;
       this.snackbar = true;
     },
+    prox(){
+      this.$emit("compraProx", 1);
+    }
   },
 };
 </script>
@@ -239,5 +256,9 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.tituloModalCarrinho {
+  font-size: 28px;
+  font-weight: 500;
 }
 </style>

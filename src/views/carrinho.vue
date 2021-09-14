@@ -26,28 +26,7 @@
 
             <v-stepper-items>
               <v-stepper-content step="1">
-                <compras></compras>
-
-                <v-row class="text-right mx-1 mb-3">
-                  <v-col lg="9"></v-col>
-                  <v-col lg="3">
-                    <v-row class="text-right">
-                      <v-col class="pl-5 text-center">
-                        <v-btn
-                          elevation="1"
-                          icon
-                          id="ir"
-                          @click="e1 = 2"
-                          :disabled="
-                            verificaId == false ||
-                            $store.state.carrinho.length == 0
-                          "
-                          ><v-icon>mdi-chevron-right</v-icon></v-btn
-                        >
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                </v-row>
+                <compras @compraProx="e1 = 2"></compras>
               </v-stepper-content>
               <v-stepper-content step="2">
                 <pagamento :mostra="false"></pagamento>
@@ -100,21 +79,8 @@
             </v-stepper-header>
 
             <v-stepper-items>
-              <v-stepper-content style="padding: 10px 24px 16px 24px" step="1">
-                <compras></compras>
-
-                <v-row class="text-right mx-1 mb-3">
-                  <v-col lg="9"></v-col>
-                  <v-col lg="3">
-                    <v-row class="text-right">
-                      <v-col class="pl-5 text-center">
-                        <v-btn elevation="1" icon id="ir" @click="e1 = 2"
-                          ><v-icon>mdi-chevron-right</v-icon></v-btn
-                        >
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                </v-row>
+              <v-stepper-content step="1">
+                <compras @compraProx="e1 = 2"></compras>
               </v-stepper-content>
               <v-stepper-content step="2">
                 <entrar :carrinho="true" @logou="e1 = 3"></entrar>
@@ -251,8 +217,3 @@ export default {
   },
 };
 </script>
-<style>
-::v-deep .stepper__content {
-    padding: 10px 24px 16px 24px !important;
-}
-</style>
