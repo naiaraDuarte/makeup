@@ -17,13 +17,13 @@ export default {
       .getContext("2d")
       .createLinearGradient(0, 0, 0, 450);
 
-    this.gradient.addColorStop(0, "rgba(255, 0,0, 0.5)");
-    this.gradient.addColorStop(0.5, "rgba(255, 0, 0, 0.25)");
-    this.gradient.addColorStop(1, "rgba(255, 0, 0, 0)");
+    this.gradient.addColorStop(0, "rgba(179, 139, 87, 0.5)");
+    this.gradient.addColorStop(0.5, "rgba(179, 139, 87, 0.50)");
+    this.gradient.addColorStop(1, "rgba(179, 139, 87, 0)");
 
     this.gradient2.addColorStop(0, "rgba(0, 231, 255, 0.9)");
-    this.gradient2.addColorStop(0.5, "rgba(0, 231, 255, 0.25)");
-    this.gradient2.addColorStop(1, "rgba(0, 231, 255, 0)");
+    this.gradient2.addColorStop(0.5, "rgba(179, 139, 87, 0.25)");
+    this.gradient2.addColorStop(1, "rgba(179, 139, 87, 0)");
 
     this.renderChart(
       {
@@ -39,7 +39,7 @@ export default {
         datasets: [
           {
             label: "Data One",
-            borderColor: "#FC2525",
+            borderColor: "#b38b57",
             pointBackgroundColor: "white",
             borderWidth: 1,
             pointBorderColor: "white",
@@ -48,7 +48,7 @@ export default {
           },
           {
             label: "Data Two",
-            borderColor: "#05CBE1",
+            borderColor: "#000000",
             pointBackgroundColor: "white",
             pointBorderColor: "white",
             borderWidth: 1,
