@@ -207,7 +207,7 @@
                       <v-btn
                         elevation="0"
                         icon
-                        @click="trocaComId(perfilSelecionado, prod.id)"
+                        @click="trocaComId(perfilSelecionado, prod)"
                         ><v-icon color="#b38b57">mdi-sync</v-icon></v-btn
                       >
                     </v-col>
@@ -326,10 +326,10 @@ export default {
       return this.perfilSelecionado;
     },
     trocaComId(item, idProd) {
-      this.editaParaTroca([item, idProd]);
-      console.log(this.$store.state.listaProdutos);
+      this.editaParaTroca([item, idProd.id]);
+      console.log(this.$store.state.listaProdutos, "||||", idProd.id);
       this.$store.state.listaProdutos.filter((prod) => {
-        if (prod.cod == idProd) {
+        if (prod.cod == idProd.id) {
           this.$store.state.valeTroca.push(prod.preco);
         }
       });

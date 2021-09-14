@@ -232,6 +232,7 @@ export default {
         "17.70",
         "9.99",
       ],
+      cod: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
     };
   },
   watch: {
@@ -288,7 +289,7 @@ export default {
     for (let index = 0; index < 15; index++) {
       let x = Math.floor(Math.random() * 11 + 1);
       this.itens.push({
-        cod: index,
+        cod: this.cod[x],
         src: `produto${x}.jpeg`,
         nome: this.nomeItens[x],
         preco: this.precosItens[x],
