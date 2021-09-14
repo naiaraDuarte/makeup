@@ -3,15 +3,18 @@
     <v-card class="px-3" elevation="0">
       <v-row>
         <v-col lg="6">
-          <h2>Pagamento</h2>
+         <p class="mb-3 tituloModalCarrinho">
+            <v-icon class="pb-1" large>mdi-chevron-double-right</v-icon>Pagamento
+          </p>
+          <v-divider class="mb-8"></v-divider>
           <v-card elevation="0" class="mt-3">
-            <h4>
-              <v-icon>mdi-credit-card-plus-outline</v-icon> Cartão de crédito
+            <h4 class="alinhamentoTitulo">
+              <p><v-icon>mdi-credit-card-plus-outline</v-icon> Cartão de crédito</p>
               <v-btn
                 elevation="0"
                 text
                 v-if="mostrarCartao == false"
-                class="btnSubmit"
+                class="btnSubmit pb-3"
                 @click="mostrarCartao = true"
                 ><v-icon left> mdi-plus </v-icon> add cartão</v-btn
               >
@@ -44,9 +47,7 @@
                 <p>Você ainda não possui cartões cadastrados</p>
               </v-col>
             </v-row>
-            <v-row
-              v-if="$store.state.cartoes.length > 0 && mostrarCartao == true"
-            >
+            <v-row v-if="mostrarCartao == true">
               <v-col lg="12" class="alinhamento">
                 <v-btn
                   elevation="1"
@@ -64,7 +65,7 @@
             <v-row>
               <v-col lg="12">
                 <h4><v-icon>mdi-ticket-percent-outline</v-icon> Cupom</h4>
-                <p>Você tem um cupom? <b>Desejo usá-lo agora</b></p>
+                <p>Você tem um cupom? Desejo usá-lo agora</p>
                 <v-row>
                   <v-col lg="10">
                     <v-text-field
@@ -93,7 +94,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col lg="12" class="alinhamento">
+              <v-col lg="12" class="alinhamento" v-show="mostrarEndereco">
                 <v-btn
                   elevation="1"
                   icon
@@ -102,22 +103,25 @@
                   ><v-icon>mdi-close</v-icon></v-btn
                 >
               </v-col>
-              <v-col lg="12">
-                <endereco v-show="mostrarEndereco" :mostra="false"></endereco>
+              <v-col lg="12" v-show="mostrarEndereco">
+                <endereco :mostra="false"></endereco>
               </v-col>
               <v-col lg="12" v-show="mostrarEndereco == false">
-                <h4>
-                  <v-icon>mdi-map-marker-radius-outline</v-icon> Endereço de
-                  entrega
+                <h4 class="alinhamentoTitulo">
+                  <p><v-icon>mdi-map-marker-radius-outline</v-icon> Endereço de
+                  entrega</p>
                   <v-btn
                     elevation="0"
                     text
                     v-if="mostrarEndereco == false"
-                    class="btnSubmit"
+                    class="btnSubmit pb-3"
                     @click="mostrarEndereco = true"
                     ><v-icon left> mdi-plus </v-icon> Add endereco</v-btn
                   >
                 </h4>
+                <p>
+                  Selecione o endereço de entraga do seus produtos
+                </p>
                 <v-row
                   class="mt-3"
                   v-for="(item, i) in this.$store.state.enderecos"
@@ -351,5 +355,9 @@ export default {
 .alinhamento {
   display: flex;
   justify-content: flex-end;
+}
+.alinhamentoTitulo{
+  display: flex;
+  justify-content: space-between;
 }
 </style>

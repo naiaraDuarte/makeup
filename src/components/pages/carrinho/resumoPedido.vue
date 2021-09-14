@@ -1,6 +1,9 @@
 <template>
   <v-container>
-    <h2>Resumo do pedido</h2>
+    <p class="mb-3 tituloModalCarrinho">
+      <v-icon class="pb-1" large>mdi-chevron-double-right</v-icon>Resumo do pedido
+    </p>
+    <v-divider></v-divider>
     <v-row v-if="$store.state.carrinho.length > 0">
       <v-col lg="12" class="px-2 mt-1">
         <v-row
@@ -19,7 +22,7 @@
             <p>{{ item.preco }}</p>
           </v-col>
         </v-row>
-        <v-divider></v-divider>
+        <v-divider class="mt-5"></v-divider>
       </v-col>
       <v-col lg="12">
         <v-row>
@@ -58,6 +61,13 @@
               >Tem algo errado, desejo voltar e arrumar</v-btn
             >
             <v-btn
+              v-else
+              class="btnFilter ampliarBtn mb-3"
+              elevation="0"
+              @click="$router.push(`/`)"
+              >Continuar comprando</v-btn
+            >
+            <v-btn
               v-if="pag == 'confirmacao'"
               elevation="0"
               color="primary"
@@ -81,13 +91,13 @@
     <v-dialog v-model="dialog" persistent max-width="290">
       <v-card>
         <v-card-title class="text-h5 centraliza">
-         Compra realizada
+          Compra realizada
         </v-card-title>
         <v-card-text>
           <v-img width="300" src="../../../assets/images/check1.gif"></v-img>
-          Sua compra foi finalizada com sucesso, você poderá acompranhar o status do seu pedido em: Minha conta > compras. 
-          </v-card-text
-        >
+          Sua compra foi finalizada com sucesso, você poderá acompranhar o
+          status do seu pedido em: Minha conta > compras.
+        </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="green darken-1" text @click="redireciona">

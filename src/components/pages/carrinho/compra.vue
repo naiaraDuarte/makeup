@@ -4,7 +4,7 @@
       <v-col>
         <v-card elevation="0">
           <p class="mb-3 tituloModalCarrinho">
-            <v-icon large>mdi-chevron-double-right</v-icon>Meu carrinho
+            <v-icon class="pb-1" large>mdi-chevron-double-right</v-icon>Meu carrinho
           </p>
           <v-divider class="mb-5"></v-divider>
           <v-row v-if="$store.state.carrinho.length > 0">
