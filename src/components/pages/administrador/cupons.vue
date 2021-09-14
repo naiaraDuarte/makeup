@@ -1,18 +1,19 @@
 <template>
   <v-container style="width: 1200px" fluid>
-    <v-card elevation="0" class="mt-5"> 
+    <v-card elevation="0" class="mt-5">
       <v-row>
         <v-col lg="12" class="alinhamento">
-          <v-btn color="primary mr-5" @click="gerar"><v-icon class="pr-2" small>mdi-plus</v-icon> Add Cupom </v-btn>
+          <v-btn color="primary mr-5" @click="gerar"
+            ><v-icon class="pr-2" small>mdi-plus</v-icon> Add Cupom
+          </v-btn>
         </v-col>
-        </v-row>   
-      
+      </v-row>
+
       <v-card elevation="0">
         <v-card-title>
           <h2 class="nameTable">
             <v-icon x-large>mdi-chevron-double-right</v-icon> Cupons
           </h2>
-          
 
           <v-spacer></v-spacer>
           <v-text-field
@@ -30,9 +31,12 @@
           :search="search"
         >
           <template v-slot:[`item.acoes`]="{ item }">
-            <v-row align="center" class="mx-0">
+            <v-row align="center" class="mx-0 mr-4">
+              <v-btn @click="getCupom(item.cod)" icon>
+                <v-icon>mdi-pencil</v-icon>
+              </v-btn>
               <v-btn @click="verMais(item.acoes)" icon>
-                <v-icon>mdi-dots-horizontal</v-icon>
+                <v-icon>mdi-delete</v-icon>
               </v-btn>
             </v-row>
           </template>
@@ -103,7 +107,17 @@
             elevation="0"
             color="white"
             class="btnSubmit"
+            @click="editarCupom"
+            v-if="id != null"
+          >
+            Salvar
+          </v-btn>
+          <v-btn
+            elevation="0"
+            color="white"
+            class="btnSubmit"
             @click="salvarCupom"
+            v-else
           >
             Salvar
           </v-btn>
@@ -137,6 +151,8 @@ export default {
       search: "",
       itensTipoDesconto: ["Na compra", "Frete"],
       gerarCupom: false,
+      cod: "",
+      id: null,
       headers: [
         { text: "Codigo", value: "cod" },
         { text: "Tipo Desconto", value: "tipo" },
@@ -148,8 +164,16 @@ export default {
   },
   methods: {
     ...mapMutations(["addCupons"]),
+    ...mapMutations(["editarCupons"]),
     gerar() {
       this.gerarCupom = !this.gerarCupom;
+    },
+    limparCampos(){
+      this.cupom = "";
+      this.tipoDesconto = "";
+      this.quant = 0;
+      this.porcen = 0;
+
     },
     salvarCupom() {
       if (
@@ -170,6 +194,8 @@ export default {
       };
       this.addCupons(frm);
       this.exibeSnackBar("green", "Cupom adicionado");
+      this.limparCampos();
+
       this.gerarCupom = !this.gerarCupom;
       console.log(this.$store.state.cupons);
     },
@@ -178,10 +204,30 @@ export default {
       this.mensagem = msg;
       this.snackbar = true;
     },
-    // getCupom(){
-    //   this.cupons
+    editarCupom() {
+      let frm = {
+        cod: this.cupom,
+        quant: this.quant,
+        porcen: parseInt(this.porcen.replace("%", "")),
+        tipo: this.tipoDesconto,
+      };
+      this.editarCupons(frm);
+      this.id = null;
+      this.limparCampos();
+      this.gerarCupom = !this.gerarCupom;
+      this.exibeSnackBar("green", "Cupom editado");
+    },
+    getCupom(cod) {
+      this.gerarCupom = !this.gerarCupom;
+      this.id = cod;
 
-    // },
+      let cupom = this.$store.state.cupons.filter((cupom) => cupom.cod == cod);
+      cupom = cupom[0];
+      this.cupom = cupom.cod;
+      this.porcen = cupom.porcen;
+      this.quant = cupom.quant;
+      this.tipoDesconto = cupom.tipo;
+    },
   },
 };
 </script>
@@ -203,7 +249,7 @@ export default {
   border: 2px solid #bbb !important;
 }
 .alinhamento {
-    display: flex;
-    justify-content: end;
+  display: flex;
+  justify-content: end;
 }
 </style>

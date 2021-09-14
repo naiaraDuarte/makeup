@@ -92,8 +92,10 @@ export default new Vuex.Store({
             state.cupons.push(payload);
         },
         editarCupons(state, payload) {
+            console.log("store", payload)
             let index = state.cupons.findIndex(cupons => cupons.cod == payload.cod);
             Vue.set(state.cupons, index, payload);
+
         },
         removeCupons(state, payload) {
             let index = state.cupons.findIndex(cupons => cupons.cod == payload);
@@ -137,7 +139,7 @@ export default new Vuex.Store({
             state.pedidos.push(payload);
             state.countId++;
         },
-        editaParaTroca(state, payload){
+        editaParaTroca(state, payload) {
             let index = state.pedidos.findIndex(pdt => pdt.id == payload[0].id);
             let indexPedido = state.pedidos[index].carrinho.findIndex(item => item.id == payload[1]);
             console.log("IIIIIIIIIIIIIII", state.produtos)

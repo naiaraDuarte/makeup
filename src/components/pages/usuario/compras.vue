@@ -123,6 +123,7 @@
                       style="box-shadow: none"
                       v-else-if="cancelado == true"
                     >
+                    
                       <v-stepper-step step="1" :complete="e1 > 1"
                         >Cancelamento solicitado
                       </v-stepper-step>
@@ -131,7 +132,8 @@
                         >Em análise
                       </v-stepper-step>
                       <v-divider></v-divider>
-                      <v-stepper-step step="3" :complete="e1 > 3">
+                      <!-- :complete="e1 > 3"  tirei pra apresentar-->
+                      <v-stepper-step step="3" >
                         Concluído
                       </v-stepper-step>
                     </v-stepper-header>
@@ -204,9 +206,9 @@
           <v-btn
             color="blue darken-1"
             text
-            @click="efetuarCancelamento(perfilSelecionado.id)"
+            @click="efetuarCancelamento(perfilSelecionado.id)" id="confirmarCancela"
           >
-            Cancelar
+            Confirmar
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -253,16 +255,16 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="trocaModal = false">
+          <v-btn color="blue darken-1" text @click="trocaModal = false" id="fecharTroca">
             Fechar
           </v-btn>
-          <v-btn
+          <!-- <v-btn
             color="blue darken-1"
             text
             @click="efetuarCancelamento(perfilSelecionado.id)"
           >
             Cancelar
-          </v-btn>
+          </v-btn> -->
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -283,7 +285,7 @@ export default {
     return {
       troca: false,
       cancelado: false,
-      e1: 4,
+      e1: 1,
       cancelarPedido: false,
       trocaModal: false,
       perfilSelecionado: "",
@@ -345,8 +347,13 @@ export default {
       //     this.removeEnderecos(id);
       //   });
       // } else {
-      this.removeItemPedido(id);
-      this.exibeSnackBar("green", "Seu pedido foi cancelado");
+      // this.removeItemPedido(id);
+      console.log(id);
+      this.exibeSnackBar("green", "Seu cancelamento foi pra análise");
+      this.cancelado =true;
+      // this.status ="CANCELAMENTO SOLICITADO";
+      // this.verificaStatus(this.status);    
+      // console.log("e1", this.e1)
       this.cancelarPedido = false;
     },
     trocarPedido(id) {

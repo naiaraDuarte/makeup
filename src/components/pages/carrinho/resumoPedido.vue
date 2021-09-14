@@ -82,6 +82,7 @@
               :disabled="!habilitaBotao"
               class="ampliarBtn"
               @click="prox()"
+              id="finalizarCompra"
               >Finalizar compra</v-btn
             >
           </v-col>

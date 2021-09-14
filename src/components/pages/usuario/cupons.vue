@@ -1,6 +1,7 @@
 <template>
   <v-container fluid>
-    <h1>Cupons do cliente {{ $store.state.valeTroca }}</h1>
+    <h1>Cupons do cliente </h1>
+    <!-- {{ $store.state.valeTroca }} -->
     <v-row class="mt-3">
       <v-col lg="3" v-for="(item, i) in this.$store.state.cupons" :key="i">
         <v-card elevation="0" class="card-cartao p-2">

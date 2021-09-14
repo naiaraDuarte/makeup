@@ -117,7 +117,7 @@
                     > 
                   </v-card>
                   <v-card class="separa mt-2 mb-5" elevation="0">
-                    <v-btn class="ampliarBtn" color="primary" elevation="0" @click="prox"
+                    <v-btn class="ampliarBtn" color="primary" elevation="0" @click="prox" id="irPagamento"
                       >Ir para pagamento</v-btn
                     >
                   </v-card>
