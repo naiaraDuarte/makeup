@@ -7,6 +7,7 @@ import './assets/css/main.scss'
 import VueTheMask from 'vue-the-mask'
 import VueI18n from 'vue-i18n'
 import './plugins/axios'
+import 'chart.js'
 
 Vue.config.productionTip = false
 Vue.use(VueTheMask);

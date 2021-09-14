@@ -64,7 +64,7 @@
                     :src="getImgUrl(prod.src)"
                   ></v-img>
                 </v-col>
-                <v-col lg="4">
+                <v-col lg="3">
                   <p>{{ prod.nome }}</p>
                 </v-col>
                 <v-col lg="2">
@@ -79,8 +79,8 @@
                     ></v-rating>
                   </p>
                 </v-col>
-                <v-col lg="1">
-                  <p>{{ prod.preco }}</p>
+                <v-col lg="2">
+                  <p>{{ $n(prod.preco, "currency") }}</p>
                 </v-col>
                 <v-col lg="2">
                   <v-btn
