@@ -35,7 +35,7 @@
               <v-btn @click="getCupom(item.cod)" icon>
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
-              <v-btn @click="verMais(item.acoes)" icon>
+              <v-btn @click="removeCupons(item.cod)" icon>
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
             </v-row>
@@ -165,6 +165,8 @@ export default {
   methods: {
     ...mapMutations(["addCupons"]),
     ...mapMutations(["editarCupons"]),
+    ...mapMutations(["removeCupons"]),
+    
     gerar() {
       this.gerarCupom = !this.gerarCupom;
     },
