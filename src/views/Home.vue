@@ -437,7 +437,7 @@ export default {
 
 .corTitulo{
   color: grey;
-  font-size: 16px;
+  font-size: 16px !important;
 }
 
 .v-card--reveal {
