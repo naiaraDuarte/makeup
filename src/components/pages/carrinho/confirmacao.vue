@@ -36,16 +36,16 @@
                 </div>
               </v-col>
             </v-row>
-            <v-row v-if="Object.keys($store.state.cupomUtilizado).length > 1">
-              <v-col lg="6" class="mt-3">
+            <v-row>
+              <v-col lg="6" class="mt-3" v-if="Object.keys($store.state.cupomUtilizado).length > 1">
                 <h4>
                   <v-icon>mdi-ticket-percent-outline</v-icon> Cupom Utilizado
                 </h4>
                 <v-row class="mt-3">
                   <v-col lg="12">
-                    <v-card elevation="0" class="card-endereco p-2">
+                    <v-card elevation="0" class="card-endereco">
                       <v-row>
-                        <v-col lg="12" class="centraliza">
+                        <v-col lg="12" class="centraliza p-0">
                           <h4>{{ $store.state.cupomUtilizado.cod  }}</h4>
                         </v-col>
                         <v-col lg="6" class="p-0 centraliza">

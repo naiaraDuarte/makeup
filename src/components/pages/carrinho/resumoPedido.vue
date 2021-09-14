@@ -100,7 +100,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="green darken-1" text @click="redireciona">
+          <v-btn color="#b38b57" text @click="redireciona">
             Ir pra Home
           </v-btn>
         </v-card-actions>

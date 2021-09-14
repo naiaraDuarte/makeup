@@ -52,9 +52,42 @@
                   <p>Produtos:</p>
                 </v-col>
               </v-row>
-              <v-row v-for="(prod, i) in item.carrinho" :key="i">
-                <v-col lg="3">
-                  <p>{{ item.carrinho[i].nome }}</p>
+              <v-row
+                v-for="(prod, i) in item.carrinho"
+                :key="i"
+                class="alinhamentoProd"
+              >
+                <v-col lg="2">
+                  <v-img
+                    height="80"
+                    width="80"
+                    :src="getImgUrl(prod.src)"
+                  ></v-img>
+                </v-col>
+                <v-col lg="4">
+                  <p>{{ prod.nome }}</p>
+                </v-col>
+                <v-col lg="2">
+                  <p>
+                    <v-rating
+                      :value="4.5"
+                      color="#deb887"
+                      dense
+                      half-increments
+                      readonly
+                      size="14"
+                    ></v-rating>
+                  </p>
+                </v-col>
+                <v-col lg="1">
+                  <p>{{ prod.preco }}</p>
+                </v-col>
+                <v-col lg="2">
+                  <v-btn
+                    class="btnFilter ampliarBtn"
+                    elevation="0"
+                    >Avaliar</v-btn
+                  >
                 </v-col>
               </v-row>
               <v-row>
@@ -334,6 +367,9 @@ export default {
         }
       });
     },
+    getImgUrl(pic) {
+      return require("../../../assets/images/" + pic);
+    },
     exibeSnackBar(cor, msg) {
       this.snackbarColor = cor;
       this.mensagem = msg;
@@ -350,5 +386,10 @@ export default {
 
 .v-dialog > .v-card > .v-card__title > .status {
   font-size: 14px !important;
+}
+
+.alinhamentoProd {
+  display: flex;
+  align-items: center;
 }
 </style>
