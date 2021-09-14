@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <p class="mb-3 tituloModalCarrinho">
       <v-icon class="pb-1" large>mdi-chevron-double-right</v-icon>Resumo do pedido
     </p>

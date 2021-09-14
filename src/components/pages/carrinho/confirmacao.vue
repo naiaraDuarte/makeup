@@ -3,12 +3,14 @@
     <v-card class="px-3" elevation="0">
       <v-row>
         <v-col lg="6">
-          <h2>Pagamento</h2>
+         <p class="mb-3 tituloModalCarrinho">
+            <v-icon class="pb-1" large>mdi-chevron-double-right</v-icon>Confirmação
+          </p>
+          <v-divider class="mb-5"></v-divider>
           <v-card elevation="0" class="mt-3">
-            <h4>
-              <v-icon>mdi-credit-card-plus-outline</v-icon> Cartão de crédito
+            <h4 class="mb-5">
+              <v-icon class="pl-1">mdi-credit-card-plus-outline</v-icon> Cartões escolhidos
             </h4>
-            <p>Selecione os cartões que deseja pagar</p>
             <v-row v-if="$store.state.cartoesEscolhidos.length > 0">
               <v-col
                 lg="12"
@@ -17,53 +19,53 @@
                 :key="i"
               >
                 <div class="mt-2 px-5">
-                  <v-card class="p-3 pl-2">
+                  <v-card class="p-3 pl-2" elevation="1">
                     <v-row>
-                      <v-col lg="6">
-                        <p>
-                          <b>{{ item.nome }}</b>
+                      <v-col lg="5">
+                        <p>{{ item.nome }}
                         </p>
                       </v-col>
-                      <v-col lg="6">
+                      <v-col lg="5">
                         <p>{{ item.numero }}</p>
+                      </v-col>
+                      <v-col lg="2">
+                        <p>2x</p>
                       </v-col>
                     </v-row>
                   </v-card>
                 </div>
               </v-col>
             </v-row>
-            <v-row v-if="Object.keys($store.state.cupomUtilizado).length != 0">
-              <v-col lg="12">
+            <v-row v-if="Object.keys($store.state.cupomUtilizado).length > 1">
+              <v-col lg="6" class="mt-3">
                 <h4>
                   <v-icon>mdi-ticket-percent-outline</v-icon> Cupom Utilizado
                 </h4>
-                <v-row>
-                  <v-col lg="4">
-                    <p>
-                      <b>Código do cupom: </b>
-                      {{ $store.state.cupomUtilizado.cod }}
-                    </p>
-                  </v-col>
-                  <v-col lg="4">
-                    <p>
-                      <b>Porcentagem de desconto: </b>
-                      {{ $store.state.cupomUtilizado.porcen }} %
-                    </p>
-                  </v-col>
-                  <v-col lg="4">
-                    <p><b>Valor de desconto: </b> {{ $n( desconto, "currency")  }}</p>
+                <v-row class="mt-3">
+                  <v-col lg="12">
+                    <v-card elevation="0" class="card-endereco p-2">
+                      <v-row>
+                        <v-col lg="12" class="centraliza">
+                          <h4>{{ $store.state.cupomUtilizado.cod  }}</h4>
+                        </v-col>
+                        <v-col lg="6" class="p-0 centraliza">
+                          <p>{{ $store.state.cupomUtilizado.porcen }}%</p>
+                        </v-col>
+                        <v-col lg="6" class="p-0 centraliza">
+                          <p>{{ $n( desconto, "currency") }}</p>
+                        </v-col>
+                      </v-row>
+                    </v-card>
                   </v-col>
                 </v-row>
               </v-col>
-            </v-row>
-            <v-row>
-              <v-col lg="12">
+              <v-col lg="6" class="mt-3">
                 <h4>
                   <v-icon>mdi-map-marker-radius-outline</v-icon> Endereço de
                   entrega
                 </h4>
                 <v-row class="mt-3">
-                  <v-col lg="6">
+                  <v-col lg="12">
                     <v-card elevation="0" class="card-endereco p-2">
                       <v-row>
                         <v-col lg="12" class="centraliza">
@@ -80,6 +82,9 @@
                   </v-col>
                 </v-row>
               </v-col>
+            </v-row>
+            <v-row>
+              
             </v-row>
             <!-- <v-combobox
               class="mt-3"

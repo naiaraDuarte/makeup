@@ -3,7 +3,7 @@
     <v-card elevation="0" class="mt-5"> 
       <v-row>
         <v-col lg="12" class="alinhamento">
-          <v-btn color="primary mr-5" @click="gerar"> Gerar Cupom </v-btn>
+          <v-btn color="primary mr-5" @click="gerar"><v-icon class="pr-2" small>mdi-plus</v-icon> Add Cupom </v-btn>
         </v-col>
         </v-row>   
       

@@ -71,6 +71,7 @@
                     <v-text-field
                       v-model="cupom"
                       label="Cupom"
+                      :disabled="cupomUtilizado == true"
                       class="cupom-input"
                       id="cupom"
                       required
