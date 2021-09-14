@@ -99,9 +99,10 @@
     </v-speed-dial>
 
     <v-bottom-sheet v-model="sheet" v-if="sheet">
-      <v-card class="carrinho text-center" height="500" width="300">
+      <v-card class="carrinho text-center" :class="[$store.state.carrinho.length == 0 ? 'centraliza' : '']" height="500" width="300">
         <p class="tituloModalCarrinho mt-2" v-if="$store.state.carrinho.length > 0">Produtos escolhidos</p>
-        <p class="tituloModalCarrinho mt-2" v-else >Você ainda não add nenhum produto, mas ó, assim que add ele aparecerá aqui, viu?</p>
+        <v-divider class="px-10 mx-10 mt-1" v-if="$store.state.carrinho.length > 0"></v-divider>
+        <p class="tituloModalCarrinho corTitulo pl-3 mt-2" v-else >Você ainda não adicionou nenhum produto, mas assim que adicionar, ele aparecerá aqui, viu?</p>
 
         <v-row>
           <v-col lg="12" class="mt-3">
@@ -111,7 +112,7 @@
                   <p v-if="item.qtd != 0">{{ item.nome }}</p>
                   <v-row v-if="item.qtd != 0" class="mt-1">
                     <v-col lg="4">
-                      <p>{{ item.preco }}</p>
+                      <p>{{ $n(parseFloat(item.preco), "currency") }}</p>
                     </v-col>
                     <v-col lg="8">
                       <v-row>
@@ -168,7 +169,7 @@
         <v-row class="px-2" v-if="$store.state.carrinho.length > 0">
           <v-col>
             <v-btn color="#b38b57" class="white--text btn-total" @click="redireciona">
-              finalizar compra ({{ $n(parseFloat(total), "currency") }})
+              Ver meu carrinho ({{ $n(parseFloat(total), "currency") }})
             </v-btn>
           </v-col>
         </v-row>
@@ -208,14 +209,14 @@ export default {
         "nenhum",
         "Base Ruby rose",
         "Rímel áqua ruby rose",
-        "Primer fecha póros - Ruby rose",
+        "Primer fecha póros",
         "kit tratamento pra pele",
-        "hidratante para região dos olhos",
+        "hidratante para olhos",
         "fix plus - ruby rose",
         "Serum - ruby rose",
         "Corretivo - mi amor",
         "pó translucido - luisance",
-        "Delineador ultra fino - Eudora",
+        "Delineador ultra fino",
         "lápis de olho - avon",
       ],
       precosItens: [
@@ -424,8 +425,19 @@ export default {
   }
 }
 
+.centraliza{
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
 #create .v-btn--floating {
   position: relative;
+}
+
+.corTitulo{
+  color: grey;
+  font-size: 16px;
 }
 
 .v-card--reveal {

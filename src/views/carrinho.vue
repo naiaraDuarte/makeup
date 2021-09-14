@@ -100,7 +100,7 @@
             </v-stepper-header>
 
             <v-stepper-items>
-              <v-stepper-content step="1">
+              <v-stepper-content style="padding: 10px 24px 16px 24px" step="1">
                 <compras></compras>
 
                 <v-row class="text-right mx-1 mb-3">
@@ -251,3 +251,8 @@ export default {
   },
 };
 </script>
+<style>
+::v-deep .stepper__content {
+    padding: 10px 24px 16px 24px !important;
+}
+</style>
