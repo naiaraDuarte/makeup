@@ -145,19 +145,17 @@ export default new Vuex.Store({
             if (payload[2] != null) {
                 state.pedidos[index].carrinho.findIndex(item => {
                     if (item.id == payload[2]) {
-                        state.pedidos[index].prodTroca = item;
+                        state.pedidos[index].prodTroca.push(item);
                     }
                 });
             }
         },
         editaParaTroca(state, payload) {
-            console.log("PAYLOAD", payload)
             let index = state.pedidos.findIndex(pdt => pdt.id == payload[0].acoes);
-            console.log("INdex", state.pedidos[index].carrinho);
-            let indexPedido = state.pedidos[index].carrinho.findIndex(item => item.cod == payload[0].troca.cod);
-            console.log("IIIIIIIIIIIIIII", state.pedidos[index].carrinho)
-            state.pedidos[index].carrinho.splice(indexPedido, 1);
-            console.log("EEEEEEEEEEEEEEE", indexPedido, state.pedidos[index].carrinho)
+            payload[0].troca.forEach(e => {
+                let indexPedido = state.pedidos[index].carrinho.findIndex(item => item.cod == e.cod);
+                state.pedidos[index].carrinho.splice(indexPedido, 1);
+            });
         },
         editarPedido(state, payload) {
             let index = state.pedidos.findIndex(pdt => pdt.id == payload[0]);

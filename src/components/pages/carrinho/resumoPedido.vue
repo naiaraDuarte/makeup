@@ -159,7 +159,7 @@ export default {
           this.totalProdutos + (parseFloat(this.frete) - this.desconto)
         ),
         status: "EM PROCESSAMENTO",
-        prodTroca: null,
+        prodTroca: [],
       };
       this.addPedido(frm);
       console.log("Comprou");

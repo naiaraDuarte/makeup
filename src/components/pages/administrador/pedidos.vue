@@ -91,21 +91,21 @@
                 <v-col
                   lg="12"
                   class="addBorder"
-                  v-if="perfilSelecionado[0].troca != null"
+                  v-if="perfilSelecionado[0].troca.length > 0"
                 >
                   <p>Produto de troca solicitada</p>
-                  <v-row>
+                  <v-row v-for="(item, i) in perfilSelecionado[0].troca" :key="i">
                     <v-col lg="2">
-                      <p>{{ perfilSelecionado[0].troca.cod }}</p>
+                      <p>{{ item.cod }}</p>
                     </v-col>
                     <v-col lg="5">
-                      <p>{{ perfilSelecionado[0].troca.nome }}</p>
+                      <p>{{ item.nome }}</p>
                     </v-col>
                     <v-col lg="2">
-                      <p>{{ perfilSelecionado[0].troca.preco }}</p>
+                      <p>{{ item.preco }}</p>
                     </v-col>
                     <v-col lg="2">
-                      <p>{{ perfilSelecionado[0].troca.qtd }}</p>
+                      <p>{{ item.qtd }}</p>
                     </v-col>
                   </v-row>
                 </v-col>
@@ -351,10 +351,13 @@ export default {
     },
     nextStep(op) {
       if (
-        this.steps[this.e1].nome == "EM TRANSPORTE" && op == "add" && this.perfilSelecionado[0].troca != null
+        this.steps[this.e1].nome == "EM TRANSPORTE" && op == "add" && this.perfilSelecionado[0].troca.length > 0
       ) {
         this.editaParaTroca([this.perfilSelecionado[0]]);
-        this.$store.state.valeTroca.push(this.perfilSelecionado[0].troca.preco);
+        this.perfilSelecionado[0].troca.forEach(e => {
+          this.$store.state.valeTroca.push(e.preco);
+        });
+        
       }
       if (op == "add") {
         if (this.e1 != this.steps.length) {
