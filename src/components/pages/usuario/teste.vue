@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1>Compras</h1>
+    <h1>Compras {{ this.$store.state.valeTroca }}</h1>
 
     <!-- <div class="compras"></div> -->
     <v-row class="mt-1 mx-3 my-3">
@@ -12,6 +12,7 @@
           >
             <v-expansion-panel-header
               v-if="item.cliente.cpf == $store.state.usuario[1].cpf"
+              @click="getDados(item.status)"
             >
               <v-row class="centraliza">
                 <v-col lg="3">
@@ -83,9 +84,7 @@
                   <p>{{ $n(prod.preco, "currency") }}</p>
                 </v-col>
                 <v-col lg="2">
-                  <v-btn
-                    class="btnFilter ampliarBtn"
-                    elevation="0"
+                  <v-btn class="btnFilter ampliarBtn" elevation="0"
                     >Avaliar</v-btn
                   >
                 </v-col>
@@ -93,72 +92,19 @@
               <v-row>
                 <v-col>
                   <v-stepper alt-labels elevation="0" v-model="e1">
-                    {{ verificaStatus(item.status) }}
-                    <!-- Troca -->
-                    <v-stepper-header
-                      elevation="0"
-                      style="box-shadow: none"
-                      v-if="troca == true"
-                    >
-                      <v-stepper-step step="1" :complete="e1 > 1">
-                        Troca solicitada
-                      </v-stepper-step>
-                      <v-divider></v-divider>
-                      <v-stepper-step step="2" :complete="e1 > 2">
-                        Em análise
-                      </v-stepper-step>
-                      <v-divider></v-divider>
-                      <v-stepper-step step="3" :complete="e1 > 3">
-                        Emitindo cupom
-                      </v-stepper-step>
-                      <v-divider></v-divider>
-                      <v-stepper-step step="4" :complete="e1 == 4">
-                        Concluido
-                      </v-stepper-step>
-                    </v-stepper-header>
+                    <v-stepper-header elevation="0" style="box-shadow: none">
+                      <template v-for="(val, i) in steps">
+                        <v-stepper-step
+                          :key="`${i}-step`"
+                          :complete="e1 > i"
+                          :step="i"
+                          class="centraliza letra"
+                        >
+                          {{ val.nome }}
+                        </v-stepper-step>
 
-                    <!-- Cancelamento -->
-                    <v-stepper-header
-                      elevation="0"
-                      style="box-shadow: none"
-                      v-else-if="cancelado == true"
-                    >
-                    
-                      <v-stepper-step step="1" :complete="e1 > 1"
-                        >Cancelamento solicitado
-                      </v-stepper-step>
-                      <v-divider></v-divider>
-                      <v-stepper-step step="2" :complete="e1 > 2"
-                        >Em análise
-                      </v-stepper-step>
-                      <v-divider></v-divider>
-                      <!-- :complete="e1 > 3"  tirei pra apresentar-->
-                      <v-stepper-step step="3" >
-                        Concluído
-                      </v-stepper-step>
-                    </v-stepper-header>
-
-                    <!-- Normal -->
-                    <v-stepper-header
-                      elevation="0"
-                      style="box-shadow: none"
-                      v-else
-                    >
-                      <v-stepper-step step="1" :complete="e1 > 1"
-                        >Pedido realizado
-                      </v-stepper-step>
-                      <v-divider></v-divider>
-                      <v-stepper-step step="2" :complete="e1 > 2"
-                        >Aprovado
-                      </v-stepper-step>
-                      <v-divider></v-divider>
-                      <v-stepper-step step="3" :complete="e1 > 3">
-                        Em trânsito
-                      </v-stepper-step>
-                      <v-divider></v-divider>
-                      <v-stepper-step step="4">
-                        Entregue/Concluido
-                      </v-stepper-step>
+                        <v-divider v-if="i !== steps" :key="i"></v-divider>
+                      </template>
                     </v-stepper-header>
                   </v-stepper>
                 </v-col>
@@ -176,7 +122,7 @@
     </v-row>
     <v-dialog v-model="cancelarPedido" persistent max-width="550px">
       <v-card>
-        <v-card-title class="alinhamento">
+        <v-card-title class="alinhamentoEntre">
           <span class="text-h5">Cancelar pedido</span>
           <span class="status">{{ perfilSelecionado.status }}</span>
         </v-card-title>
@@ -206,7 +152,8 @@
           <v-btn
             color="blue darken-1"
             text
-            @click="efetuarCancelamento(perfilSelecionado.id)" id="confirmarCancela"
+            @click="efetuarCancelamento()"
+            id="confirmarCancela"
           >
             Confirmar
           </v-btn>
@@ -215,7 +162,7 @@
     </v-dialog>
     <v-dialog v-model="trocaModal" persistent max-width="750px">
       <v-card>
-        <v-card-title class="alinhamento">
+        <v-card-title class="alinhamentoEntre">
           <span class="text-h5">Trocar produto</span>
           <span class="status">{{ perfilSelecionado.status }}</span>
         </v-card-title>
@@ -255,7 +202,12 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="trocaModal = false" id="fecharTroca">
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="trocaModal = false"
+            id="fecharTroca"
+          >
             Fechar
           </v-btn>
           <!-- <v-btn
@@ -276,22 +228,6 @@
         </v-btn>
       </template>
     </v-snackbar>
-     <!-- <v-dialog v-model="modalMotivoTroca" persistent max-width="500">
-      <v-card>
-        <v-card-title class="text-h5 centraliza">
-          Deseja realmente trocar esse produto?
-        </v-card-title>
-        <v-card-text>
-          
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="#b38b57" text @click="redireciona">
-            Trocar
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog> -->
   </v-container>
 </template>
 <script>
@@ -302,7 +238,6 @@ export default {
       troca: false,
       cancelado: false,
       modalMotivoTroca: false,
-      e1: 1,
       cancelarPedido: false,
       trocaModal: false,
       perfilSelecionado: "",
@@ -310,16 +245,73 @@ export default {
       snackbar: false,
       snackbarColor: "",
       status: "CANCELAMENTO REJEITADO",
+      conteudoSteps: [
+        {
+          nome: "EM PROCESSAMENTO",
+          status: "normal",
+        },
+        {
+          nome: "PAGAMENTO REALIZADO",
+          status: "normal",
+        },
+        {
+          nome: "EM TRANSPORTE",
+          status: "normal",
+        },
+        {
+          nome: "ENTREGA REALIZADA",
+          status: "normal",
+        },
+        {
+          nome: "TROCA SOLICITADA",
+          status: "troca",
+        },
+        {
+          nome: "TROCA AUTORIZADA",
+          status: "troca",
+          valor: "aceita",
+        },
+        {
+          nome: "TROCA REJEITADA",
+          status: "troca",
+          valor: "rejeitada",
+        },
+        {
+          nome: "EM TRANSPORTE",
+          status: "troca",
+        },
+        {
+          nome: "TROCA EFETUADA",
+          status: "troca",
+        },
+
+        {
+          nome: "CANCELAMENTO SOLICITADO",
+          status: "cancelamento",
+        },
+        {
+          nome: "CANCELAMENTO REJEITADO",
+          status: "cancelamento",
+        },
+
+        {
+          nome: "CANCELAMENTO ACEITO",
+          status: "cancelamento",
+        },
+        {
+          nome: "CANCELAMENTO EFETUADO",
+          status: "cancelamento",
+        },
+      ],
+      e1: 1,
+      steps: [],
     };
   },
   mounted() {
-    console.log("pedidos", this.$store.state.pedidos);
+    // this.getDados("normal", "EM TRANSPORTE");
   },
-
   methods: {
-    ...mapMutations(["editaParaTroca"]),
-    ...mapMutations(["removeItemPedido"]),
-    ...mapMutations(["editarProduto"]),
+    ...mapMutations(["editaStatus"]),
     verMais(id) {
       this.perfilSelecionado = this.$store.state.pedidos.filter(
         (ped) => ped.id == id
@@ -329,45 +321,46 @@ export default {
       console.log("perfil", this.perfilSelecionado);
       return this.perfilSelecionado;
     },
-    verificaStatus(status) {
-      console.log("status", status);
-      if (
-        status == "EM PROCESSAMENTO" ||
-        status == "TROCA SOLICITADA" ||
-        status == "CANCELAMENTO SOLICITADO"
-      ) {
-        this.e1 = 1;
-      }
-      if (
-        status == "PAGAMENTO REALIZADO" ||
-        status == "TROCA AUTORIZADA" ||
-        status == "CANCELAMENTO ACEITO" ||
-        status == "TROCA REJEITADA" ||
-        status == "CANCELAMENTO REJEITADO"
-      ) {
-        this.e1 = 2;
-      }
-      if (status == "EM TRANSPORTE") {
-        this.e1 = 3;
-      }
-      if (
-        status == "ENTREGA REALIZADA" ||
-        status == "TROCA EFETUADA" ||
-        status == "CANCELAMENTO EFETUADO"
-      ) {
-        this.e1 = 4;
-      }
+    getDados(status) {
+      let fluxo = this.conteudoSteps.filter((val) => val.nome == status);
+      fluxo = fluxo[0].status;
+      let valor = "aceita";
+      let stepProv = [];
+      this.conteudoSteps.forEach((e) => {
+        if (fluxo == "troca") {
+          if (e.status == fluxo) {
+            if (e.valor) {
+              if (e.valor == valor) {
+                stepProv.push(e);
+              }
+            } else {
+              stepProv.push(e);
+            }
+          }
+        } else {
+          if (e.status == fluxo) {
+            stepProv.push(e);
+          }
+        }
+      });
+      this.steps = stepProv;
+      this.getStatus(status);
     },
-    efetuarCancelamento(id) {
+    getStatus(status) {
+      this.e1 = this.steps.findIndex((step) => step.nome == status);
+      this.e1 += 1;
+    },
+    efetuarCancelamento() {
       // if (this.verificaId) {
       //   this.$http.delete(`/endereco/${id}`).then(() => {
       //     this.removeEnderecos(id);
       //   });
       // } else {
       // this.removeItemPedido(id);
-      console.log(id);
+      this.editaStatus([this.perfilSelecionado.id, "CANCELAMENTO SOLICITADO"], null);
       this.exibeSnackBar("green", "Seu cancelamento foi pra análise");
-      this.cancelado =true;
+      console.log(this.perfilSelecionado.id);
+      // this.cancelado =true;
       // this.status ="CANCELAMENTO SOLICITADO";
       // this.verificaStatus(this.status);    
       // console.log("e1", this.e1)
@@ -382,14 +375,9 @@ export default {
       console.log("perfil", this.perfilSelecionado);
       return this.perfilSelecionado;
     },
-    trocaComId(item, idProd) {
-      this.editaParaTroca([item, idProd.id]);
-      console.log(this.$store.state.listaProdutos, "||||", idProd.id);
-      this.$store.state.listaProdutos.filter((prod) => {
-        if (prod.cod == idProd.id) {
-          this.$store.state.valeTroca.push(prod.preco);
-        }
-      });
+    trocaComId(item, prod) {
+      this.editaStatus([item.id, "TROCA SOLICITADA", prod.id]);
+      
     },
     getImgUrl(pic) {
       return require("../../../assets/images/" + pic);
@@ -403,7 +391,7 @@ export default {
 };
 </script>
 <style scoped>
-.alinhamento {
+.alinhamentoEntre {
   display: flex;
   justify-content: space-between;
 }

@@ -355,7 +355,7 @@ export default {
 }
 .alinhamento {
   display: flex;
-  justify-content: flex-end;
+  justify-content: end;
 }
 .alinhamentoTitulo{
   display: flex;

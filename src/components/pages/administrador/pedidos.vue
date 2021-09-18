@@ -46,12 +46,19 @@
       </v-data-table>
     </v-card>
     <v-row justify="center">
-      <v-dialog v-model="dialog" persistent max-width="1000px">
+      <v-dialog
+        v-model="dialog"
+        persistent
+        max-width="1000px"
+        v-if="idSelecionado != null"
+      >
         <v-card>
           <v-card-title>
             <v-row>
               <v-col lg="12" class="espacamentoEntreEl px-5">
-                <span class="text-h5">N° do pedido: {{ perfilSelecionado[0].pedido }} </span>
+                <span class="text-h5"
+                  >N° do pedido: {{ perfilSelecionado[0].pedido }}
+                </span>
               </v-col>
             </v-row>
           </v-card-title>
@@ -81,9 +88,31 @@
                     </v-col>
                   </v-row>
                 </v-col>
+                <v-col
+                  lg="12"
+                  class="addBorder"
+                  v-if="perfilSelecionado[0].troca != null"
+                >
+                  <p>Produto de troca solicitada</p>
+                  <v-row>
+                    <v-col lg="2">
+                      <p>{{ perfilSelecionado[0].troca.cod }}</p>
+                    </v-col>
+                    <v-col lg="5">
+                      <p>{{ perfilSelecionado[0].troca.nome }}</p>
+                    </v-col>
+                    <v-col lg="2">
+                      <p>{{ perfilSelecionado[0].troca.preco }}</p>
+                    </v-col>
+                    <v-col lg="2">
+                      <p>{{ perfilSelecionado[0].troca.qtd }}</p>
+                    </v-col>
+                  </v-row>
+                </v-col>
+
                 <v-col lg="12">
                   <p><b>Histórico de compras</b></p>
-                   
+
                   <v-stepper alt-labels elevation="0">
                     <v-stepper v-model="e1">
                       <v-stepper-header elevation="0" style="box-shadow: none">
@@ -102,13 +131,29 @@
                       </v-stepper-header>
                     </v-stepper>
                   </v-stepper>
-                 
+
                   <div class="centraliza mt-5">
-                      <v-btn class="mx-2" text @click="nextStep('sub')"> {{ steps[(e1 - 1)].nome }} </v-btn>
-                      <v-btn class="mx-2" color="primary" @click="nextStep('add')" v-if="e1 != (steps.length - 1)">
-                        {{ steps[(e1 + 1)].nome }}
-                      </v-btn>
-                      <v-btn class="mx-2" color="primary" @click="nextStep('add')" v-else> Finalizado </v-btn>
+                    <v-btn class="mx-2" text @click="nextStep('sub')">
+                      <!-- {{ steps[e1 - 1].nome }} -->
+                      Voltar
+                    </v-btn>
+                    <v-btn
+                      class="mx-2"
+                      color="primary"
+                      @click="nextStep('add')"
+                      v-if="e1 != steps.length - 1"
+                    >
+                      ir
+                      <!-- {{ steps[e1 + 1].nome }} -->
+                    </v-btn>
+                    <!-- <v-btn
+                      class="mx-2"
+                      color="primary"
+                      @click="nextStep('add')"
+                      v-else
+                    >
+                      Finalizado
+                    </v-btn> -->
                   </div>
                 </v-col>
               </v-row>
@@ -116,9 +161,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn text @click="dialog = false">
-              Cancelar
-            </v-btn>
+            <v-btn text @click="limpa"> Cancelar </v-btn>
             <v-btn
               color="#b38b57"
               class="btnFilter"
@@ -164,6 +207,7 @@ export default {
       desserts: [],
       e1: 1,
       steps: [],
+      idSelecionado: null,
       conteudoSteps: [
         {
           nome: "EM PROCESSAMENTO",
@@ -203,7 +247,7 @@ export default {
           nome: "TROCA EFETUADA",
           status: "troca",
         },
-        
+
         {
           nome: "CANCELAMENTO SOLICITADO",
           status: "cancelamento",
@@ -212,11 +256,11 @@ export default {
           nome: "CANCELAMENTO REJEITADO",
           status: "cancelamento",
         },
-        
+
         {
           nome: "CANCELAMENTO ACEITO",
           status: "cancelamento",
-        },        
+        },
         {
           nome: "CANCELAMENTO EFETUADO",
           status: "cancelamento",
@@ -233,28 +277,12 @@ export default {
         nome: ped.cliente.nome,
         cpf: ped.cliente.cpf,
         status: ped.status,
+        fluxo: ped.fluxo,
+        troca: ped.prodTroca,
         acoes: ped.id,
       });
     });
-    let statusAtual = "normal";
-    let valor = "aceita";
-    this.conteudoSteps.forEach((e) => {
-      if (statusAtual == "troca") {
-        if (e.status == statusAtual) {
-          if (e.valor) {
-            if (e.valor == valor) {
-              this.steps.push(e);
-            }
-          } else {
-            this.steps.push(e);
-          }
-        }
-      } else {
-        if (e.status == statusAtual) {
-          this.steps.push(e);
-        }
-      }
-    });
+
     // this.$http.get(`/cliente/`).then((res) => {
     //   res.data.dados.forEach((cliente) => {
     //     this.desserts.push({
@@ -277,30 +305,71 @@ export default {
   },
   methods: {
     ...mapMutations(["editarPedido"]),
-    salvar(id){
+    ...mapMutations(["editaParaTroca"]),
+    salvar(id) {
       this.editarPedido([id, this.steps[this.e1].nome]);
       this.desserts[id].status = this.steps[this.e1].nome;
-      // this.$store.state.pedidos[id].status = this.steps[this.e1].nome;
-      console.log("Não funfou", this.$store.state.pedidos)
-      this.dialog = false;
+      console.log("Não funfou", this.$store.state.pedidos);
+      this.limpa();
     },
-    verMais(id) {
+    async verMais(id) {
       this.perfilSelecionado = this.desserts.filter(
         (clientes) => clientes.acoes == id
       );
+      this.steps = [];
+      console.log("291", this.perfilSelecionado);
+      await this.getDados(this.perfilSelecionado[0].status);
+      await this.getStatus(this.perfilSelecionado[0].status);
+      this.idSelecionado = id;
       this.dialog = !this.dialog;
       return this.perfilSelecionado;
     },
+    getDados(status) {
+      let fluxo = this.conteudoSteps.filter((val) => val.nome == status);
+      fluxo = fluxo[0].status;
+      let valor = "aceita";
+      this.conteudoSteps.forEach((e) => {
+        if (fluxo == "troca") {
+          if (e.status == fluxo) {
+            if (e.valor) {
+              if (e.valor == valor) {
+                this.steps.push(e);
+              }
+            } else {
+              this.steps.push(e);
+            }
+          }
+        } else {
+          if (e.status == fluxo) {
+            this.steps.push(e);
+          }
+        }
+      });
+    },
+    getStatus(status) {
+      this.e1 = this.steps.findIndex((step) => step.nome == status);
+    },
     nextStep(op) {
-      if (op == 'add') {
+      if (
+        this.steps[this.e1].nome == "EM TRANSPORTE" && op == "add" && this.perfilSelecionado[0].troca != null
+      ) {
+        this.editaParaTroca([this.perfilSelecionado[0]]);
+        this.$store.state.valeTroca.push(this.perfilSelecionado[0].troca.preco);
+      }
+      if (op == "add") {
         if (this.e1 != this.steps.length) {
           this.e1 += 1;
         }
-      }else{
+      } else {
         if (this.e1 != 0) {
           this.e1 -= 1;
         }
       }
+    },
+    limpa() {
+      this.steps = [];
+      // this.idSelecionado = null;
+      this.dialog = false;
     },
   },
 };
