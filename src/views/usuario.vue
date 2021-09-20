@@ -70,9 +70,9 @@
 import cadastro from "../components/pages/usuario/cadastro.vue";
 import login from "../components/pages/usuario-e-adm/login.vue";
 import pagamento from "../components/pages/usuario/pagamento.vue";
-// import compras from "../components/pages/usuario/compras.vue";
+import compras from "../components/pages/usuario/compras.vue";
 import cupons from '../components/pages/usuario/cupons.vue';
-import compras from '../components/pages/usuario/teste.vue';
+// import compras from '../components/pages/usuario/teste.vue';
 
 export default {
   components: {

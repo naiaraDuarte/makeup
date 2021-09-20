@@ -351,9 +351,9 @@ export default {
     },
     nextStep(op) {
       if (
-        this.steps[this.e1].nome == "EM TRANSPORTE" && op == "add" && this.perfilSelecionado[0].troca.length > 0
+        (this.steps[this.e1].nome == "EM TRANSPORTE" || this.steps[this.e1].nome == "CANCELAMENTO ACEITO") && op == "add" && this.perfilSelecionado[0].troca.length > 0
       ) {
-        this.editaParaTroca([this.perfilSelecionado[0]]);
+        this.editaParaTroca([this.perfilSelecionado[0], this.steps[this.e1].nome]);
         this.perfilSelecionado[0].troca.forEach(e => {
           this.$store.state.valeTroca.push(e.preco);
         });

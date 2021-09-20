@@ -3,13 +3,16 @@
     <v-card class="px-3" elevation="0">
       <v-row>
         <v-col lg="6">
-         <p class="mb-3 tituloModalCarrinho">
-            <v-icon class="pb-1" large>mdi-chevron-double-right</v-icon>Pagamento
+          <p class="mb-3 tituloModalCarrinho">
+            <v-icon class="pb-1" large>mdi-chevron-double-right</v-icon
+            >Pagamento
           </p>
           <v-divider class="mb-8"></v-divider>
           <v-card elevation="0" class="mt-3">
             <h4 class="alinhamentoTitulo">
-              <p><v-icon>mdi-credit-card-plus-outline</v-icon> Cartão de crédito</p>
+              <p>
+                <v-icon>mdi-credit-card-plus-outline</v-icon> Cartão de crédito
+              </p>
               <v-btn
                 elevation="0"
                 text
@@ -109,8 +112,10 @@
               </v-col>
               <v-col lg="12" v-show="mostrarEndereco == false">
                 <h4 class="alinhamentoTitulo">
-                  <p><v-icon>mdi-map-marker-radius-outline</v-icon> Endereço de
-                  entrega</p>
+                  <p>
+                    <v-icon>mdi-map-marker-radius-outline</v-icon> Endereço de
+                    entrega
+                  </p>
                   <v-btn
                     elevation="0"
                     text
@@ -120,9 +125,7 @@
                     ><v-icon left> mdi-plus </v-icon> Add endereco</v-btn
                   >
                 </h4>
-                <p>
-                  Selecione o endereço de entraga do seus produtos
-                </p>
+                <p>Selecione o endereço de entraga do seus produtos</p>
                 <v-row
                   class="mt-3"
                   v-for="(item, i) in this.$store.state.enderecos"
@@ -357,7 +360,7 @@ export default {
   display: flex;
   justify-content: end;
 }
-.alinhamentoTitulo{
+.alinhamentoTitulo {
   display: flex;
   justify-content: space-between;
 }

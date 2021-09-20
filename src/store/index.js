@@ -148,6 +148,11 @@ export default new Vuex.Store({
                         state.pedidos[index].prodTroca.push(item);
                     }
                 });
+            } else {
+                state.pedidos[index].carrinho.forEach(e => {
+                    state.pedidos[index].prodTroca.push(e);
+                });
+                console.log(state.pedidos[index].carrinho, "||", state.pedidos[index].prodTroca)
             }
         },
         editaParaTroca(state, payload) {

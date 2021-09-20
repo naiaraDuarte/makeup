@@ -351,19 +351,9 @@ export default {
       this.e1 += 1;
     },
     efetuarCancelamento() {
-      // if (this.verificaId) {
-      //   this.$http.delete(`/endereco/${id}`).then(() => {
-      //     this.removeEnderecos(id);
-      //   });
-      // } else {
-      // this.removeItemPedido(id);
       this.editaStatus([this.perfilSelecionado.id, "CANCELAMENTO SOLICITADO"], null);
       this.exibeSnackBar("green", "Seu cancelamento foi pra análise");
       console.log(this.perfilSelecionado.id);
-      // this.cancelado =true;
-      // this.status ="CANCELAMENTO SOLICITADO";
-      // this.verificaStatus(this.status);    
-      // console.log("e1", this.e1)
       this.cancelarPedido = false;
     },
     trocarPedido(id) {
