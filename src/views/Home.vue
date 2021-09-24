@@ -1,6 +1,24 @@
 <template>
   <div class="teste">
     <v-container>
+      <v-row>
+        <v-col lg="12">
+          <v-carousel
+            cycle
+            height="300"
+            hide-delimiter-background
+            show-arrows-on-hover
+          >
+            <v-carousel-item
+              v-for="(item, i) in imagens"
+              :key="i"
+              :src="getImgUrl(item)"
+            >
+            </v-carousel-item>
+          </v-carousel>
+        </v-col>
+      </v-row>
+
       <v-row style="margin-top: 0px" v-if="itens.length > 0">
         <v-col class="px-2 custom5cols" v-for="(item, i) in itens" :key="i">
           <v-card class="mx-auto my-12">
@@ -33,7 +51,7 @@
             <v-card-text>
               <div class="text-center">
                 <h4 class="preco">
-                  <b>{{ item.preco }}</b>
+                  <b>{{ $n(parseFloat(item.preco), "currency") }}</b>
                 </h4>
                 <p>
                   Até <b>2x</b> de
@@ -99,10 +117,26 @@
     </v-speed-dial>
 
     <v-bottom-sheet v-model="sheet" v-if="sheet">
-      <v-card class="carrinho text-center" :class="[$store.state.carrinho.length == 0 ? 'centraliza' : '']" height="500" width="300">
-        <p class="tituloModalCarrinho mt-2" v-if="$store.state.carrinho.length > 0">Produtos escolhidos</p>
-        <v-divider class="px-10 mx-10 mt-1" v-if="$store.state.carrinho.length > 0"></v-divider>
-        <p class="tituloModalCarrinho corTitulo pl-3 mt-2" v-else >Você ainda não adicionou nenhum produto, mas assim que adicionar, ele aparecerá aqui, viu?</p>
+      <v-card
+        class="carrinho text-center"
+        :class="[$store.state.carrinho.length == 0 ? 'centraliza' : '']"
+        height="500"
+        width="300"
+      >
+        <p
+          class="tituloModalCarrinho mt-2"
+          v-if="$store.state.carrinho.length > 0"
+        >
+          Produtos escolhidos
+        </p>
+        <v-divider
+          class="px-10 mx-10 mt-1"
+          v-if="$store.state.carrinho.length > 0"
+        ></v-divider>
+        <p class="tituloModalCarrinho corTitulo pl-3 mt-2" v-else>
+          Você ainda não adicionou nenhum produto, mas assim que adicionar, ele
+          aparecerá aqui, viu?
+        </p>
 
         <v-row>
           <v-col lg="12" class="mt-3">
@@ -126,7 +160,6 @@
                           >
                             <v-icon> mdi-minus </v-icon>
                           </v-btn>
-                          
                         </v-col>
                         <v-col col="4">
                           <p>{{ item.qtd }}</p>
@@ -146,7 +179,6 @@
                           >
                             <v-icon> mdi-plus </v-icon>
                           </v-btn>
-                          
                         </v-col>
                         <v-col col="2">
                           <v-btn
@@ -168,7 +200,11 @@
         </v-row>
         <v-row class="px-2" v-if="$store.state.carrinho.length > 0">
           <v-col>
-            <v-btn color="#b38b57" class="white--text btn-total" @click="redireciona">
+            <v-btn
+              color="#b38b57"
+              class="white--text btn-total"
+              @click="redireciona"
+            >
               Ver meu carrinho ({{ $n(parseFloat(total), "currency") }})
             </v-btn>
           </v-col>
@@ -205,35 +241,8 @@ export default {
       snackbarColor: "",
       mensagem: "",
       transition: "slide-y-reverse-transition",
-      nomeItens: [
-        "nenhum",
-        "Base Ruby rose",
-        "Rímel áqua ruby rose",
-        "Primer fecha póros",
-        "kit tratamento pra pele",
-        "hidratante para olhos",
-        "fix plus - ruby rose",
-        "Serum - ruby rose",
-        "Corretivo - mi amor",
-        "pó translucido - luisance",
-        "Delineador ultra fino",
-        "lápis de olho - avon",
-      ],
-      precosItens: [
-        "",
-        "25.90",
-        "18.90",
-        "29.90",
-        "59.90",
-        "45.99",
-        "52.90",
-        "17.80",
-        "32.80",
-        "24.20",
-        "17.70",
-        "9.99",
-      ],
-      cod: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
+      imagens: ["banner1.jpg", "banner2.jpg", "banner3.png"],
+      slides: ["First", "Second", "Third", "Fourth", "Fifth"],
     };
   },
   watch: {
@@ -287,27 +296,29 @@ export default {
   },
   components: {},
   created() {
-    for (let index = 0; index < 15; index++) {
-      let x = Math.floor(Math.random() * 11 + 1);
-      this.itens.push({
-        cod: this.cod[x],
-        src: `produto${x}.jpeg`,
-        nome: this.nomeItens[x],
-        preco: this.precosItens[x],
-        qtd: 1,
+    this.$http.get(`/produto/`).then((res) => {
+      res.data.dados.forEach((prod) => {
+        this.itens.push({
+          cod: prod.id,
+          src: prod.imagem,
+          nome: prod.nome,
+          preco: prod.custo,
+          qtd: prod.quantidade,
+        });
       });
-    }
+    });
     this.itensBase = this.itens;
     this.$store.state.listaProdutos = this.itens;
   },
   methods: {
     getImgUrl(pic) {
-      return require("../assets/images/" + pic);
+      console.log(pic);
+      return require(`../assets/images/${pic}`);
     },
     ...mapMutations(["addCarrinho"]),
     ...mapMutations(["editarCarrinho"]),
     ...mapMutations(["removeItemCarrinho"]),
-    removeItem(item){
+    removeItem(item) {
       this.total -= parseFloat(item.preco) * item.qtd;
       item.qtd = 0;
       this.removeItemCarrinho(item.cod);
@@ -335,7 +346,7 @@ export default {
       this.total = total;
       this.editarCarrinho(pdt);
     },
-    
+
     addProduto(item) {
       let index = this.$store.state.carrinho.findIndex(
         (pdt) => pdt.cod == item.cod
@@ -349,7 +360,7 @@ export default {
         this.atualizarCarrinho(item, "add");
       }
     },
-    redireciona(){
+    redireciona() {
       this.$router.push(`/carrinho`);
     },
     exibeSnackBar(cor, msg) {
@@ -425,7 +436,7 @@ export default {
   }
 }
 
-.centraliza{
+.centraliza {
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
@@ -435,7 +446,7 @@ export default {
   position: relative;
 }
 
-.corTitulo{
+.corTitulo {
   color: grey;
   font-size: 16px !important;
 }

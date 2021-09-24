@@ -32,10 +32,10 @@
         >
           <template v-slot:[`item.acoes`]="{ item }">
             <v-row align="center" class="mx-0 mr-4">
-              <v-btn  id="editarCupom" @click="getCupom(item.cod)" icon>
+              <v-btn id="editarCupom" @click="getCupom(item.id)" icon>
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
-              <v-btn id="deletarCupom" @click="removeCupom(item.acoes)" icon>
+              <v-btn id="deletarCupom" @click="removeCupom(item.id)" icon>
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
             </v-row>
@@ -106,7 +106,7 @@
           <v-btn
             elevation="0"
             color="white"
-            class="btnSubmit"            
+            class="btnSubmit"
             @click="editarCupom"
             v-if="id != null"
           >
@@ -162,24 +162,37 @@ export default {
       ],
     };
   },
+  mounted() {
+    this.listarCuponsCadastrados();
+  },
   methods: {
     ...mapMutations(["addCupons"]),
     ...mapMutations(["editarCupons"]),
     ...mapMutations(["removeCupons"]),
-    
+
     gerar() {
       this.gerarCupom = !this.gerarCupom;
     },
-    limparCampos(){
+    limparCampos() {
       this.cupom = "";
       this.tipoDesconto = "";
       this.quant = 0;
       this.porcen = 0;
-
     },
-    removeCupom(cod){      
-      this.removeCupons(cod);
-      this.exibeSnackBar("green", "Cupom removido");
+    listarCuponsCadastrados() {
+      this.$store.state.cupons = [];
+      this.$http.get(`/cupom/`).then((res) => {
+        console.log(res);
+        res.data.dados.forEach((e) => {
+          this.$store.state.cupons.push(e);
+        });
+      });
+    },
+    removeCupom(id) {
+      this.$http.delete(`/cupom/${id}`).then(() => {
+        this.removeCupons(id);
+        this.exibeSnackBar("green", "Cupom removido");
+      });
     },
     salvarCupom() {
       if (
@@ -198,9 +211,12 @@ export default {
         tipo: this.tipoDesconto,
         quant: this.quant,
       };
-      this.addCupons(frm);
-      this.exibeSnackBar("green", "Cupom adicionado");
-      this.limparCampos();
+      this.$http.post(`/cupom/`, frm).then((res) => {
+        this.frm.id = res.data.cupom.id;
+        this.addCupons(frm);
+        this.exibeSnackBar("green", "Cupom adicionado");
+        this.limparCampos();
+      });
 
       this.gerarCupom = !this.gerarCupom;
       console.log(this.$store.state.cupons);
@@ -211,23 +227,28 @@ export default {
       this.snackbar = true;
     },
     editarCupom() {
+      console.log(this.id);
       let frm = {
-        cod: this.cupom,
+        id: this.id,
+        cod: this.cupom.toUpperCase(),
         quant: this.quant,
         porcen: parseInt(this.porcen.replace("%", "")),
         tipo: this.tipoDesconto,
       };
-      this.editarCupons(frm);
-      this.id = null;
-      this.limparCampos();
-      this.gerarCupom = !this.gerarCupom;
-      this.exibeSnackBar("green", "Cupom editado");
-    },
-    getCupom(cod) {
-      this.gerarCupom = !this.gerarCupom;
-      this.id = cod;
 
-      let cupom = this.$store.state.cupons.filter((cupom) => cupom.cod == cod);
+      this.$http.put(`/cupom/${this.id}`, frm).then(() => {
+        this.editarCupons(frm);
+        this.id = null;
+        this.limparCampos();
+        this.gerarCupom = !this.gerarCupom;
+        this.exibeSnackBar("green", "Cupom editado");
+      });
+    },
+    getCupom(id) {
+      this.gerarCupom = !this.gerarCupom;
+      this.id = id;
+
+      let cupom = this.$store.state.cupons.filter((cupom) => cupom.id == id);
       cupom = cupom[0];
       this.cupom = cupom.cod;
       this.porcen = cupom.porcen;
