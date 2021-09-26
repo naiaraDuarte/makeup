@@ -49,7 +49,10 @@
                   </div>
 
                   <v-text-field
-                    v-if="item.selecionado == true && i < $store.state.cartoes.length - 1"
+                    v-if="
+                      item.selecionado == true &&
+                      i < $store.state.cartoes.length - 1
+                    "
                     @blur="salvaValor(item.id, $event.target.value)"
                     label="Valor a pagar neste cartão"
                     class="cupom-input"
@@ -58,7 +61,10 @@
                     required
                   ></v-text-field>
                   <v-text-field
-                    v-if="item.selecionado == true && i == $store.state.cartoes.length - 1" 
+                    v-if="
+                      item.selecionado == true &&
+                      i == $store.state.cartoes.length - 1
+                    "
                     :disabled="true"
                     v-model="restante"
                     label="Valor a pagar neste cartão"
@@ -241,7 +247,10 @@ export default {
       this.$store.state.carrinho.forEach((item) => {
         this.totalProdutos += item.qtd * item.preco;
       });
-      this.restante = this.$n(this.totalProdutos + parseFloat(this.frete), "currency")
+      this.restante = this.$n(
+        this.totalProdutos + parseFloat(this.frete),
+        "currency"
+      );
     }
   },
   watch: {
@@ -289,7 +298,7 @@ export default {
       this.$store.state.cartoesEscolhidos = [];
       let index = this.marcados.findIndex((item) => item.cartao == val);
       if (index == -1) {
-        this.marcados.push({cartao: val, valor: 0});
+        this.marcados.push({ cartao: val, valor: 0 });
         this.$store.state.cartoes.filter((cartao) => {
           this.marcados.some((item) => {
             if (cartao.id == item.cartao) {
@@ -317,11 +326,14 @@ export default {
     },
     salvaValor(id, val) {
       let index = this.marcados.findIndex((item) => item.cartao == val);
-      this.marcados[index] = {cartao: id, valor: val};
+      this.marcados[index] = { cartao: id, valor: val };
       this.$store.state.cartoesEscolhidos = this.marcados;
-      val = val.replace("R$", "")
-      val = val.replace(",", ".")
-      this.restante = this.$n((this.totalProdutos + parseFloat(this.frete)) - parseFloat(val), "currency");
+      val = val.replace("R$", "");
+      val = val.replace(",", ".");
+      this.restante = this.$n(
+        this.totalProdutos + parseFloat(this.frete) - parseFloat(val),
+        "currency"
+      );
     },
     usarCupom() {
       if (this.cupom == "" || this.cupom == null) {
@@ -333,25 +345,46 @@ export default {
         this.exibeSnackBar("red", "Nenhum cupom cadastrado");
         return false;
       }
-      this.$store.state.cupons.filter((cupom) => {
-        if (cupom.cod == this.cupom && cupom.quant > 0) {
-          let frm = {
-            cod: this.cupom,
-            porcen: cupom.porcen,
-            tipo: cupom.tipo,
-          };
-          this.$store.state.cupomUtilizado = frm;
-          cupom.quant -= 1;
-          this.editarCupons(cupom);
-          this.cupomUtilizado = true;
-          this.exibeSnackBar("green", "Cupom utilizado");
-          console.log("FUncionaouuu", this.$store.state.cupons);
-          return true;
-        } else {
-          this.exibeSnackBar("red", "Cupom inexistente ou esgotado");
-          return false;
-        }
+      this.$http.get(`/cupom/${this.cupom}`).then((res) => {
+        let frm = {
+          id: res.data.cupom[0].id,
+          cod: res.data.cupom[0].cod,
+          porcen: res.data.cupom[0].porcen,
+          tipo: res.data.cupom[0].tipo,
+        };
+        this.$store.state.cupomUtilizado = frm;
+        let qtd = res.data.cupom[0].quant - 1;
+        this.$http
+          .patch(`/cupom/${res.data.cupom[0].id}`, { quant: qtd })
+          .then(() => {
+            this.cupomUtilizado = true;
+            this.exibeSnackBar("green", "Cupom utilizado");
+          })
+          .catch((e) => {
+            this.exibeSnackBar("red", "Cupom inexistente ou esgotado", e);
+            return false;
+          });
+
+        return true;
       });
+      // this.$store.state.cupons.filter((cupom) => {
+      //   if (cupom.cod == this.cupom && cupom.quant > 0) {
+      //     let frm = {
+      //       cod: this.cupom,
+      //       porcen: cupom.porcen,
+      //       tipo: cupom.tipo,
+      //     };
+      //     this.$store.state.cupomUtilizado = frm;
+      //     cupom.quant -= 1;
+      //     this.editarCupons(cupom);
+      //     this.cupomUtilizado = true;
+      //     this.exibeSnackBar("green", "Cupom utilizado");
+      //     return true;
+      //   } else {
+      //     this.exibeSnackBar("red", "Cupom inexistente ou esgotado");
+      //     return false;
+      //   }
+      // });
       this.cupom = "";
     },
     removerCupom() {

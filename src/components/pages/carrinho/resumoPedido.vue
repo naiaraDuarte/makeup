@@ -183,6 +183,7 @@ export default {
           id: 2,
           valor: 10,
         },
+        status: "EM PROCESSAMENTO",
       };
 
       this.$http.post(`/pedido/`, frmB).then((res) => {
