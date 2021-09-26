@@ -204,6 +204,7 @@ export default {
         cvv: this.codCartao,
         data_validade: this.expCartao,
         bandeira: 2,
+        selecionado: false,
       };
       if (this.verificaId) {
         this.$http

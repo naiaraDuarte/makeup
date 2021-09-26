@@ -312,7 +312,6 @@ export default {
   },
   methods: {
     getImgUrl(pic) {
-      console.log(pic);
       return require(`../assets/images/${pic}`);
     },
     ...mapMutations(["addCarrinho"]),
@@ -354,6 +353,7 @@ export default {
       console.log(index);
       if (this.$store.state.carrinho.length == 0 || index == -1) {
         this.total += parseFloat(item.preco);
+        item.qtd = 1;
         this.addCarrinho(item);
         this.exibeSnackBar("#b38b57", "Seu produto foi add ao carrinho");
       } else {

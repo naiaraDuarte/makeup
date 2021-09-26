@@ -1,7 +1,8 @@
 <template>
   <v-container fluid>
     <p class="mb-3 tituloModalCarrinho">
-      <v-icon class="pb-1" large>mdi-chevron-double-right</v-icon>Resumo do pedido
+      <v-icon class="pb-1" large>mdi-chevron-double-right</v-icon>Resumo do
+      pedido
     </p>
     <v-divider></v-divider>
     <v-row v-if="$store.state.carrinho.length > 0">
@@ -101,9 +102,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="#b38b57" text @click="redireciona">
-            Ir pra Home
-          </v-btn>
+          <v-btn color="#b38b57" text @click="redireciona"> Ir pra Home </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -140,7 +139,6 @@ export default {
       return require("../../../assets/images/" + pic);
     },
     prox() {
-      console.log("Caindo no PROXIMO");
       if (this.pag == "confirmacao") {
         this.$store.state.concluir = false;
         return null;
@@ -148,6 +146,51 @@ export default {
       this.$store.state.concluir = true;
     },
     comprar() {
+      let produtos = [];
+      this.$store.state.carrinho.forEach((e) => {
+        produtos.push({
+          id: e.id,
+          quantidade: e.qtd,
+          preco: e.preco,
+        });
+      });
+
+      let frmB = {
+        valorTotal: parseFloat(
+          this.totalProdutos + (parseFloat(this.frete) - this.desconto)
+        ),
+        frete: this.$store.state.freteCalculado,
+        produto: produtos,
+        cliente: {
+          id: this.$store.state.usuario[1].id,
+        },
+        endereco: {
+          cep: this.$store.state.enderecoDeEntrega.cep,
+          numero: this.$store.state.enderecoDeEntrega.numero,
+          id: this.$store.state.enderecoDeEntrega.id,
+        },
+        cartao: [
+          {
+            id: 2,
+            credito: 15,
+          },
+          {
+            id: 2,
+            credito: 15,
+          },
+        ],
+        cupom: {
+          id: 3,
+        },
+        cashback: {
+          id: 2,
+          valor: 10,
+        },
+      };
+
+      this.$http.post(`/pedido/`, frmB).then((res) => {
+        console.log("valor", res);
+      });
       let frm = {
         cliente: this.$store.state.usuario[1],
         carrinho: this.$store.state.carrinho,

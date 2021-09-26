@@ -95,8 +95,8 @@
                 </v-col>
                 <v-col lg="4">
                   <v-card class="separa" elevation="0">
-                    <p>{{ $store.state.carrinho.length + 1 }} Produtos</p>
-                    <p>{{ $n(parseFloat(totalProdutos), "currency") }}</p>
+                    <p>{{ $store.state.carrinho.length }} Produtos</p>
+                    <p>{{ $n(totalProdutos, "currency") }}</p>
                   </v-card>
                   <v-card class="separa" elevation="0">
                     <p>Frete</p>

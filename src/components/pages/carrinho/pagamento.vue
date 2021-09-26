@@ -35,13 +35,37 @@
                 v-for="(item, i) in this.$store.state.cartoes"
                 :key="i"
               >
-                <v-card elevation="0" @click="marca(item.id)">
-                  <cartao
-                    :nome="item.nome"
-                    :numero="item.numero"
-                    :data="item.data_validade"
-                    :id="i"
-                  ></cartao>
+                <v-card elevation="0">
+                  <div @click="marca(item.id)">
+                    <cartao
+                      :class="[
+                        item.selecionado == true ? 'marcado' : 'desmarcado',
+                      ]"
+                      :nome="item.nome"
+                      :numero="item.numero"
+                      :data="item.data_validade"
+                      :id="i"
+                    ></cartao>
+                  </div>
+
+                  <v-text-field
+                    v-if="item.selecionado == true && i < $store.state.cartoes.length - 1"
+                    @blur="salvaValor(item.id, $event.target.value)"
+                    label="Valor a pagar neste cartão"
+                    class="cupom-input"
+                    v-mask="['R$#,##', 'R$##,##', 'R$###,##', 'R$####,##']"
+                    id="cupom"
+                    required
+                  ></v-text-field>
+                  <v-text-field
+                    v-if="item.selecionado == true && i == $store.state.cartoes.length - 1" 
+                    :disabled="true"
+                    v-model="restante"
+                    label="Valor a pagar neste cartão"
+                    class="cupom-input"
+                    id="cupom"
+                    required
+                  ></v-text-field>
                 </v-card>
               </v-col>
             </v-row>
@@ -199,9 +223,11 @@ export default {
       mostrarCartao: false,
       mostrarEndereco: false,
       marcados: [],
+      totalProdutos: 0,
       frete: "0",
       snackbarColor: "",
       mensagem: "",
+      restante: 0,
       snackbar: false,
       itensDivisoes: [
         "Pagar com 1 cartão",
@@ -211,7 +237,12 @@ export default {
     };
   },
   mounted() {
-    console.log(this.$store.state.carrinho);
+    if (this.$store.state.carrinho.length > 0) {
+      this.$store.state.carrinho.forEach((item) => {
+        this.totalProdutos += item.qtd * item.preco;
+      });
+      this.restante = this.$n(this.totalProdutos + parseFloat(this.frete), "currency")
+    }
   },
   watch: {
     enderecoEntrega(newVal) {
@@ -253,22 +284,44 @@ export default {
   methods: {
     ...mapMutations(["editarCupons"]),
     ...mapMutations(["removeCupons"]),
+    ...mapMutations(["editarCartao"]),
     marca(val) {
-      let index = this.marcados.findIndex((valor) => valor == val);
+      let index = this.marcados.findIndex((item) => item.cartao == val);
       if (index == -1) {
-        this.marcados.push(val);
+        this.marcados.push({cartao: val, valor: 0});
         this.$store.state.cartoes.filter((cartao) => {
           this.marcados.some((item) => {
-            if (cartao.id == item) {
+            if (cartao.id == item.cartao) {
+              cartao.selecionado = true;
+              cartao.valor = 0;
               this.$store.state.cartoesEscolhidos.push(cartao);
+              this.editarCartao(cartao);
             }
           });
         });
       } else {
+        this.$store.state.cartoes.filter((cartao) => {
+          this.marcados.some((item) => {
+            if (cartao.id == item.cartao) {
+              cartao.selecionado = false;
+              cartao.valor = 0;
+              this.editarCartao(cartao);
+            }
+          });
+        });
         this.marcados.splice(index, 1);
         this.$store.state.cartoesEscolhidos = this.marcados;
       }
       console.log(this.marcados);
+    },
+    salvaValor(id, val) {
+      let index = this.marcados.findIndex((item) => item.cartao == val);
+      this.marcados[index] = {cartao: id, valor: val};
+      this.$store.state.cartoesEscolhidos = this.marcados;
+      val = val.replace("R$", "")
+      val = val.replace(",", ".")
+      console.log("VA", val)
+      this.restante = this.$n((this.totalProdutos + parseFloat(this.frete)) - parseFloat(val), "currency");
     },
     usarCupom() {
       if (this.cupom == "" || this.cupom == null) {
@@ -334,6 +387,9 @@ export default {
         this.$store.state.freteCalculado = this.frete;
         console.log("valor", res);
       });
+
+      this.frete = "22.00";
+      this.$store.state.freteCalculado = this.frete;
     },
     exibeSnackBar(cor, msg) {
       this.snackbarColor = cor;
