@@ -51,4 +51,18 @@ export default {
   .cartao .jp-card-container{
     transform: scale(0.771429) !important;
   }
+
+  .cartao .jp-card .jp-card-front .jp-card-lower .jp-card-number{
+    font-size: 19px;
+  }
+
+  .cartao .jp-card .jp-card-front .jp-card-lower .jp-card-expiry{
+    font-size: 13px;
+  }
+  .cartao .jp-card .jp-card-front .jp-card-lower .jp-card-name{
+    font-size: 16px;
+  }
+  .cartao .jp-card{
+    min-width: none;
+  }
 </style>

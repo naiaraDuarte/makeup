@@ -12,15 +12,15 @@
           :key="i"
           class="centraliza mt-1"
         >
-          <v-col lg="3" v-if="item.qtd > 0">
+          <v-col lg="2" v-if="item.qtd > 0">
             <v-img height="50" width="50" :src="getImgUrl(item.src)"></v-img>
           </v-col>
           <v-col lg="7" v-if="item.qtd > 0">
             <p>{{ item.nome }}</p>
           </v-col>
 
-          <v-col lg="2" v-if="item.qtd > 0">
-            <p>{{ item.preco }}</p>
+          <v-col lg="3" v-if="item.qtd > 0">
+            <p>{{ $n(parseFloat(item.preco), "currency") }}</p>
           </v-col>
         </v-row>
         <v-divider class="mt-5"></v-divider>
@@ -147,11 +147,19 @@ export default {
     },
     comprar() {
       let produtos = [];
+      let cartoes = [];
       this.$store.state.carrinho.forEach((e) => {
         produtos.push({
           id: e.id,
           quantidade: e.qtd,
           preco: e.preco,
+        });
+      });
+
+      this.$store.state.cartoesEscolhidos.forEach((e) => {
+        cartoes.push({
+          id: e.id,
+          credito: e.valor,
         });
       });
 
@@ -169,19 +177,8 @@ export default {
           numero: this.$store.state.enderecoDeEntrega.numero,
           id: this.$store.state.enderecoDeEntrega.id,
         },
-        cartao: [
-          {
-            id: 2,
-            credito: 15,
-          },
-          {
-            id: 2,
-            credito: 15,
-          },
-        ],
-        cupom: {
-          id: 3,
-        },
+        cartao: cartoes,
+        cupom: this.$store.state.cupomUtilizado.id,
         cashback: {
           id: 2,
           valor: 10,
