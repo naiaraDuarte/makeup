@@ -286,6 +286,7 @@ export default {
     ...mapMutations(["removeCupons"]),
     ...mapMutations(["editarCartao"]),
     marca(val) {
+      this.$store.state.cartoesEscolhidos = [];
       let index = this.marcados.findIndex((item) => item.cartao == val);
       if (index == -1) {
         this.marcados.push({cartao: val, valor: 0});
@@ -320,7 +321,6 @@ export default {
       this.$store.state.cartoesEscolhidos = this.marcados;
       val = val.replace("R$", "")
       val = val.replace(",", ".")
-      console.log("VA", val)
       this.restante = this.$n((this.totalProdutos + parseFloat(this.frete)) - parseFloat(val), "currency");
     },
     usarCupom() {
