@@ -145,7 +145,7 @@ export default {
         )
         if ((valor - this.cashback) < 0) {
           let sobraCashbach = valor - this.cashback;
-          console.log(sobraCashbach)
+          console.log(sobraCashbach * -1)
         }
         return valor;
       }
