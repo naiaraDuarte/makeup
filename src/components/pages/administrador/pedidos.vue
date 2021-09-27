@@ -71,14 +71,14 @@
                     <v-col lg="4" class="addBorder">
                       <p><b>Dados pessoais:</b></p>
                       <p><b>CPF:</b> {{ perfilSelecionado[0].cpf }}</p>
-                      <p><b>Data nascimento:</b> 20/05/2001</p>
-                      <p><b>Telefone:</b> (11) 97854-5212</p>
+                      <p><b>Data nascimento:</b> {{ perfilSelecionado[0].dataNasc }}</p>
+                      <p><b>Telefone:</b> {{ perfilSelecionado[0].telefone }}</p>
                     </v-col>
                     <v-col lg="4" class="addBorder">
                       <p><b>Endereco da Entrega</b></p>
-                      <p><b>CPF:</b> {{ perfilSelecionado[0].cpf }}</p>
-                      <p><b>Data nascimento:</b> 20/05/2001</p>
-                      <p><b>Telefone:</b> (11) 97854-5212</p>
+                      <p><b>Logradouro:</b> {{ perfilSelecionado[0].endereco.logradouro}}</p>
+                      <p><b>Numero:</b> {{ perfilSelecionado[0].endereco.numero}}</p>
+                      <p><b>Cep:</b> {{ perfilSelecionado[0].endereco.cep}}</p>
                     </v-col>
                     <v-col lg="4" class="addBorder">
                       <p><b>Dados de pagamento</b></p>
@@ -357,7 +357,12 @@ export default {
         this.perfilSelecionado[0].troca.forEach(e => {
           this.$store.state.valeTroca.push(e.preco);
         });
-        
+      this.$http.put(`/cashback/${localStorage.getItem("usuarioId")}`, this.$store.state.valeTroca).then((res) => {
+        console.log(res);
+        res.data.dados.forEach((e) => {
+          this.$store.state.cashback.push(e);
+        });
+      });  
       }
       if (op == "add") {
         if (this.e1 != this.steps.length) {
