@@ -27,6 +27,7 @@
       </v-col>
       <v-col lg="12">
         <v-row>
+          {{ frete}}
           <v-col lg="12">
             <v-card class="separa" elevation="0">
               <p>Total dos Produtos</p>
@@ -41,8 +42,8 @@
               <p>-{{ $n(parseFloat(desconto), "currency") }}</p>
             </v-card>
             <v-card class="separa" elevation="0" v-if="cashback > 0">
-              <p>Valor do cashback</p>
-              <p>-{{ $n(parseFloat(cashback), "currency") }}</p>
+              <p>Desconto do cashback</p>
+              <p>-{{ $n(valorDescontoCashback, "currency") }}</p>
             </v-card>
             <v-divider></v-divider>
             <v-card class="separa" elevation="0">
@@ -124,6 +125,7 @@ export default {
       totalProdutos: 0,
       totalFrete: 0,
       dialog: false,
+      valorDescontoCashback: 0,
     };
   },
   mounted() {
@@ -135,19 +137,10 @@ export default {
   },
   computed: {
     calculaTotal() {
-      if (this.tipoDesconto == "frete") {
-        return parseFloat(
-          this.totalProdutos - this.cashback + (parseFloat(this.frete) - this.desconto)
-        );
+      if (this.cashback > 0 && this.cashback != null) {
+        return this.teste();
       } else {
-        let valor = parseFloat(
-          (this.totalProdutos - this.desconto) + parseFloat(this.frete)
-        )
-        if ((valor - this.cashback) < 0) {
-          let sobraCashbach = valor - this.cashback;
-          console.log(sobraCashbach * -1)
-        }
-        return valor;
+        return null;
       }
     },
   },
@@ -163,6 +156,47 @@ export default {
       }
       this.$store.state.concluir = true;
     },
+    editaCashback(val) {
+      if (val == null || val == '') {
+        return false;
+      }
+      this.$http
+        .put(`/cashback/${localStorage.getItem("usuarioId")}`, val)
+        .then((res) => {
+          console.log("teyfve", this.$store.state.valeTroca);
+          // this.$store.state.valeTroca[0].valor = val;
+          this.valorDescontoCashback = this.cashback - val;
+          console.log("Viadooo", res);
+        });
+    },
+    atualizaStore(val) {
+      this.$store.state.valeTroca[0].valor = val;
+    },
+    teste(){
+      console.log(parseFloat(this.cashback));
+        let valor = 0;
+        if (this.tipoDesconto == "frete") {
+          valor = parseFloat(
+            this.totalProdutos -
+              this.cashback +
+              (parseFloat(this.frete) - this.desconto)
+          );
+        } else {
+          valor = parseFloat(
+            this.totalProdutos - this.desconto + parseFloat(this.frete)
+          );
+        }
+        if (valor - this.cashback < 0) {
+          let sobraCashbach = (valor - this.cashback) * -1;
+          this.editaCashback(sobraCashbach);
+          valor = 0;
+        } else {
+          console.log("YYYYYYYYYYY", valor, this.cashback);
+          valor = valor - this.cashback;
+          this.editaCashback(valor);
+        }
+        return valor;
+    },
     comprar() {
       let produtos = [];
       let cartoes = [];
@@ -173,16 +207,12 @@ export default {
           preco: e.preco,
         });
       });
-      console.log(this.$store.state.cartoesEscolhidos);
       this.$store.state.cartoesEscolhidos.forEach((e) => {
         cartoes.push({
           id: e.cartao,
           credito: e.valor,
         });
       });
-
-      console.log("PPPPPPPPPPP", this.$store.state.cupomUtilizado.id);
-
       let frmB = {
         valorTotal: parseFloat(
           this.totalProdutos + (parseFloat(this.frete) - this.desconto)
@@ -208,7 +238,6 @@ export default {
         },
         status: "EM PROCESSAMENTO",
       };
-      console.log("FRM", frmB);
 
       this.$http.post(`/pedido/`, frmB).then((res) => {
         console.log("valor", res);
@@ -227,7 +256,6 @@ export default {
         prodTroca: [],
       };
       this.addPedido(frm);
-      console.log("Comprou");
       this.dialog = true;
     },
     redireciona() {

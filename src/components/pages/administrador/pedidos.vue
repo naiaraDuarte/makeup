@@ -71,14 +71,25 @@
                     <v-col lg="4" class="addBorder">
                       <p><b>Dados pessoais:</b></p>
                       <p><b>CPF:</b> {{ perfilSelecionado[0].cpf }}</p>
-                      <p><b>Data nascimento:</b> {{ perfilSelecionado[0].dataNasc }}</p>
-                      <p><b>Telefone:</b> {{ perfilSelecionado[0].telefone }}</p>
+                      <p>
+                        <b>Data nascimento:</b>
+                        {{ perfilSelecionado[0].dataNasc }}
+                      </p>
+                      <p>
+                        <b>Telefone:</b> {{ perfilSelecionado[0].telefone }}
+                      </p>
                     </v-col>
                     <v-col lg="4" class="addBorder">
                       <p><b>Endereco da Entrega</b></p>
-                      <p><b>Logradouro:</b> {{ perfilSelecionado[0].endereco.logradouro}}</p>
-                      <p><b>Numero:</b> {{ perfilSelecionado[0].endereco.numero}}</p>
-                      <p><b>Cep:</b> {{ perfilSelecionado[0].endereco.cep}}</p>
+                      <p>
+                        <b>Logradouro:</b>
+                        {{ perfilSelecionado[0].endereco.logradouro }}
+                      </p>
+                      <p>
+                        <b>Numero:</b>
+                        {{ perfilSelecionado[0].endereco.numero }}
+                      </p>
+                      <p><b>Cep:</b> {{ perfilSelecionado[0].endereco.cep }}</p>
                     </v-col>
                     <v-col lg="4" class="addBorder">
                       <p><b>Dados de pagamento</b></p>
@@ -94,7 +105,10 @@
                   v-if="perfilSelecionado[0].troca.length > 0"
                 >
                   <p>Produto de troca solicitada</p>
-                  <v-row v-for="(item, i) in perfilSelecionado[0].troca" :key="i">
+                  <v-row
+                    v-for="(item, i) in perfilSelecionado[0].troca"
+                    :key="i"
+                  >
                     <v-col lg="2">
                       <p>{{ item.cod }}</p>
                     </v-col>
@@ -351,18 +365,26 @@ export default {
     },
     nextStep(op) {
       if (
-        (this.steps[this.e1].nome == "EM TRANSPORTE" || this.steps[this.e1].nome == "CANCELAMENTO ACEITO") && op == "add" && this.perfilSelecionado[0].troca.length > 0
+        (this.steps[this.e1].nome == "EM TRANSPORTE" ||
+          this.steps[this.e1].nome == "CANCELAMENTO ACEITO") &&
+        op == "add" &&
+        this.perfilSelecionado[0].troca.length > 0
       ) {
-        this.editaParaTroca([this.perfilSelecionado[0], this.steps[this.e1].nome]);
-        this.perfilSelecionado[0].troca.forEach(e => {
+        this.editaParaTroca([
+          this.perfilSelecionado[0],
+          this.steps[this.e1].nome,
+        ]);
+        this.perfilSelecionado[0].troca.forEach((e) => {
           this.$store.state.valeTroca.push(e.preco);
         });
-      this.$http.put(`/cashback/${localStorage.getItem("usuarioId")}`, this.$store.state.valeTroca).then((res) => {
-        console.log(res);
-        res.data.dados.forEach((e) => {
-          this.$store.state.cashback.push(e);
-        });
-      });  
+        this.$http
+          .put(
+            `/cashback/${localStorage.getItem("usuarioId")}`,
+            this.$store.state.valeTroca
+          )
+          .then((res) => {
+            console.log(res);
+          });
       }
       if (op == "add") {
         if (this.e1 != this.steps.length) {
