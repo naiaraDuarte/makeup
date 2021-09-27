@@ -55,7 +55,7 @@
                   </v-row>
                 </v-col>
                 <v-col lg="2">
-                  <h3>{{ item.preco }}</h3>
+                  <h3>{{ $n(item.preco, "currency") }}</h3>
                 </v-col>
                 <v-col lg="1">
                   <v-btn icon small elevation="0" @click="removeItem(item)">

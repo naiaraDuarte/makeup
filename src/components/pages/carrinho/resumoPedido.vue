@@ -155,13 +155,15 @@ export default {
           preco: e.preco,
         });
       });
-
+      console.log(this.$store.state.cartoesEscolhidos);
       this.$store.state.cartoesEscolhidos.forEach((e) => {
         cartoes.push({
-          id: e.id,
+          id: e.cartao,
           credito: e.valor,
         });
       });
+
+      console.log("PPPPPPPPPPP", this.$store.state.cupomUtilizado.id);
 
       let frmB = {
         valorTotal: parseFloat(
@@ -178,33 +180,36 @@ export default {
           id: this.$store.state.enderecoDeEntrega.id,
         },
         cartao: cartoes,
-        cupom: this.$store.state.cupomUtilizado.id,
+        cupom: {
+          id: this.$store.state.cupomUtilizado.id,
+        },
         cashback: {
           id: 2,
           valor: 10,
         },
         status: "EM PROCESSAMENTO",
       };
+      console.log("FRM", frmB);
 
       this.$http.post(`/pedido/`, frmB).then((res) => {
         console.log("valor", res);
       });
-      let frm = {
-        cliente: this.$store.state.usuario[1],
-        carrinho: this.$store.state.carrinho,
-        cartao: this.$store.state.cartoesEscolhidos,
-        cupom: this.$store.state.cupomUtilizado,
-        enderecoEntrega: this.$store.state.enderecoDeEntrega,
-        freteCobrado: this.$store.state.freteCalculado,
-        totalPago: parseFloat(
-          this.totalProdutos + (parseFloat(this.frete) - this.desconto)
-        ),
-        status: "EM PROCESSAMENTO",
-        prodTroca: [],
-      };
-      this.addPedido(frm);
-      console.log("Comprou");
-      this.dialog = true;
+      // let frm = {
+      //   cliente: this.$store.state.usuario[1],
+      //   carrinho: this.$store.state.carrinho,
+      //   cartao: this.$store.state.cartoesEscolhidos,
+      //   cupom: this.$store.state.cupomUtilizado,
+      //   enderecoEntrega: this.$store.state.enderecoDeEntrega,
+      //   freteCobrado: this.$store.state.freteCalculado,
+      //   totalPago: parseFloat(
+      //     this.totalProdutos + (parseFloat(this.frete) - this.desconto)
+      //   ),
+      //   status: "EM PROCESSAMENTO",
+      //   prodTroca: [],
+      // };
+      // this.addPedido(frm);
+      // console.log("Comprou");
+      // this.dialog = true;
     },
     redireciona() {
       this.$store.state.carrinho = [];

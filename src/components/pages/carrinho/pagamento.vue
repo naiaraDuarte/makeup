@@ -51,7 +51,7 @@
                   <v-text-field
                     v-if="
                       item.selecionado == true &&
-                      i < $store.state.cartoes.length - 1
+                      i < $store.state.cartoesEscolhidos.length - 1
                     "
                     @blur="salvaValor(item.id, $event.target.value)"
                     label="Valor a pagar neste cartão"
@@ -63,7 +63,7 @@
                   <v-text-field
                     v-if="
                       item.selecionado == true &&
-                      i == $store.state.cartoes.length - 1
+                      i == $store.state.cartoesEscolhidos.length - 1
                     "
                     :disabled="true"
                     v-model="restante"
@@ -298,14 +298,23 @@ export default {
       this.$store.state.cartoesEscolhidos = [];
       let index = this.marcados.findIndex((item) => item.cartao == val);
       if (index == -1) {
-        this.marcados.push({ cartao: val, valor: 0 });
-        this.$store.state.cartoes.filter((cartao) => {
-          this.marcados.some((item) => {
+        console.log(this.$store.state.cartoes);
+        let ref = this.$store.state.cartoes.findIndex((item) => item.id == val);
+        if (ref == this.$store.state.cartoes.length - 1) {
+          let restante = this.restante;
+          restante = restante.replace("R$", "");
+          restante = restante.replace(",", ".");
+          this.marcados.push({ cartao: val, valor: parseFloat(restante) });
+        } else this.marcados.push({ cartao: val, valor: 0 });
+        this.marcados.filter((item, i) => {
+          console.log(i);
+          this.$store.state.cartoes.some((cartao) => {
             if (cartao.id == item.cartao) {
               cartao.selecionado = true;
-              cartao.valor = 0;
+              cartao.valor = item.valor;
               this.$store.state.cartoesEscolhidos.push(cartao);
               this.editarCartao(cartao);
+              return false;
             }
           });
         });
@@ -314,7 +323,6 @@ export default {
           this.marcados.some((item) => {
             if (cartao.id == item.cartao) {
               cartao.selecionado = false;
-              cartao.valor = 0;
               this.editarCartao(cartao);
             }
           });
@@ -322,7 +330,7 @@ export default {
         this.marcados.splice(index, 1);
         this.$store.state.cartoesEscolhidos = this.marcados;
       }
-      console.log(this.marcados);
+      console.log(this.$store.state.cartoesEscolhidos, "|||||", this.marcados);
     },
     salvaValor(id, val) {
       let index = this.marcados.findIndex((item) => item.cartao == val);
@@ -334,6 +342,17 @@ export default {
         this.totalProdutos + parseFloat(this.frete) - parseFloat(val),
         "currency"
       );
+      let indice = this.$store.state.cartoesEscolhidos.findIndex(
+        (e) => e.cartao == id
+      );
+      console.log(indice);
+      let valor = this.restante;
+      valor = valor.replace("R$", "");
+      valor = valor.replace(",", ".");
+      this.$store.state.cartoesEscolhidos[indice].valor = val;
+      this.$store.state.cartoesEscolhidos[
+        this.$store.state.cartoesEscolhidos.length - 1
+      ].valor = valor;
     },
     usarCupom() {
       if (this.cupom == "" || this.cupom == null) {
@@ -341,10 +360,10 @@ export default {
         return false;
       }
       this.cupom = this.cupom.toUpperCase();
-      if (this.$store.state.cupons.length == 0) {
-        this.exibeSnackBar("red", "Nenhum cupom cadastrado");
-        return false;
-      }
+      // if (this.$store.state.cupons.length == 0) {
+      //   this.exibeSnackBar("red", "Nenhum cupom cadastrado");
+      //   return false;
+      // }
       this.$http.get(`/cupom/${this.cupom}`).then((res) => {
         let frm = {
           id: res.data.cupom[0].id,
