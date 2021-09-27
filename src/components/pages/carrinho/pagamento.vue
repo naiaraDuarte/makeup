@@ -51,7 +51,7 @@
                   <v-text-field
                     v-if="
                       item.selecionado == true &&
-                      i < $store.state.cartoes.length - 1
+                      i < $store.state.cartoesEscolhidos.length - 1
                     "
                     @blur="salvaValor(item.id, $event.target.value)"
                     label="Valor a pagar neste cartão"
@@ -63,7 +63,7 @@
                   <v-text-field
                     v-if="
                       item.selecionado == true &&
-                      i == $store.state.cartoes.length - 1
+                      i >= $store.state.cartoesEscolhidos.length - 1
                     "
                     :disabled="true"
                     v-model="restante"
@@ -138,6 +138,7 @@
                 >
               </v-col>
               <v-col lg="12" v-show="mostrarEndereco">
+               
                 <endereco :mostra="false"></endereco>
               </v-col>
               <v-col lg="12" v-show="mostrarEndereco == false">
@@ -158,10 +159,10 @@
                 <p>Selecione o endereço de entraga do seus produtos</p>
                 <v-row
                   class="mt-3"
-                  v-for="(item, i) in this.$store.state.enderecos"
+                  v-for="(item, i) in $store.state.enderecos"
                   :key="i"
                 >
-                  <v-col lg="6" v-if="item.tipo_endereco == 'Entrega'">
+                  <v-col lg="6" v-if="item.tipo_endereco == 'Entrega' || item.tipo_endereco == 'Cobrança e Entrega'">
                     <v-card
                       elevation="0"
                       class="card-endereco p-2"
@@ -193,7 +194,9 @@
         <v-col lg="5" class="pl-5">
           <resumoPedido
             :frete="frete"
+            :cashback="cashback.valor"
             :desconto="desconto"
+            :tipoDesconto="$store.state.cupomUtilizado.tipo"
             :habilitaBotao="habilitaBotao"
             pag="pagamento"
           ></resumoPedido>
@@ -235,6 +238,9 @@ export default {
       mensagem: "",
       restante: 0,
       snackbar: false,
+      cashback: {
+        valor: 0
+      },
       itensDivisoes: [
         "Pagar com 1 cartão",
         "Pagar com 2 cartões",
@@ -252,6 +258,11 @@ export default {
         "currency"
       );
     }
+    this.$http
+      .get(`/cashback/${localStorage.getItem("usuarioId")}`)
+      .then((res) => {
+          this.cashback = res.data.cashback[0];
+      });
   },
   watch: {
     enderecoEntrega(newVal) {
@@ -285,6 +296,7 @@ export default {
       }
       if (this.$store.state.cupomUtilizado.tipo == "frete") {
         return frete * (porcen / 100);
+        
       } else {
         return total * (porcen / 100);
       }
@@ -298,42 +310,68 @@ export default {
       this.$store.state.cartoesEscolhidos = [];
       let index = this.marcados.findIndex((item) => item.cartao == val);
       if (index == -1) {
-        this.marcados.push({ cartao: val, valor: 0 });
-        this.$store.state.cartoes.filter((cartao) => {
-          this.marcados.some((item) => {
+        console.log(this.$store.state.cartoes);
+        let ref = this.$store.state.cartoes.findIndex((item) => item.id == val);
+        if (ref == this.$store.state.cartoes.length - 1) {
+          let restante = this.restante;
+          restante = restante.replace("R$", "");
+          restante = restante.replace(",", ".");
+          this.marcados.push({ cartao: val, valor: parseFloat(restante) });
+        } else this.marcados.push({ cartao: val, valor: 0 });
+
+        this.marcados.filter((item, i) => {
+          console.log(i);
+          this.$store.state.cartoes.some((cartao) => {
             if (cartao.id == item.cartao) {
               cartao.selecionado = true;
-              cartao.valor = 0;
+              cartao.valor = item.valor;
               this.$store.state.cartoesEscolhidos.push(cartao);
               this.editarCartao(cartao);
+              return false;
             }
           });
         });
       } else {
-        this.$store.state.cartoes.filter((cartao) => {
-          this.marcados.some((item) => {
-            if (cartao.id == item.cartao) {
-              cartao.selecionado = false;
-              cartao.valor = 0;
-              this.editarCartao(cartao);
-            }
-          });
+        this.$store.state.cartoes.some((cartao) => {
+          if (cartao.id == val) {
+            cartao.selecionado = false;
+            this.editarCartao(cartao);
+          }
         });
         this.marcados.splice(index, 1);
         this.$store.state.cartoesEscolhidos = this.marcados;
       }
-      console.log(this.marcados);
+      console.log(this.$store.state.cartoesEscolhidos, "|||||", this.marcados);
     },
     salvaValor(id, val) {
-      let index = this.marcados.findIndex((item) => item.cartao == val);
-      this.marcados[index] = { cartao: id, valor: val };
-      this.$store.state.cartoesEscolhidos = this.marcados;
       val = val.replace("R$", "");
       val = val.replace(",", ".");
-      this.restante = this.$n(
-        this.totalProdutos + parseFloat(this.frete) - parseFloat(val),
-        "currency"
-      );
+      if (parseFloat(val) >= 10) {
+        let index = this.marcados.findIndex((item) => item.cartao == val);
+        this.marcados[index] = { cartao: id, valor: val };
+        this.$store.state.cartoesEscolhidos = this.marcados;
+
+        this.restante = this.$n(
+          this.totalProdutos + parseFloat(this.frete) - parseFloat(val),
+          "currency"
+        );
+        let indice = this.$store.state.cartoesEscolhidos.findIndex(
+          (e) => e.cartao == id
+        );
+        console.log(indice);
+        // let valor = this.restante;
+        // valor = valor.replace("R$", "");
+        // valor = valor.replace(",", ".");
+        this.$store.state.cartoesEscolhidos[indice].valor = val;
+        this.$store.state.cartoesEscolhidos[
+          this.$store.state.cartoesEscolhidos.length - 1
+        ].valor = val;
+      } else {
+        this.exibeSnackBar(
+          "#b38b57",
+          "O valor minimo em cada cartão é de R$10,00"
+        );
+      }
     },
     usarCupom() {
       if (this.cupom == "" || this.cupom == null) {
@@ -341,10 +379,10 @@ export default {
         return false;
       }
       this.cupom = this.cupom.toUpperCase();
-      if (this.$store.state.cupons.length == 0) {
-        this.exibeSnackBar("red", "Nenhum cupom cadastrado");
-        return false;
-      }
+      // if (this.$store.state.cupons.length == 0) {
+      //   this.exibeSnackBar("red", "Nenhum cupom cadastrado");
+      //   return false;
+      // }
       this.$http.get(`/cupom/${this.cupom}`).then((res) => {
         let frm = {
           id: res.data.cupom[0].id,

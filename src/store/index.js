@@ -68,6 +68,7 @@ export default new Vuex.Store({
         editarEnderecos(state, payload) {
             let index = state.enderecos.findIndex(endereco => endereco.id == payload.id);
             Vue.set(state.enderecos, index, payload);
+            Vue.set(state.dadosEndereco, index, payload);
         },
         removeEnderecos(state, payload) {
             let index = state.enderecos.findIndex(endereco => endereco.id == payload);

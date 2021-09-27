@@ -4,7 +4,8 @@
       <v-col>
         <v-card elevation="0">
           <p class="mb-3 tituloModalCarrinho">
-            <v-icon class="pb-1" large>mdi-chevron-double-right</v-icon>Meu carrinho
+            <v-icon class="pb-1" large>mdi-chevron-double-right</v-icon>Meu
+            carrinho
           </p>
           <v-divider class="mb-5"></v-divider>
           <v-row v-if="$store.state.carrinho.length > 0">
@@ -55,7 +56,7 @@
                   </v-row>
                 </v-col>
                 <v-col lg="2">
-                  <h3>{{ item.preco }}</h3>
+                  <h3>{{ $n(item.preco, "currency") }}</h3>
                 </v-col>
                 <v-col lg="1">
                   <v-btn icon small elevation="0" @click="removeItem(item)">
@@ -63,6 +64,7 @@
                   </v-btn>
                 </v-col>
               </v-row>
+              <endereco v-show="false"></endereco>
               <v-divider></v-divider>
             </v-col>
             <v-col lg="12">
@@ -112,12 +114,20 @@
                     </h3>
                   </v-card>
                   <v-card class="separa mt-4" elevation="0">
-                    <v-btn class="btnFilter ampliarBtn" elevation="0" @click="$router.push(`/`)"
+                    <v-btn
+                      class="btnFilter ampliarBtn"
+                      elevation="0"
+                      @click="$router.push(`/`)"
                       >Continuar comprando</v-btn
-                    > 
+                    >
                   </v-card>
                   <v-card class="separa mt-2 mb-5" elevation="0">
-                    <v-btn class="ampliarBtn" color="primary" elevation="0" @click="prox" id="irPagamento"
+                    <v-btn
+                      class="ampliarBtn"
+                      color="primary"
+                      elevation="0"
+                      @click="prox"
+                      id="irPagamento"
                       >Ir para pagamento</v-btn
                     >
                   </v-card>
@@ -154,8 +164,12 @@
 </template>
 <script>
 import { mapMutations } from "vuex";
+import endereco from "../usuario/endereco.vue";
 
 export default {
+  components: {
+    endereco,
+  },
   data() {
     return {
       cep: "",
@@ -245,9 +259,9 @@ export default {
       this.mensagem = msg;
       this.snackbar = true;
     },
-    prox(){
+    prox() {
       this.$emit("compraProx", 1);
-    }
+    },
   },
 };
 </script>
