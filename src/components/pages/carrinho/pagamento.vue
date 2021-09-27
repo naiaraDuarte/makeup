@@ -63,7 +63,7 @@
                   <v-text-field
                     v-if="
                       item.selecionado == true &&
-                      i == $store.state.cartoesEscolhidos.length - 1
+                      i >= $store.state.cartoesEscolhidos.length - 1
                     "
                     :disabled="true"
                     v-model="restante"
@@ -306,6 +306,7 @@ export default {
           restante = restante.replace(",", ".");
           this.marcados.push({ cartao: val, valor: parseFloat(restante) });
         } else this.marcados.push({ cartao: val, valor: 0 });
+        
         this.marcados.filter((item, i) => {
           console.log(i);
           this.$store.state.cartoes.some((cartao) => {
@@ -319,13 +320,11 @@ export default {
           });
         });
       } else {
-        this.$store.state.cartoes.filter((cartao) => {
-          this.marcados.some((item) => {
-            if (cartao.id == item.cartao) {
-              cartao.selecionado = false;
-              this.editarCartao(cartao);
-            }
-          });
+        this.$store.state.cartoes.some((cartao) => {
+          if (cartao.id == val) {
+            cartao.selecionado = false;
+            this.editarCartao(cartao);
+          }
         });
         this.marcados.splice(index, 1);
         this.$store.state.cartoesEscolhidos = this.marcados;
