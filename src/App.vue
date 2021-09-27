@@ -48,6 +48,7 @@ export default {
         this.$http
           .get(`/cliente/${localStorage.getItem("usuarioId")}`)
           .then((res) => {
+            console.log("RES", res)
             this.salvaUsuario(res.data.cliente[0]);
             this.salvaEndereco(res.data.endereco);
             this.salvaCartao(res.data.cartao);
@@ -59,7 +60,7 @@ export default {
       console.log("User", this.$store.state.usuario)
     },
     salvaEndereco(data) {
-      console.log(data)
+      console.log("FDp", data)
       this.$store.state.dadosEndereco = data;
     },
     salvaCartao(data) {

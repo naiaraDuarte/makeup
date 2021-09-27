@@ -605,7 +605,8 @@ export default {
       };
 
       this.$http.post(`/cliente/`, frm).then((res) => {
-        frm.id = res.data.dados.id;
+        console.log(res);
+        frm.id = res.data.cliente.id;
         this.addUsuario(frm);
         localStorage.setItem("usuarioId", frm.id);
         this.$store.state.cadastro = true;

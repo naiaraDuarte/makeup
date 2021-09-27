@@ -38,18 +38,17 @@
             </v-card>
             <v-card class="separa" elevation="0" v-if="desconto > 0">
               <p>Desconto</p>
-              <p>{{ $n(parseFloat(desconto), "currency") }}</p>
+              <p>-{{ $n(parseFloat(desconto), "currency") }}</p>
+            </v-card>
+            <v-card class="separa" elevation="0" v-if="cashback > 0">
+              <p>Valor do cashback</p>
+              <p>-{{ $n(parseFloat(cashback), "currency") }}</p>
             </v-card>
             <v-divider></v-divider>
             <v-card class="separa" elevation="0">
               <h3>Total</h3>
               <h3>
-                {{
-                  $n(
-                    parseFloat(totalProdutos + (parseFloat(frete) - desconto)),
-                    "currency"
-                  )
-                }}
+                {{ $n(calculaTotal, "currency") }}
               </h3>
             </v-card>
           </v-col>
@@ -117,6 +116,8 @@ export default {
     habilitaBotao: Boolean,
     pag: String,
     desconto: Number,
+    cashback: Number,
+    tipoDesconto: String,
   },
   data() {
     return {
@@ -132,7 +133,24 @@ export default {
       });
     }
   },
-  computed: {},
+  computed: {
+    calculaTotal() {
+      if (this.tipoDesconto == "frete") {
+        return parseFloat(
+          this.totalProdutos - this.cashback + (parseFloat(this.frete) - this.desconto)
+        );
+      } else {
+        let valor = parseFloat(
+          (this.totalProdutos - this.desconto) + parseFloat(this.frete)
+        )
+        if ((valor - this.cashback) < 0) {
+          let sobraCashbach = valor - this.cashback;
+          console.log(sobraCashbach)
+        }
+        return valor;
+      }
+    },
+  },
   methods: {
     ...mapMutations(["addPedido"]),
     getImgUrl(pic) {
@@ -183,6 +201,7 @@ export default {
         cupom: {
           id: this.$store.state.cupomUtilizado.id,
         },
+        //cashback utilizado
         cashback: {
           id: 2,
           valor: 10,
