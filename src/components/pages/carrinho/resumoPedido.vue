@@ -175,9 +175,6 @@ export default {
           console.log("Viadooo", res);
         });
     },
-    atualizaStore(val) {
-      this.$store.state.valeTroca[0].valor = val;
-    },
     teste() {
       console.log(parseFloat(this.cashback));
       if (this.cashback != null) {
@@ -206,7 +203,7 @@ export default {
           valor = valor - this.cashback;
           // this.editaCashback(valor);
           this.valorDescontoCashback = v - valor;
-          this.$store.state.valeTroca = valor;
+          this.$store.state.valeTroca = this.valorDescontoCashback;
         }
         //  valor;
         this.total = valor;
@@ -231,9 +228,7 @@ export default {
         });
       });
       let frmB = {
-        valorTotal: parseFloat(
-          this.totalProdutos + (parseFloat(this.frete) - this.desconto)
-        ),
+        valor: this.total,
         frete: this.$store.state.freteCalculado,
         produto: produtos,
         cliente: {

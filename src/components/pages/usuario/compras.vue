@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1>Compras {{ this.$store.state.valeTroca }}</h1>
+    <h1>Compras</h1>
 
     <!-- <div class="compras"></div> -->
     <v-row class="mt-1 mx-3 my-3">

@@ -101,6 +101,7 @@
         <v-col lg="5" class="pl-5">
           <resumoPedido
             :frete="this.$store.state.freteCalculado"
+            :cashback="cashback.valor"
             :desconto="desconto"
             :habilitaBotao="habilitaBotao"
             pag="confirmacao"
@@ -122,6 +123,9 @@ export default {
       enderecoEntrega: "",
       pagConfirmacao: false,
       marcados: [],
+      cashback: {
+        valor: 0
+      },
       itensDivisoes: [
         "Pagar com 1 cartão",
         "Pagar com 2 cartões",
@@ -131,6 +135,11 @@ export default {
   },
   mounted() {
     console.log(this.$store.state.carrinho);
+    this.$http
+      .get(`/cashback/${localStorage.getItem("usuarioId")}`)
+      .then((res) => {
+          this.cashback = res.data.cashback[0];
+      });
   },
   watch: {
     enderecoEntrega(newVal) {
