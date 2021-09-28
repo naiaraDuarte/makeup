@@ -299,6 +299,7 @@ export default {
     this.$http.get(`/produto/`).then((res) => {
       res.data.dados.forEach((prod) => {
         this.itens.push({
+          id: prod.id,
           cod: prod.id,
           src: prod.imagem,
           nome: prod.nome,
@@ -309,6 +310,7 @@ export default {
     });
     this.itensBase = this.itens;
     this.$store.state.listaProdutos = this.itens;
+    console.log("LISTA DE PRODUTOS", this.$store.state.listaProdutos)
   },
   methods: {
     getImgUrl(pic) {
@@ -343,6 +345,7 @@ export default {
         }
       });
       this.total = total;
+      console.log("PDT", pdt)
       this.editarCarrinho(pdt);
     },
 

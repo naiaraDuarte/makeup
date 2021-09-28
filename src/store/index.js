@@ -120,9 +120,9 @@ export default new Vuex.Store({
 
         //Carrinho
         addCarrinho(state, payload) {
-            payload.id = state.carrinhoCountId;
+            // payload.id = state.carrinhoCountId;
             state.carrinho.push(payload);
-            state.carrinhoCountId++;
+            // state.carrinhoCountId++;
         },
         editarCarrinho(state, payload) {
             let index = state.carrinho.findIndex(pdt => pdt.cod == payload.cod);
