@@ -62,7 +62,7 @@
                   <v-img
                     height="80"
                     width="80"
-                    :src="getImgUrl(prod.src)"
+                    :src="getImgUrl(prod.imagem)"
                   ></v-img>
                 </v-col>
                 <v-col lg="3">
@@ -81,7 +81,7 @@
                   </p>
                 </v-col>
                 <v-col lg="2">
-                  <p>{{ $n(prod.preco, "currency") }}</p>
+                  <p>{{ $n(prod.custo, "currency") }}</p>
                 </v-col>
                 <v-col lg="2">
                   <v-btn class="btnFilter ampliarBtn" elevation="0"
@@ -308,6 +308,36 @@ export default {
     };
   },
   mounted() {
+    this.$store.state.pedidos = [];
+    this.$http
+      .get(`/pedido/${localStorage.getItem("usuarioId")}`)
+      .then((res) => {
+        console.log("OMDS", res)
+        res.data.todosOsPedidos.forEach((ped) => {
+          let carrinho = ped.pedido.produtos;
+          let cartao = ped.pedido.cartoes;
+          let cupom = ped.pedido.cupom;
+          let endereco = ped.pedido.endereco[0];
+          let frete = ped.pedido.frete;
+          let status = ped.pedido.status;
+          
+          this.$store.state.pedidos.push({
+            cliente: this.$store.state.usuario[1],
+            carrinho: carrinho,
+            cartao: cartao,
+            cupom: cupom,
+            enderecoEntrega: endereco,
+            freteCobrado: frete,
+            totalPago: parseFloat(
+              this.totalProdutos + (parseFloat(this.frete) - this.desconto)
+            ),
+            status: status,
+            prodTroca: [],
+          })
+        });
+        
+        console.log(this.$store.state.pedidos);
+      });
     // this.getDados("normal", "EM TRANSPORTE");
   },
   methods: {
@@ -351,7 +381,10 @@ export default {
       this.e1 += 1;
     },
     efetuarCancelamento() {
-      this.editaStatus([this.perfilSelecionado.id, "CANCELAMENTO SOLICITADO"], null);
+      this.editaStatus(
+        [this.perfilSelecionado.id, "CANCELAMENTO SOLICITADO"],
+        null
+      );
       this.exibeSnackBar("green", "Seu cancelamento foi pra análise");
       console.log(this.perfilSelecionado.id);
       this.cancelarPedido = false;
@@ -367,7 +400,6 @@ export default {
     },
     trocaComId(item, prod) {
       this.editaStatus([item.id, "TROCA SOLICITADA", prod.id]);
-      
     },
     getImgUrl(pic) {
       return require("../../../assets/images/" + pic);
