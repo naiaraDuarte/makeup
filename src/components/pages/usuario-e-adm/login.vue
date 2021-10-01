@@ -3,7 +3,7 @@
     <h2 class="cor-letra text-center mt-5 pt-5">
       Nos forneça seus dados de acesso...
     </h2>
-    <v-row class="mx-3 my-3 centraliza">
+    <v-row class="mx-3 ml-3 mt-3 mr-3 centraliza">
       <v-col lg="5">
         <v-text-field
           v-model="email"
@@ -24,6 +24,22 @@
           required
         ></v-text-field>
       </v-col>
+    </v-row>
+    <v-row class="mx-0 my-0 centraliza">
+      <v-col lg="4"></v-col>
+      <v-col lg="4" class="p-0 centraliza" style="padding: 0px">
+        <v-btn
+          elevation="0"
+          text
+          class="btnSubmit"
+          style="text-transform: none"
+          @click="cadastrar()"
+          id="cadastre"
+        >
+          Não tem login? Cadastre-se</v-btn
+        >
+      </v-col>
+      <v-col lg="4"></v-col>
     </v-row>
     <v-row>
       <v-col class="text-center mb-5" lg="12" md="" sm="" col="5">
@@ -124,6 +140,9 @@ export default {
     salvaEndereco(data) {
       console.log(data);
       this.$store.state.dadosEndereco = data;
+    },
+    cadastrar(){
+      this.$router.push(`/usuario`);
     },
     salvaCartao(data) {
       this.$store.state.cartoes = [];
