@@ -27,6 +27,7 @@ export default new Vuex.Store({
         concluir: false,
         cartoesEscolhidos: [],
         valeTroca: [],
+        totalCompra: 0,
         enderecoDeEntrega: '',
         cupomUtilizado: {
             porcen: 0,

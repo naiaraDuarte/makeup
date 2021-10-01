@@ -207,6 +207,9 @@ export default {
         }
         //  valor;
         this.total = valor;
+        this.$store.state.totalCompra = valor;
+
+        this.$emit("total", this.total);
         return valor;
       }
     },

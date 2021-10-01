@@ -36,7 +36,7 @@
                 :key="i"
               >
                 <v-card elevation="0">
-                  <div @click="marca(item.id)">
+                  <div @click="selecionaCartao(item.id)">
                     <cartao
                       :class="[
                         item.selecionado == true ? 'marcado' : 'desmarcado',
@@ -156,7 +156,7 @@
                     ><v-icon left> mdi-plus </v-icon> Add endereco</v-btn
                   >
                 </h4>
-                <p>Selecione o endereço de entraga do seus produtos</p>
+                <p>Selecione o endereço de entrega do seus produtos</p>
                 <v-row
                   class="mt-3"
                   v-for="(item, i) in $store.state.enderecos"
@@ -306,7 +306,7 @@ export default {
     ...mapMutations(["editarCupons"]),
     ...mapMutations(["removeCupons"]),
     ...mapMutations(["editarCartao"]),
-    marca(val) {
+    selecionaCartao(val) {
       this.$store.state.cartoesEscolhidos = [];
       let index = this.marcados.findIndex((item) => item.cartao == val);
       if (index == -1) {
@@ -339,7 +339,19 @@ export default {
           }
         });
         this.marcados.splice(index, 1);
-        this.$store.state.cartoesEscolhidos = this.marcados;
+        this.$store.state.cartoesEscolhidos = [];
+        this.marcados.filter((item, i) => {
+          console.log(i);
+          this.$store.state.cartoes.some((cartao) => {
+            if (cartao.id == item.cartao) {
+              cartao.selecionado = true;
+              cartao.valor = item.valor;
+              this.$store.state.cartoesEscolhidos.push(cartao);
+              this.editarCartao(cartao);
+              return false;
+            }
+          });
+        });
       }
       console.log(this.$store.state.cartoesEscolhidos, "|||||", this.marcados);
     },
@@ -349,7 +361,19 @@ export default {
       if (parseFloat(val) >= 10) {
         let index = this.marcados.findIndex((item) => item.cartao == val);
         this.marcados[index] = { cartao: id, valor: val };
-        this.$store.state.cartoesEscolhidos = this.marcados;
+       this.$store.state.cartoesEscolhidos = [];
+        this.marcados.filter((item, i) => {
+          console.log(i);
+          this.$store.state.cartoes.some((cartao) => {
+            if (cartao.id == item.cartao) {
+              cartao.selecionado = true;
+              cartao.valor = item.valor;
+              this.$store.state.cartoesEscolhidos.push(cartao);
+              this.editarCartao(cartao);
+              return false;
+            }
+          });
+        });
 
         this.restante = this.$n(
           this.totalProdutos + parseFloat(this.frete) - parseFloat(val),
