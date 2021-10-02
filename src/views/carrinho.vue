@@ -29,7 +29,7 @@
                 <compras @compraProx="e1 = 2"></compras>
               </v-stepper-content>
               <v-stepper-content step="2">
-                <pagamento :mostra="false"></pagamento>
+                <pagamento v-if="e1 == 2" :mostra="false"></pagamento>
 
                 <v-row class="text-right mx-1 mb-3">
                   <v-col lg="9"></v-col>
@@ -50,7 +50,7 @@
                 </v-row>
               </v-stepper-content>
               <v-stepper-content step="3">
-                 <confirmacao></confirmacao>
+                 <confirmacao v-if="e1 == 3"></confirmacao>
               </v-stepper-content>
             </v-stepper-items>
           </v-stepper>
@@ -86,7 +86,7 @@
                 <entrar :carrinho="true" @logou="e1 = 3"></entrar>
               </v-stepper-content>
               <v-stepper-content step="3">
-                <pagamento
+                <pagamento v-if="e1 == 3"
                   :dadosEndereco="dadosEndereco"
                   :dadosCartao="dadosCartao"
                 ></pagamento>
@@ -110,7 +110,7 @@
               </v-stepper-content>
 
               <v-stepper-content step="4">
-                <confirmacao></confirmacao>
+                <confirmacao v-if="e1 == 4"></confirmacao>
               </v-stepper-content>
             </v-stepper-items>
           </v-stepper>

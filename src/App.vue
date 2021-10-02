@@ -52,6 +52,7 @@ export default {
             this.salvaUsuario(res.data.cliente[0]);
             this.salvaEndereco(res.data.endereco);
             this.salvaCartao(res.data.cartao);
+            this.salvarCashBack(res.data.cashback[0])
           });
       }
     },
@@ -76,6 +77,10 @@ export default {
         });
       });
     },
+    salvarCashBack(data){
+      this.$store.state.valeTroca = data.valor;
+      console.log("MERDA", this.$store.state.valeTroca)
+    }
   },
 };
 </script>

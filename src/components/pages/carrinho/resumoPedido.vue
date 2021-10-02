@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <p v-show="false">{{ teste() }}</p>
+    <!-- <p v-show="false">{{ calcTotal() }}</p> -->
     <p class="mb-3 tituloModalCarrinho">
       <v-icon class="pb-1" large>mdi-chevron-double-right</v-icon>Resumo do
       pedido
@@ -49,7 +49,7 @@
             <v-card class="separa" elevation="0">
               <h3>Total</h3>
               <h3>
-                {{ $n(total, "currency") }}
+                {{ $n(calculaTotal, "currency") }}
               </h3>
             </v-card>
           </v-col>
@@ -129,27 +129,16 @@ export default {
       valorDescontoCashback: 0,
     };
   },
-  created() {
-    // this.total = this.teste();
-  },
   mounted() {
-    // this.total = this.teste();
     if (this.$store.state.carrinho.length > 0) {
       this.$store.state.carrinho.forEach((item) => {
         this.totalProdutos += item.qtd * item.preco;
       });
     }
   },
-  activated() {
-    // this.total = this.teste();
-  },
   computed: {
     calculaTotal() {
-      if (this.cashback > 0 && this.cashback != null) {
-        return this.teste();
-      } else {
-        return null;
-      }
+      return this.calcTotal();
     },
   },
   methods: {
@@ -165,53 +154,44 @@ export default {
       this.$store.state.concluir = true;
     },
     editaCashback(val) {
-      console.log("IIIIIIIIIII", val)
       this.$http
-        .put(`/cashback/${localStorage.getItem("usuarioId")}`, {valor: val})
+        .put(`/cashback/${localStorage.getItem("usuarioId")}`, { valor: val })
         .then((res) => {
           console.log("teyfve", this.$store.state.valeTroca);
-          // this.$store.state.valeTroca[0].valor = val;
-          // this.valorDescontoCashback = this.cashback - val;
           console.log("Viadooo", res);
         });
     },
-    teste() {
-      console.log(parseFloat(this.cashback));
-      if (this.cashback != null) {
-        let valor = 0;
-        if (this.tipoDesconto == "frete") {
-          valor = parseFloat(
-            this.totalProdutos -
-              this.cashback +
-              (parseFloat(this.frete) - this.desconto)
-          );
-        } else {
-          valor = parseFloat(
-            this.totalProdutos - this.desconto + parseFloat(this.frete)
-          );
-        }
-
-        if (valor - this.cashback < 0) {
-          let sobraCashbach = (valor - this.cashback) * -1;
-          // this.editaCashback(sobraCashbach);
-          this.$store.state.valeTroca = sobraCashbach;
-          this.valorDescontoCashback = valor;
-          valor = 0;
-        } else {
-          console.log("YYYYYYYYYYY", valor, this.cashback);
-          let v = valor;
-          valor = valor - this.cashback;
-          // this.editaCashback(valor);
-          this.valorDescontoCashback = v - valor;
-          this.$store.state.valeTroca = this.valorDescontoCashback;
-        }
-        //  valor;
-        this.total = valor;
-        this.$store.state.totalCompra = valor;
-
-        this.$emit("total", this.total);
-        return valor;
+    calcTotal() {
+      let valorFinal = 0;
+      if (this.tipoDesconto == "frete") {
+        valorFinal = parseFloat(
+          this.totalProdutos -
+            this.cashback +
+            (parseFloat(this.frete) - this.desconto)
+        );
+      } else {
+        valorFinal = parseFloat(
+          this.totalProdutos - this.desconto + parseFloat(this.frete)
+        );
       }
+      // 10 - 100 = 90
+      if ((valorFinal - this.cashback) < 0) {
+        let sobraCashbach = (valorFinal - this.cashback) * -1;
+        this.$store.state.valeTroca = sobraCashbach;
+        this.valorDescontoCashback = valorFinal;
+        valorFinal = 0;
+      } 
+      // 100 - 10 = 90 
+      else {
+        valorFinal = valorFinal - this.cashback;
+        this.valorDescontoCashback = this.cashback;
+        this.$store.state.valeTroca = 0;
+      }
+      this.total = valorFinal;
+      this.$store.state.totalCompra = valorFinal;
+
+      this.$emit("total", this.total);
+      return valorFinal;
     },
     comprar() {
       this.editaCashback(this.$store.state.valeTroca);
