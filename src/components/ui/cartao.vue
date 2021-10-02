@@ -17,7 +17,7 @@ export default {
     nome: String,
     numero: String,
     data: String,
-    id: Number
+    id: Number,
   },
   name: "Form",
   mounted() {
@@ -30,7 +30,7 @@ export default {
         expiryInput: "input#cc-expiration",
         cvcInput: "input#cc-cvv",
       },
-      width: 200,
+      width: 270,
       formatting: true,
       placeholders: {
         number: "•••• •••• •••• ••••",
@@ -44,25 +44,39 @@ export default {
 };
 </script>
 <style>
-  .esconde{
-    visibility: hidden;
-    display: none;
-  }
-  .cartao .jp-card-container{
-    transform: scale(0.771429) !important;
-  }
+.esconde {
+  visibility: hidden;
+  display: none;
+}
+.cartao .jp-card-container {
+  transform: scale(0.771429) !important;
+  height: 170px !important;
+}
 
-  .cartao .jp-card .jp-card-front .jp-card-lower .jp-card-number{
-    font-size: 19px;
-  }
+.cartao .jp-card-container .jp-card .jp-card-mastercard .jp-card-identified {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    line-height: 1;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-width: 0px;
+    border-radius: 10px;
+    transform-style: preserve-3d;
+    transition: all 400ms linear;
+}
 
-  .cartao .jp-card .jp-card-front .jp-card-lower .jp-card-expiry{
-    font-size: 13px;
-  }
-  .cartao .jp-card .jp-card-front .jp-card-lower .jp-card-name{
-    font-size: 16px;
-  }
-  .cartao .jp-card{
-    min-width: none;
-  }
+.cartao .jp-card .jp-card-front .jp-card-lower .jp-card-number {
+  font-size: 19px;
+}
+
+.cartao .jp-card .jp-card-front .jp-card-lower .jp-card-expiry {
+  font-size: 13px;
+}
+.cartao .jp-card .jp-card-front .jp-card-lower .jp-card-name {
+  font-size: 16px;
+}
+
+.cartao .jp-card .jp-card-front .jp-card-lower .jp-card-number {
+  margin-bottom: 10px !important;
+}
 </style>

@@ -203,6 +203,7 @@
             :desconto="desconto"
             :tipoDesconto="$store.state.cupomUtilizado.tipo"
             :habilitaBotao="habilitaBotao"
+            @total="totalProdutos = $event"
             pag="pagamento"
           ></resumoPedido>
         </v-col>
@@ -255,11 +256,11 @@ export default {
   },
   mounted() {
     if (this.$store.state.carrinho.length > 0) {
-      this.$store.state.carrinho.forEach((item) => {
-        this.totalProdutos += item.qtd * item.preco;
-      });
+      // this.$store.state.carrinho.forEach((item) => {
+      //   this.totalProdutos += item.qtd * item.preco;
+      // });
       this.restante = this.$n(
-        this.totalProdutos + parseFloat(this.frete),
+        this.totalProdutos,
         "currency"
       );
     }
@@ -282,6 +283,12 @@ export default {
         }
       });
     },
+    totalProdutos(){
+      this.restante = this.$n(
+        this.totalProdutos,
+        "currency"
+      );
+    }
   },
   computed: {
     habilitaBotao() {
@@ -313,27 +320,35 @@ export default {
     selecionaCartao(id) {
       this.$store.state.cartoesEscolhidos = [];
       let index = this.marcados.findIndex((item) => item.id == id);
+      let ref = this.$store.state.cartoes.findIndex((item) => item.id == id);
+      let restante = this.restante;
+      restante = restante.replace("R$", "");
+      restante = restante.replace(",", ".");
       if (index == -1) {
         this.$store.state.cartoes.filter((cartao) => {
           if (cartao.id == id) {
             cartao.selecionado = true;
-            cartao.valor = 0;
+            if (ref == this.$store.state.cartoes.length - 1) {
+              cartao.valor = 0;
+            } else {
+              cartao.valor = parseFloat(restante);
+            }
             this.marcados.push(cartao);
-            this.$store.state.cartoesEscolhidos.push(cartao);
+            // this.$store.state.cartoesEscolhidos.push(cartao);
             this.editarCartao(cartao);
           }
         });
       } else {
         this.$store.state.cartoes.filter((cartao) => {
-            if (cartao.id == id) {
-              cartao.selecionado = false;
-              cartao.valor = 0;
-              this.editarCartao(cartao);
-            }
+          if (cartao.id == id) {
+            cartao.selecionado = false;
+            cartao.valor = 0;
+            this.editarCartao(cartao);
+          }
         });
         this.marcados.splice(index, 1);
-        this.$store.state.cartoesEscolhidos = this.marcados;
       }
+      this.$store.state.cartoesEscolhidos = this.marcados;
       console.log(this.$store.state.cartoesEscolhidos, "|||||", this.marcados);
     },
     salvaValor(id, val) {
@@ -347,7 +362,7 @@ export default {
       val = val.replace("R$", "");
       val = val.replace(",", ".");
       this.restante = this.$n(
-        this.totalProdutos + parseFloat(this.frete) - parseFloat(val),
+        this.totalProdutos - parseFloat(val),
         "currency"
       );
       console.log("AAAAAAAAAAAAAAa", this.$store.state.cartoesEscolhidos);
