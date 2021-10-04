@@ -1,6 +1,5 @@
 <template>
   <v-container fluid>
-    <!-- <p v-show="false">{{ calcTotal() }}</p> -->
     <p class="mb-3 tituloModalCarrinho">
       <v-icon class="pb-1" large>mdi-chevron-double-right</v-icon>Resumo do
       pedido
@@ -181,7 +180,6 @@ export default {
         this.valorDescontoCashback = valorFinal;
         valorFinal = 0;
       } 
-      // 100 - 10 = 90 
       else {
         valorFinal = valorFinal - this.cashback;
         this.valorDescontoCashback = this.cashback;
@@ -236,6 +234,11 @@ export default {
 
       this.$http.post(`/pedido/`, frmB).then((res) => {
         console.log("valor", res);
+        this.$store.state.cartoes.filter((cartao) => {
+            cartao.selecionado = false;
+            cartao.valor = 0;
+            this.editarCartao(cartao);
+        });
       });
       let frm = {
         cliente: this.$store.state.usuario[1],

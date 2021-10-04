@@ -11,6 +11,7 @@
             <h4 class="mb-5">
               <v-icon class="pl-1">mdi-credit-card-plus-outline</v-icon> Cartões escolhidos
             </h4>
+            
             <v-row v-if="$store.state.cartoesEscolhidos.length > 0">
               <v-col
                 lg="12"
@@ -21,15 +22,15 @@
                 <div class="mt-2 px-5">
                   <v-card class="p-3 pl-2" elevation="1">
                     <v-row>
-                      <v-col lg="5">
+                      <v-col lg="3">
                         <p>{{ item.nome }}
                         </p>
                       </v-col>
                       <v-col lg="5">
                         <p>{{ item.numero }}</p>
                       </v-col>
-                      <v-col lg="2">
-                        <p>2x</p>
+                      <v-col lg="3">
+                        <p>{{ item.valor }}</p>
                       </v-col>
                     </v-row>
                   </v-card>

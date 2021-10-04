@@ -254,15 +254,10 @@ export default {
       ],
     };
   },
+  activated() {},
   mounted() {
     if (this.$store.state.carrinho.length > 0) {
-      // this.$store.state.carrinho.forEach((item) => {
-      //   this.totalProdutos += item.qtd * item.preco;
-      // });
-      this.restante = this.$n(
-        this.totalProdutos,
-        "currency"
-      );
+      this.restante = this.$n(this.totalProdutos, "currency");
     }
     this.$http
       .get(`/cashback/${localStorage.getItem("usuarioId")}`)
@@ -283,16 +278,17 @@ export default {
         }
       });
     },
-    totalProdutos(){
-      this.restante = this.$n(
-        this.totalProdutos,
-        "currency"
-      );
-    }
+    totalProdutos() {
+      this.restante = this.$n(this.totalProdutos, "currency");
+    },
   },
   computed: {
     habilitaBotao() {
       if (this.frete != "0" && this.marcados.length > 0) {
+        this.salvaValorRestante();
+        return true;
+      } else if (this.frete != "0" && this.totalProdutos == 0) {
+        this.salvaValorRestante();
         return true;
       }
       return false;
@@ -334,7 +330,6 @@ export default {
               cartao.valor = parseFloat(restante);
             }
             this.marcados.push(cartao);
-            // this.$store.state.cartoesEscolhidos.push(cartao);
             this.editarCartao(cartao);
           }
         });
@@ -352,20 +347,35 @@ export default {
       console.log(this.$store.state.cartoesEscolhidos, "|||||", this.marcados);
     },
     salvaValor(id, val) {
+      console.log("OOOOOOOOOOOOOOOOOOOOOOOO");
       let index = this.marcados.findIndex((item) => item.id == id);
-      let valorDoCartaoSelecionado = this.marcados.filter(
-        (item) => item.id == id
-      );
-      valorDoCartaoSelecionado.valor = val;
-      this.marcados[index] = valorDoCartaoSelecionado;
-      this.$store.state.cartoesEscolhidos = this.marcados;
+      this.marcados.filter((item) => {
+        if (item.id == id) {
+          // valorDoCartaoSelecionado.valor = val;
+          // console.log("TTTTTTTTTTT", valorDoCartaoSelecionado);
+          item.valor = this.restante;
+          this.marcados[index] = item;
+          this.$store.state.cartoesEscolhidos = this.marcados;
+        }
+      });
+
       val = val.replace("R$", "");
       val = val.replace(",", ".");
-      this.restante = this.$n(
-        this.totalProdutos - parseFloat(val),
-        "currency"
-      );
+      this.restante = this.$n(this.totalProdutos - parseFloat(val), "currency");
       console.log("AAAAAAAAAAAAAAa", this.$store.state.cartoesEscolhidos);
+    },
+    salvaValorRestante() {
+      let id =
+        this.$store.state.cartoes[this.$store.state.cartoes.length - 1].id;
+      let index = this.$store.state.cartoesEscolhidos.findIndex(
+        (item) => item.id == id
+      );
+      this.$store.state.cartoesEscolhidos.filter((item) => {
+        if (item.id == id) {
+          item.valor = this.restante;
+          this.$store.state.cartoesEscolhidos[index] = item;
+        }
+      });
     },
     usarCupom() {
       if (this.cupom == "" || this.cupom == null) {
