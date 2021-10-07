@@ -105,17 +105,17 @@ export default new Vuex.Store({
         },
 
         //Produto
-        addProduto(state, payload) {
+        addProdutos(state, payload) {
             payload.id = state.countId;
             state.produtos.push(payload);
             state.countId++;
         },
-        editarProduto(state, payload) {
-            let index = state.produto.findIndex(produto => produto.id == payload.id);
-            state.produtos[index] = payload;
+        editarProdutos(state, payload) {
+            let index = state.produtos.findIndex(produto => produto.id == payload.id);
+            Vue.set(state.produtos, index, payload);
         },
-        removeProduto(state, payload) {
-            let index = state.addProduto.findIndex(produto => produto.id == payload);
+        removeProdutos(state, payload) {
+            let index = state.produtos.findIndex(produto => produto.id == payload);
             state.produtos.splice(index, 1);
         },
 

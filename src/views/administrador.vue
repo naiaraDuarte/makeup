@@ -13,6 +13,9 @@
        <v-card elevation="3" class="mt-5" v-if="troca == 3">
          <cupons></cupons>
       </v-card>
+       <v-card elevation="3" class="mt-5" v-if="troca == 4">
+         <cadastro></cadastro>
+      </v-card>
     </v-row>
   </v-container>
 </template>
@@ -21,13 +24,15 @@ import listagemUsuario from '@/components/pages/administrador/listagemUsuarios.v
 import pedidos from '../components/pages/administrador/pedidos.vue';
 import cupons from '../components/pages/administrador/cupons.vue';
 import dashboard from '../components/pages/administrador/dashboard.vue';
+import cadastro from '../components/pages/produtos/cadastro.vue';
 
 export default {
   components: {
     listagemUsuario,
     pedidos,
     cupons,
-    dashboard
+    dashboard,
+    cadastro
   },
   mounted() {
     this.$store.state.perfil = "adm";
