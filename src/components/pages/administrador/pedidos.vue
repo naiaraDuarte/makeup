@@ -345,6 +345,17 @@ export default {
   methods: {
     ...mapMutations(["editarPedido"]),
     ...mapMutations(["editaParaTroca"]),
+
+    listarPedidos(){      
+      this.$http.get(`/pedido/`).then((res) => {
+        console.log(res);
+        res.data.dados.forEach((e) => {
+          this.$store.state.pedidos.push(e);
+        });
+      });
+    
+    },
+    
     salvar(id) {
       console.log('aaaaaaaaaaa', id)
       this.$http
