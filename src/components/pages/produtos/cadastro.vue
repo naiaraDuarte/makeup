@@ -95,6 +95,10 @@
                       :items="itensCategoria"
                       label="Categoria"
                       id="categoria"
+                      item-text="nome"
+                      item-value="id"
+                      return-object
+                      clearable
                       required
                     ></v-combobox>
                   </v-col>
@@ -356,7 +360,7 @@ export default {
       mensagem: "",
       snackbarColor: "",
       adicionarProduto: false,
-      itensCategoria: ["Pele", "Sombras", "Acessórios", "Boca", "Olhos"],
+      itensCategoria: [],
       headers: [
         { text: "Produto", value: "nome" },
         { text: "Marca", value: "marca" },
@@ -418,7 +422,9 @@ export default {
       });
     },
     gerar() {
+      this.getCategoria();
       this.adicionarProduto = !this.adicionarProduto;
+      
     },
     limparCampos() {
       (this.codigoProduto = ""),
@@ -547,7 +553,20 @@ export default {
       }
       return false;
     },
+    getCategoria(){
+      this.$http.get(`/categoria/`).then((res) => {
+        console.log(res);
+        res.data.dados.forEach((e) => {
+          this.itensCategoria.push({
+            id: e.id,
+            nome: e.descricao,
+            mgLucro: e.gp_precificacao,
+          });
+        });
+      });
+    },
     getProduto(id) {
+      this.getCategoria();
       this.adicionarProduto = !this.adicionarProduto;
       this.id = id;
 
@@ -564,7 +583,7 @@ export default {
       this.tipoProduto = produto.tipo;
       this.pesoProduto = produto.peso;
       this.alturaProduto = produto.altura;
-      this.larguraProduto = produto.largura
+      this.larguraProduto = produto.largura;
       this.comprimentoProduto = produto.comprimento;
       this.quantidadeProduto = produto.quantidade;
       this.diametroProduto = produto.diametro;

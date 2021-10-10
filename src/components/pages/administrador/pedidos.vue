@@ -283,7 +283,9 @@ export default {
     };
   },
   mounted() {
-    console.log(this.$store.state.pedidos);
+
+    this.listarPedidos();
+    // console.log(this.$store.state.pedidos);
 
     this.$store.state.pedidos.forEach((ped) => {
       this.desserts.push({
@@ -320,6 +322,17 @@ export default {
   methods: {
     ...mapMutations(["editarPedido"]),
     ...mapMutations(["editaParaTroca"]),
+
+    listarPedidos(){      
+      this.$http.get(`/pedido/`).then((res) => {
+        console.log(res);
+        res.data.dados.forEach((e) => {
+          this.$store.state.pedidos.push(e);
+        });
+      });
+    
+    },
+    
     salvar(id) {
       this.editarPedido([id, this.steps[this.e1].nome]);
       this.desserts[id].status = this.steps[this.e1].nome;

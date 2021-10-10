@@ -481,7 +481,7 @@ export default {
       forca: 0,
       tipoTelefone: "",
       itensTipoTelefone: ["Celular", "Fixo"],
-      
+
       //Alterações
       emailNovoAlteracao: "",
       emailNovoConfirmacaoAlteracao: "",
@@ -688,18 +688,22 @@ export default {
         );
         return false;
       }
-      if (this.senhaConfirmacao != this.senha) {
-        this.exibeSnack("#b38b57", "A senha digitada não corresponde");
-        return false;
-      }
-
       this.$http
-        .patch(`/cliente/${localStorage.getItem("usuarioId")}`, {
-          email: this.emailNovoAlteracao,
+        .post(`/cliente/senha/${localStorage.getItem("usuarioId")}`, {
+          senha: this.senhaConfirmacao,
         })
         .then(() => {
-          this.email = this.emailNovoAlteracao;
-          this.editarEmail = false;
+         this.$http
+            .patch(`/cliente/${localStorage.getItem("usuarioId")}`, {
+              email: this.emailNovoAlteracao,
+            })
+            .then(() => {
+              this.email = this.emailNovoAlteracao;
+              this.editarEmail = false;
+            });
+        })
+        .catch(() => {
+          this.exibeSnack("#b38b57", "A senha atual digitada não corresponde");
         });
     },
     alteracaoSenha() {
@@ -710,21 +714,36 @@ export default {
         );
         return false;
       }
-      if (this.senhaConfirmacaoParaSenhaNova != this.senha) {
-        this.exibeSnack("#b38b57", "A senha atual digitada não corresponde");
-        return false;
-      }
-
       this.$http
-        .patch(`/cliente/${localStorage.getItem("usuarioId")}`, {
-          senha: this.senhaNovoAlteracao,
+        .post(`/cliente/senha/${localStorage.getItem("usuarioId")}`, {
+          senha: this.senhaConfirmacaoParaSenhaNova,
         })
         .then(() => {
-          this.senha = this.senhaNovoAlteracao;
-          this.confirmacaoSenha = this.senhaNovoAlteracao;
-          this.editarSenha = false;
-          this.exibeSnack("green", "Senha atualizada com sucesso");
+          this.$http
+            .patch(`/cliente/${localStorage.getItem("usuarioId")}`, {
+              senha: this.senhaNovoAlteracao,
+            })
+            .then(() => {
+              this.senha = this.senhaNovoAlteracao;
+              this.confirmacaoSenha = this.senhaNovoAlteracao;
+              this.editarSenha = false;
+              this.exibeSnack("green", "Senha atualizada com sucesso");
+            });
+        })
+        .catch(() => {
+          this.exibeSnack("#b38b57", "A senha atual digitada não corresponde");
         });
+
+      //   this.senha = this.senhaNovoAlteracao;
+      //   this.confirmacaoSenha = this.senhaNovoAlteracao;
+      //   this.editarSenha = false;
+      //   this.exibeSnack("green", "Senha atualizada com sucesso");
+      // });
+
+      // if (this.senhaConfirmacaoParaSenhaNova != this.senha) {
+
+      //   return false;
+      // }
     },
     verificacaoSalvar() {
       if (!this.validacao()) {
