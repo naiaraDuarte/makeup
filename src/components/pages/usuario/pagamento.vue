@@ -210,7 +210,8 @@ export default {
         this.$http
           .post(`/cartao/${localStorage.getItem("usuarioId")}`, frm)
           .then((res) => {
-            frm.id = res.data.cartao.id;
+            console.log('RESULTADO', res)
+            frm.id = res.data.id;
             this.addCartao(frm);
           });
       } else {

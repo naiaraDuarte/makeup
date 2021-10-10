@@ -611,6 +611,9 @@ export default {
         localStorage.setItem("usuarioId", frm.id);
         this.$store.state.cadastro = true;
         this.$router.push(`/`);
+      }).catch((e) => {
+        console.log("Falha ao cadastrar", e)
+        this.exibeSnack("red", "Cliente já existente!");
       });
     },
     editar() {
