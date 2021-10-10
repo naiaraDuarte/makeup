@@ -59,6 +59,9 @@
                 <span class="text-h5"
                   >N° do pedido: {{ perfilSelecionado[0].pedido }}
                 </span>
+                <span class="text-h5"
+                  >Cliente: {{ perfilSelecionado[0].nome }}
+                </span>
               </v-col>
             </v-row>
           </v-card-title>
@@ -70,13 +73,19 @@
                   <v-row>
                     <v-col lg="4" class="addBorder">
                       <p><b>Dados pessoais:</b></p>
-                      <p><b>CPF:</b> {{ perfilSelecionado[0].cpf }}</p>
+                      <p><b>CPF:</b> {{ perfilSelecionado[0].cliente.cpf }}</p>
                       <p>
                         <b>Data nascimento:</b>
-                        {{ perfilSelecionado[0].dataNasc }}
+                        {{
+                          $moment(
+                            perfilSelecionado[0].cliente.data_nasc,
+                            "YYYY-MM-DD"
+                          ).format("DD/MM/YYYY")
+                        }}
                       </p>
                       <p>
-                        <b>Telefone:</b> {{ perfilSelecionado[0].telefone }}
+                        <b>Telefone:</b>
+                        {{ perfilSelecionado[0].cliente.telefone }}
                       </p>
                     </v-col>
                     <v-col lg="4" class="addBorder">
@@ -93,9 +102,15 @@
                     </v-col>
                     <v-col lg="4" class="addBorder">
                       <p><b>Dados de pagamento</b></p>
-                      <p><b>CPF:</b> {{ perfilSelecionado[0].cpf }}</p>
-                      <p><b>Data nascimento:</b> 20/05/2001</p>
-                      <p><b>Telefone:</b> (11) 97854-5212</p>
+                      <p>
+                        <b>Total da compra:</b>
+                        {{
+                          $n(
+                            parseFloat(perfilSelecionado[0].totalPago),
+                            "currency"
+                          )
+                        }}
+                      </p>
                     </v-col>
                   </v-row>
                 </v-col>
@@ -283,32 +298,42 @@ export default {
     };
   },
   mounted() {
-    console.log(this.$store.state.pedidos);
+    this.$http.get(`/pedido/`).then((res) => {
+      res.data.todosOsPedidos.forEach((ped) => {
+        let cliente = ped.pedido.cliente[0];
+        let carrinho = ped.pedido.produtos;
+        let cartao = ped.pedido.cartoes;
+        let cupom = ped.pedido.cupom;
+        let endereco = ped.pedido.endereco[0];
+        let status = ped.pedido.status;
+        let total = ped.pedido.valor;
+        let id = ped.pedido.id;
 
-    this.$store.state.pedidos.forEach((ped) => {
-      this.desserts.push({
-        pedido: ped.id,
-        nome: ped.cliente.nome,
-        cpf: ped.cliente.cpf,
-        status: ped.status,
-        fluxo: ped.fluxo,
-        troca: ped.prodTroca,
-        acoes: ped.id,
+        this.$store.state.pedidos.push({
+          cliente: cliente,
+          carrinho: carrinho,
+          cartao: cartao,
+          cupom: cupom,
+          enderecoEntrega: endereco,
+          totalPago: total,
+          status: status,
+          prodTroca: [],
+        });
+
+        this.desserts.push({
+          pedido: id,
+          nome: cliente.nome,
+          cpf: cliente.cpf,
+          cliente: cliente,
+          status: status,
+          fluxo: ped.fluxo,
+          totalPago: total,
+          troca: [],
+          endereco: endereco,
+          acoes: id,
+        });
       });
     });
-
-    // this.$http.get(`/cliente/`).then((res) => {
-    //   res.data.dados.forEach((cliente) => {
-    //     this.desserts.push({
-    //       nome: cliente.nome,
-    //       cpf: cliente.cpf,
-    //       email: cliente.email,
-    //       cidade: "Mogi-SP",
-    //       avaliacao: 4.0,
-    //       acoes: cliente.id,
-    //     });
-    //   });
-    // });
   },
   watch: {
     steps(val) {
@@ -321,12 +346,24 @@ export default {
     ...mapMutations(["editarPedido"]),
     ...mapMutations(["editaParaTroca"]),
     salvar(id) {
-      this.editarPedido([id, this.steps[this.e1].nome]);
-      this.desserts[id].status = this.steps[this.e1].nome;
-      console.log("Não funfou", this.$store.state.pedidos);
-      this.limpa();
+      console.log('aaaaaaaaaaa', id)
+      this.$http
+        .put(
+          `/pedido/status/${id}`, {
+            status: this.steps[this.e1].nome
+          }
+          
+        )
+        .then((res) => {
+          console.log(res);
+          // this.editarPedido([id, this.steps[this.e1].nome]);
+          // this.desserts[id].status = this.steps[this.e1].nome;
+          // console.log("Não funfou", this.$store.state.pedidos);
+          this.limpa();
+        });
     },
     async verMais(id) {
+      console.log("jdf", id);
       this.perfilSelecionado = this.desserts.filter(
         (clientes) => clientes.acoes == id
       );

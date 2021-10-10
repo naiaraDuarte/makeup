@@ -44,11 +44,12 @@ export default {
     ...mapMutations(["addUsuario"]),
     ...mapMutations(["addCartao"]),
     usuario() {
+       console.log("RES1358", localStorage.getItem("usuarioId"))
       if (localStorage.getItem("usuarioId")) {
         this.$http
           .get(`/cliente/${localStorage.getItem("usuarioId")}`)
           .then((res) => {
-            console.log("RES", res)
+           
             this.salvaUsuario(res.data.cliente[0]);
             this.salvaEndereco(res.data.endereco);
             this.salvaCartao(res.data.cartao);
