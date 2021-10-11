@@ -182,6 +182,8 @@ export default {
         cvc: "•••",
       },
     });
+
+    this.listarCartoesCadastrados();
   },
   computed: {
     verificaId() {
@@ -190,6 +192,18 @@ export default {
     },
   },
   methods: {
+    listarCartoesCadastrados() {
+      console.log("listarrrrr");
+
+      this.$store.state.cartoes = [];
+      this.$http
+        .get(`/cartao/${localStorage.getItem("usuarioId")}`)
+        .then((res) => {
+          res.data.dados.forEach((e) => {
+            this.$store.state.cartoes.push(e);
+          });
+        });
+    },
     ...mapMutations(["addCartao"]),
     addCartoes() {
       if (!this.verificaPreenchimento()) {
@@ -203,7 +217,7 @@ export default {
       let frm = {
         status: status,
         nome: this.nomeCartao,
-        numero: this.numeroCartao,
+        numero: this.numeroCartao.trim(),
         cvv: this.codCartao,
         data_validade: this.expCartao,
         bandeira: 2,
@@ -213,7 +227,7 @@ export default {
         this.$http
           .post(`/cartao/${localStorage.getItem("usuarioId")}`, frm)
           .then(() => {
-            this.addCartao(frm)
+            this.addCartao(frm);
             this.snackbarColor = "green";
             this.mensagem = "Cartão adicionado com sucesso";
             this.snackbar = true;
@@ -222,15 +236,15 @@ export default {
             this.snackbarColor = "#b38b57";
             this.mensagem = "Verifique os dados do cartao!";
             this.snackbar = true;
-          })
-      } 
-    },  
-  
+          });
+      }
+    },
+
     ...mapMutations(["editarCartao"]),
     editarCartoes(id) {
       let status = this.verificaPreenchimento();
       let frm = {
-        id: id,
+        id: this.id,
         status: status,
         nome: this.nomeCartao,
         numero: this.numeroCartao,
@@ -238,27 +252,29 @@ export default {
         data_validade: this.expCartao,
         bandeira: 2,
       };
-      if (!this.verificaId) {
-        this.$http.put(`/cartao/${id}`, frm).then(() => {          
+      if (this.verificaId) {
+        this.$http
+          .put(`/cartao/${id}`, frm)
+          .then(() => {
+            this.editarCartao(frm);
             this.snackbarColor = "green";
             this.mensagem = "Cartão editado com sucesso";
+            console.log("alterar id", id);
             this.snackbar = true;
-          // frm.id = res.data.cartao.id;
-          this.editarCartao(frm);
+            // frm.id = res.data.cartao.id;
           })
           .catch(() => {
             this.snackbarColor = "#b38b57";
             this.mensagem = "Não foi possivel alterar!";
             this.snackbar = true;
-
-
-          })
-        }      
+          });
+      }
     },
     ...mapMutations(["removeCartao"]),
     remove(id) {
       if (this.verificaId) {
         this.$http.delete(`/cartao/${id}`).then(() => {
+          console.log("delete id", id);
           this.removeCartao(id);
         });
       }
@@ -293,6 +309,7 @@ export default {
       this.nomeCartao = "";
     },
     getCartao(id) {
+      console.log("id", id);
       this.idCartaoCliente = id;
 
       let cartao = this.$store.state.cartoes.filter(
