@@ -72,7 +72,10 @@
         >
       </v-col>
     </v-row>
-    <v-row class="mt-1 mx-3 my-3" v-if="this.$store.state.cartoes && mostra == true">
+    <v-row
+      class="mt-1 mx-3 my-3"
+      v-if="this.$store.state.cartoes && mostra == true"
+    >
       <v-col lg="12">
         <v-expansion-panels accordion>
           <v-expansion-panel
@@ -145,7 +148,7 @@ export default {
   name: "Form",
   props: {
     dadosCartao: Array,
-    mostra: Boolean
+    mostra: Boolean,
   },
   data() {
     return {
@@ -209,15 +212,20 @@ export default {
       if (this.verificaId) {
         this.$http
           .post(`/cartao/${localStorage.getItem("usuarioId")}`, frm)
-          .then((res) => {
-            console.log('RESULTADO', res)
-            frm.id = res.data.id;
-            this.addCartao(frm);
-          });
-      } else {
-        this.addCartao(frm);
-      }
-    },
+          .then(() => {
+            this.addCartao(frm)
+            this.snackbarColor = "green";
+            this.mensagem = "Cartão adicionado com sucesso";
+            this.snackbar = true;
+          })
+          .catch(() => {
+            this.snackbarColor = "#b38b57";
+            this.mensagem = "Verifique os dados do cartao!";
+            this.snackbar = true;
+          })
+      } 
+    },  
+  
     ...mapMutations(["editarCartao"]),
     editarCartoes(id) {
       let status = this.verificaPreenchimento();
@@ -230,12 +238,22 @@ export default {
         data_validade: this.expCartao,
         bandeira: 2,
       };
-      if (this.verificaId) {
-        this.$http.put(`/cartao/${id}`, frm).then(() => {
+      if (!this.verificaId) {
+        this.$http.put(`/cartao/${id}`, frm).then(() => {          
+            this.snackbarColor = "green";
+            this.mensagem = "Cartão editado com sucesso";
+            this.snackbar = true;
           // frm.id = res.data.cartao.id;
           this.editarCartao(frm);
-        });
-      }
+          })
+          .catch(() => {
+            this.snackbarColor = "#b38b57";
+            this.mensagem = "Não foi possivel alterar!";
+            this.snackbar = true;
+
+
+          })
+        }      
     },
     ...mapMutations(["removeCartao"]),
     remove(id) {
