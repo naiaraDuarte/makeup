@@ -310,6 +310,7 @@ export default {
         let id = ped.pedido.id;
 
         this.$store.state.pedidos.push({
+          id: id,
           cliente: cliente,
           carrinho: carrinho,
           cartao: cartao,
@@ -367,9 +368,9 @@ export default {
         )
         .then((res) => {
           console.log(res);
-          // this.editarPedido([id, this.steps[this.e1].nome]);
+         this.editarPedido([id, this.steps[this.e1].nome]);
           // this.desserts[id].status = this.steps[this.e1].nome;
-          // console.log("Não funfou", this.$store.state.pedidos);
+          //console.log("Não funfou", this.$store.state.pedidos);
           this.limpa();
         });
     },

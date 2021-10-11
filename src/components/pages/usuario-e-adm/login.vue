@@ -104,6 +104,10 @@ export default {
         if (usuario[0]) {
           if (usuario[0].perfil == "adm") {
             this.$router.push("/adm");
+          } else {
+            this.snackbarColor = "red";
+            this.mensagem = "Login ou senha não conferem";
+            this.snackbar = true;
           }
         } else if (usuario[0] == null) {
           let frm = {
@@ -111,21 +115,26 @@ export default {
             senha: this.senha,
           };
 
-          this.$http.post(`/cliente/login`, frm).then((res) => {
-            frm.id = res.data.cliente[0].id;
-            localStorage.setItem("usuarioId", frm.id);
-            console.log("AAAAAAAAAAAAA", res);
-            // this.$store.state.usuario.push(res.data.cliente[0]);
-            this.salvaUsuario(res.data.cliente[0]);
-            this.salvaEndereco(res.data.endereco);
-            this.salvaCartao(res.data.cartao);
-            this.$store.state.cadastro = true;
-            if (this.carrinho == true) {
-              this.$emit("logou", true);
-            } else {
-              this.$router.push(`/`);
-            }
-          });
+          this.$http
+            .post(`/cliente/login`, frm)
+            .then((res) => {
+              frm.id = res.data.cliente[0].id;
+              localStorage.setItem("usuarioId", frm.id);
+              this.salvaUsuario(res.data.cliente[0]);
+              this.salvaEndereco(res.data.endereco);
+              this.salvaCartao(res.data.cartao);
+              this.$store.state.cadastro = true;
+              if (this.carrinho == true) {
+                this.$emit("logou", true);
+              } else {
+                this.$router.push(`/`);
+              }
+            })
+            .catch(() => {
+              this.snackbarColor = "red";
+              this.mensagem = "Login ou senha não conferem";
+              this.snackbar = true;
+            });
         } else {
           this.snackbarColor = "red";
           this.mensagem = "Login ou senha não conferem";
@@ -141,7 +150,7 @@ export default {
       console.log(data);
       this.$store.state.dadosEndereco = data;
     },
-    cadastrar(){
+    cadastrar() {
       this.$router.push(`/usuario`);
     },
     salvaCartao(data) {
@@ -156,6 +165,11 @@ export default {
           bandeira: 2,
         });
       });
+    },
+    exibeSnack(color, msg) {
+      this.snackbarColor = color;
+      this.mensagem = msg;
+      this.snackbar = true;
     },
   },
 };
