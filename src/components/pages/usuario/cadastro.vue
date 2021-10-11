@@ -603,10 +603,11 @@ export default {
         data_nasc: this.date,
         endereco: this.$store.state.enderecos,
       };
+      
 
       this.$http.post(`/cliente/`, frm).then((res) => {
-        console.log(res);
-        frm.id = res.data.cliente.id;
+        console.log("formulario", res);
+        frm.id = res.data.id;
         this.addUsuario(frm);
         localStorage.setItem("usuarioId", frm.id);
         this.$store.state.cadastro = true;
