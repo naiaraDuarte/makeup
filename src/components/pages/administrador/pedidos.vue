@@ -347,29 +347,26 @@ export default {
     ...mapMutations(["editarPedido"]),
     ...mapMutations(["editaParaTroca"]),
 
-    listarPedidos(){      
+    listarPedidos() {
       this.$http.get(`/pedido/`).then((res) => {
         console.log(res);
         res.data.dados.forEach((e) => {
           this.$store.state.pedidos.push(e);
         });
       });
-    
     },
-    
+
     salvar(id) {
-      console.log('aaaaaaaaaaa', id)
+      console.log("aaaaaaaaaaa", id);
       this.$http
-        .put(
-          `/pedido/status/${id}`, {
-            status: this.steps[this.e1].nome
-          }
-          
-        )
+        .put(`/pedido/status/${id}`, {
+          status: this.steps[this.e1].nome,
+        })
         .then((res) => {
           console.log(res);
-         this.editarPedido([id, this.steps[this.e1].nome]);
-          // this.desserts[id].status = this.steps[this.e1].nome;
+          this.editarPedido([id, this.steps[this.e1].nome]);
+          let index = this.desserts.findIndex((e) => e.pedido == id);
+          this.desserts[index].status = res.data.status;
           //console.log("Não funfou", this.$store.state.pedidos);
           this.limpa();
         });

@@ -124,21 +124,21 @@
       <v-card>
         <v-card-title class="alinhamentoEntre">
           <span class="text-h5">Cancelar pedido</span>
-          <span class="status">{{ perfilSelecionado.status }}</span>
+          <span class="status">{{ pedidoSelecionado.status }}</span>
         </v-card-title>
         <v-card-text>
           <v-container v-if="$store.state.pedidos.length > 0">
             <v-card elevation="0">
-              <p><b>Numero do pedido:</b> {{ perfilSelecionado.id }}</p>
+              <p><b>Numero do pedido:</b> {{ pedidoSelecionado.id }}</p>
               <p><b>Produtos: </b></p>
               <v-row class="mt-2">
                 <v-col
                   class="py-0"
                   lg="12"
-                  v-for="(prod, i) in perfilSelecionado.carrinho"
+                  v-for="(prod, i) in pedidoSelecionado.carrinho"
                   :key="i"
                 >
-                  <p>{{ perfilSelecionado.carrinho[i].nome }}</p>
+                  <p>{{ pedidoSelecionado.carrinho[i].nome }}</p>
                 </v-col>
               </v-row>
             </v-card>
@@ -164,32 +164,43 @@
       <v-card>
         <v-card-title class="alinhamentoEntre">
           <span class="text-h5">Trocar produto</span>
-          <span class="status">{{ perfilSelecionado.status }}</span>
+          <span class="status">{{ pedidoSelecionado.status }}</span>
         </v-card-title>
         <v-card-text>
           <v-container v-if="$store.state.pedidos.length > 0">
             <v-card elevation="0">
-              <p><b>Numero do pedido:</b> {{ perfilSelecionado.id }}</p>
+              <p><b>Numero do pedido:</b> {{ pedidoSelecionado.id }}</p>
               <p><b>Produtos: </b></p>
               <v-row class="mt-2">
                 <v-col
                   class=""
                   lg="12"
-                  v-for="(prod, i) in perfilSelecionado.carrinho"
+                  v-for="(prod, i) in pedidoSelecionado.carrinho"
                   :key="i"
                 >
                   <v-row>
-                    <v-col lg="6">
-                      <p>{{ perfilSelecionado.carrinho[i].nome }}</p>
+                    <v-col lg="2" class="centraliza">
+                      <v-img
+                        height="80"
+                        width="80"
+                        :src="getImgUrl(pedidoSelecionado.carrinho[i].imagem)"
+                      ></v-img>
                     </v-col>
-                    <v-col lg="4">
-                      <p>{{ perfilSelecionado.carrinho[i].preco }}</p>
+                    <v-col lg="5" class="centraliza">
+                      <p>{{ pedidoSelecionado.carrinho[i].nome }}</p>
                     </v-col>
-                    <v-col lg="2">
+                    <v-col lg="3" class="centraliza">
+                      <p>
+                        {{
+                          $n(pedidoSelecionado.carrinho[i].custo, "currency")
+                        }}
+                      </p>
+                    </v-col>
+                    <v-col lg="2" class="centraliza">
                       <v-btn
                         elevation="0"
                         icon
-                        @click="trocaComId(perfilSelecionado, prod)"
+                        @click="trocaComId(pedidoSelecionado, prod)"
                         ><v-icon color="#b38b57">mdi-sync</v-icon></v-btn
                       >
                     </v-col>
@@ -213,7 +224,7 @@
           <!-- <v-btn
             color="blue darken-1"
             text
-            @click="efetuarCancelamento(perfilSelecionado.id)"
+            @click="efetuarCancelamento(pedidoSelecionado.id)"
           >
             Cancelar
           </v-btn> -->
@@ -240,7 +251,7 @@ export default {
       modalMotivoTroca: false,
       cancelarPedido: false,
       trocaModal: false,
-      perfilSelecionado: "",
+      pedidoSelecionado: "",
       mensagem: "",
       snackbar: false,
       snackbarColor: "",
@@ -312,7 +323,7 @@ export default {
     this.$http
       .get(`/pedido/${localStorage.getItem("usuarioId")}`)
       .then((res) => {
-        console.log("OMDS", res)
+        console.log("OMDS", res);
         res.data.todosOsPedidos.forEach((ped) => {
           let carrinho = ped.pedido.produtos;
           let cartao = ped.pedido.cartoes;
@@ -320,8 +331,10 @@ export default {
           let endereco = ped.pedido.endereco[0];
           let frete = ped.pedido.frete;
           let status = ped.pedido.status;
-          
+          let id = ped.pedido.id;
+
           this.$store.state.pedidos.push({
+            id: id,
             cliente: this.$store.state.usuario[1],
             carrinho: carrinho,
             cartao: cartao,
@@ -333,9 +346,9 @@ export default {
             ),
             status: status,
             prodTroca: [],
-          })
+          });
         });
-        
+
         console.log(this.$store.state.pedidos);
       });
     // this.getDados("normal", "EM TRANSPORTE");
@@ -343,13 +356,13 @@ export default {
   methods: {
     ...mapMutations(["editaStatus"]),
     verMais(id) {
-      this.perfilSelecionado = this.$store.state.pedidos.filter(
+      this.pedidoSelecionado = this.$store.state.pedidos.filter(
         (ped) => ped.id == id
       );
-      this.perfilSelecionado = this.perfilSelecionado[0];
+      this.pedidoSelecionado = this.pedidoSelecionado[0];
       this.cancelarPedido = !this.cancelarPedido;
-      console.log("perfil", this.perfilSelecionado);
-      return this.perfilSelecionado;
+      console.log("perfil", this.pedidoSelecionado);
+      return this.pedidoSelecionado;
     },
     getDados(status) {
       let fluxo = this.conteudoSteps.filter((val) => val.nome == status);
@@ -382,24 +395,36 @@ export default {
     },
     efetuarCancelamento() {
       this.editaStatus(
-        [this.perfilSelecionado.id, "CANCELAMENTO SOLICITADO"],
+        [this.pedidoSelecionado.id, "CANCELAMENTO SOLICITADO"],
         null
       );
       this.exibeSnackBar("green", "Seu cancelamento foi pra análise");
-      console.log(this.perfilSelecionado.id);
+      console.log(this.pedidoSelecionado.id);
       this.cancelarPedido = false;
     },
     trocarPedido(id) {
-      this.perfilSelecionado = this.$store.state.pedidos.filter(
+      this.pedidoSelecionado = this.$store.state.pedidos.filter(
         (ped) => ped.id == id
       );
-      this.perfilSelecionado = this.perfilSelecionado[0];
+      this.pedidoSelecionado = this.pedidoSelecionado[0];
       this.trocaModal = !this.trocaModal;
-      console.log("perfil", this.perfilSelecionado);
-      return this.perfilSelecionado;
+      console.log("perfil", this.pedidoSelecionado);
+      return this.pedidoSelecionado;
     },
     trocaComId(item, prod) {
-      this.editaStatus([item.id, "TROCA SOLICITADA", prod.id]);
+      let frm = {
+        produto: {
+          id: prod.id,
+        },
+        status: "TROCA SOLICITADA",
+      };
+      this.$http
+        .put(`/pedido/troca/${item.id}`, frm)
+        .then((res) => {
+          console.log("troca", res);
+          this.editaStatus([item.id, "TROCA SOLICITADA", prod.id]);
+          this.exibeSnackBar("green", "Sua troca foi para análise");
+        });
     },
     getImgUrl(pic) {
       return require("../../../assets/images/" + pic);
