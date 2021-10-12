@@ -111,32 +111,6 @@
                     ></v-text-field>
                   </v-col>
                 </v-row>
-                <v-row class="mt-5 mx-3 my-3">
-                  <v-col lg="4">
-                    <v-text-field
-                      v-model="precoProduto"
-                      :counter="10"
-                      type="number"
-                      label="Preço de venda produto"
-                      required
-                    ></v-text-field>
-                  </v-col>
-                  <v-col lg="4">
-                    <v-radio-group v-model="status" row>
-                      <v-radio label="Ativo" value="true"></v-radio>
-                      <v-spacer></v-spacer>
-                      <v-radio label="Inativo" value="false"></v-radio>
-                    </v-radio-group>
-                  </v-col>
-                  <v-col lg="4">
-                    <v-text-field
-                      v-model="motivo"
-                      :counter="20"
-                      label="Motivo"
-                      required
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
                 <v-row>
                   <v-col>
                     <v-textarea
@@ -144,7 +118,6 @@
                       outlined
                       name="input-7-4"
                       label="Descrição do Produto"
-                      value=""
                       :counter="255"
                     ></v-textarea>
                   </v-col>
@@ -424,7 +397,7 @@ export default {
     gerar() {
       this.getCategoria();
       this.adicionarProduto = !this.adicionarProduto;
-      
+      this.limparProduto();
     },
     limparCampos() {
       (this.codigoProduto = ""),
@@ -510,8 +483,8 @@ export default {
         precoProduto: this.precoProduto,
         marcaProduto: this.marcaProduto,
       };
-      console.log("editar", frm);
       this.$http.put(`/produto/${this.id}`, frm).then(() => {
+        console.log("asdd", this.descProduto);
         // this.editarProdutos(frm);
         this.listarProdutosCadastrados();
         this.id = null;
@@ -537,11 +510,13 @@ export default {
     },
     verificaPreenchimento() {
       if (
+        this.codigoProduto != "" &&
         this.nomeProduto != "" &&
         this.descProduto != "" &&
         this.categoriaProduto != "" &&
         this.tipoProduto != "" &&
         this.pesoProduto != "" &&
+        this.larguraProduto != "" &&
         this.alturaProduto != "" &&
         this.comprimentoProduto != "" &&
         this.quantidadeProduto != "" &&
@@ -553,7 +528,7 @@ export default {
       }
       return false;
     },
-    getCategoria(){
+    getCategoria() {
       this.$http.get(`/categoria/`).then((res) => {
         console.log(res);
         res.data.dados.forEach((e) => {
@@ -591,12 +566,14 @@ export default {
       this.marcaProduto = produto.marca;
     },
     limparProduto() {
-      (this.custoProduto = ""),
+      (this.codigoProduto = ""),
+        (this.custoProduto = ""),
         (this.nomeProduto = ""),
         (this.descProduto = ""),
         (this.categoriaProduto = ""),
         (this.tipoProduto = ""),
         (this.pesoProduto = ""),
+        (this.larguraProduto = ""),
         (this.alturaProduto = ""),
         (this.comprimentoProduto = ""),
         (this.quantidadeProduto = ""),
