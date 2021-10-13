@@ -223,6 +223,7 @@ export default {
         bandeira: 2,
         selecionado: false,
       };
+      console.log("cartao",localStorage.getItem("usuarioId"))
       if (this.verificaId) {
         this.$http
           .post(`/cartao/${localStorage.getItem("usuarioId")}`, frm)

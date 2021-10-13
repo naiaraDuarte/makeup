@@ -123,7 +123,10 @@
         ></v-text-field>
       </v-col>
     </v-row>
-    <v-row class="mt-1 mx-3 my-3" v-if="this.$store.state.enderecos && mostra == true">
+    <v-row
+      class="mt-1 mx-3 my-3"
+      v-if="this.$store.state.enderecos && mostra == true"
+    >
       <v-col lg="12">
         <v-expansion-panels accordion>
           <v-expansion-panel
@@ -216,7 +219,7 @@ export default {
   props: {
     clickNoSalvar: Boolean,
     dadosEndereco: Array,
-    mostra: Boolean
+    mostra: Boolean,
   },
   data() {
     return {
@@ -365,7 +368,7 @@ export default {
         tipo_logradouro: this.tipoLogradouro,
         tipo_residencia: this.tipoResidencia,
       };
-      console.log('fforjdf', frm);
+      console.log("fforjdf", frm);
       if (this.verificaId) {
         this.$http
           .put(`/endereco/${localStorage.getItem("usuarioId")}`, frm)
@@ -406,6 +409,8 @@ export default {
         tipo_residencia:
           this.itensTipoResidencia[parseInt(end.tipo_residencia) - 1],
       });
+       console.log("end.id", end.id)
+      
     },
     getEndereco(id) {
       this.idEndereco = id;

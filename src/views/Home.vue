@@ -298,9 +298,10 @@ export default {
   created() {
     this.$http.get(`/produto/`).then((res) => {
       res.data.dados.forEach((prod) => {
+        console.log("prod", prod)
         this.itens.push({
           id: prod.id,
-          cod: prod.id,
+          cod: prod.cod,
           src: prod.imagem,
           nome: prod.nome,
           preco: prod.custo,

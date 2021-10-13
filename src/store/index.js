@@ -59,6 +59,7 @@ export default new Vuex.Store({
             } else {
                 state.enderecos.push(payload);
             }
+            console.log("fora else", state.enderecos)
         },
 
         //Endereco
