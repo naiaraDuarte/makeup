@@ -204,7 +204,7 @@ export default {
       });
       this.$store.state.cartoesEscolhidos.forEach((e) => {
         cartoes.push({
-          id: e.cartao,
+          id: e.id,
           credito: e.valor,
         });
       });
@@ -231,29 +231,29 @@ export default {
         },
         status: "EM PROCESSAMENTO",
       };
-
-      this.$http.post(`/pedido/`, frmB).then((res) => {
-        console.log("valor", res);
-        this.$store.state.cartoes.filter((cartao) => {
-            cartao.selecionado = false;
-            cartao.valor = 0;
-            this.editarCartao(cartao);
-        });
-      });
-      let frm = {
-        cliente: this.$store.state.usuario[1],
-        carrinho: this.$store.state.carrinho,
-        cartao: this.$store.state.cartoesEscolhidos,
-        cupom: this.$store.state.cupomUtilizado,
-        enderecoEntrega: this.$store.state.enderecoDeEntrega,
-        freteCobrado: this.$store.state.freteCalculado,
-        totalPago: parseFloat(
-          this.totalProdutos + (parseFloat(this.frete) - this.desconto)
-        ),
-        status: "EM PROCESSAMENTO",
-        prodTroca: [],
-      };
-      this.addPedido(frm);
+      console.log("Pedidoooooos", frmB)
+      // this.$http.post(`/pedido/`, frmB).then((res) => {
+      //   console.log("valor", res);
+      //   this.$store.state.cartoes.filter((cartao) => {
+      //       cartao.selecionado = false;
+      //       cartao.valor = 0;
+      //       this.editarCartao(cartao);
+      //   });
+      // });
+      // let frm = {
+      //   cliente: this.$store.state.usuario[1],
+      //   carrinho: this.$store.state.carrinho,
+      //   cartao: this.$store.state.cartoesEscolhidos,
+      //   cupom: this.$store.state.cupomUtilizado,
+      //   enderecoEntrega: this.$store.state.enderecoDeEntrega,
+      //   freteCobrado: this.$store.state.freteCalculado,
+      //   totalPago: parseFloat(
+      //     this.totalProdutos + (parseFloat(this.frete) - this.desconto)
+      //   ),
+      //   status: "EM PROCESSAMENTO",
+      //   prodTroca: [],
+      // };
+      // this.addPedido(frm);
       this.dialog = true;
     },
     redireciona() {

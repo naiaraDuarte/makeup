@@ -288,8 +288,8 @@ export default {
     },
   },
   mounted() {
+    this.$store.state.enderecos = [];
     this.$store.state.dadosEndereco.forEach((end) => {
-      this.$store.state.enderecos = [];
       this.listarEnderecosCadastrados(end);
     });
   },
