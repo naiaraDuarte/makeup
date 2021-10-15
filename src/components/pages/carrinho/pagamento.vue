@@ -37,6 +37,7 @@
               >
                 <v-card elevation="0">
                   <div @click="selecionaCartao(item.id)">
+                    {{ $store.state.cartoesEscolhidos.length + "/////" + i}}
                     <cartao
                       :class="[
                         item.selecionado == true ? 'marcado' : 'desmarcado',
@@ -351,8 +352,6 @@ export default {
       let index = this.marcados.findIndex((item) => item.id == id);
       this.marcados.filter((item) => {
         if (item.id == id) {
-          // valorDoCartaoSelecionado.valor = val;
-          // console.log("TTTTTTTTTTT", valorDoCartaoSelecionado);
           item.valor = this.restante;
           this.marcados[index] = item;
           this.$store.state.cartoesEscolhidos = this.marcados;

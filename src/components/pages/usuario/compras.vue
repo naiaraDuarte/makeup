@@ -183,23 +183,30 @@
                       <v-img
                         height="80"
                         width="80"
-                        :src="getImgUrl(pedidoSelecionado.carrinho[i].imagem)"
+                        :src="getImgUrl(prod.imagem)"
                       ></v-img>
                     </v-col>
                     <v-col lg="5" class="centraliza">
-                      <p>{{ pedidoSelecionado.carrinho[i].nome }}</p>
+                      <p>{{ prod.nome }}</p>
                     </v-col>
                     <v-col lg="3" class="centraliza">
                       <p>
                         {{
-                          $n(pedidoSelecionado.carrinho[i].custo, "currency")
+                          $n(prod.custo, "currency")
                         }}
                       </p>
                     </v-col>
                     <v-col lg="2" class="centraliza">
-                      <v-btn
+                      <v-btn v-if="getStatusProduto(prod.status) == true"
                         elevation="0"
                         icon
+                        @click="trocaComId(pedidoSelecionado, prod)"
+                        ><v-icon color="#b38b57">mdi-sync</v-icon></v-btn
+                      >
+                       <v-btn v-else
+                        elevation="0"
+                        icon
+                        :disabled="true"
                         @click="trocaComId(pedidoSelecionado, prod)"
                         ><v-icon color="#b38b57">mdi-sync</v-icon></v-btn
                       >
@@ -295,7 +302,6 @@ export default {
           nome: "TROCA EFETUADA",
           status: "troca",
         },
-
         {
           nome: "CANCELAMENTO SOLICITADO",
           status: "cancelamento",
@@ -364,8 +370,18 @@ export default {
       console.log("perfil", this.pedidoSelecionado);
       return this.pedidoSelecionado;
     },
+    getStatusProduto(status){
+      let fluxo = this.conteudoSteps.filter((val) => val.nome == status);
+      fluxo = fluxo[0].status;
+      if (fluxo == "troca") {
+        return false;
+      }else{
+        return true;
+      }
+    },
     getDados(status) {
       let fluxo = this.conteudoSteps.filter((val) => val.nome == status);
+      console.log(fluxo)
       fluxo = fluxo[0].status;
       let valor = "aceita";
       let stepProv = [];
