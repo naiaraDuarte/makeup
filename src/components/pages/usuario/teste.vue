@@ -318,7 +318,6 @@ export default {
       );
       this.perfilSelecionado = this.perfilSelecionado[0];
       this.cancelarPedido = !this.cancelarPedido;
-      console.log("perfil", this.perfilSelecionado);
       return this.perfilSelecionado;
     },
     getDados(status) {
@@ -353,7 +352,6 @@ export default {
     efetuarCancelamento() {
       this.editaStatus([this.perfilSelecionado.id, "CANCELAMENTO SOLICITADO"], null);
       this.exibeSnackBar("green", "Seu cancelamento foi pra análise");
-      console.log(this.perfilSelecionado.id);
       this.cancelarPedido = false;
     },
     trocarPedido(id) {
@@ -362,7 +360,6 @@ export default {
       );
       this.perfilSelecionado = this.perfilSelecionado[0];
       this.trocaModal = !this.trocaModal;
-      console.log("perfil", this.perfilSelecionado);
       return this.perfilSelecionado;
     },
     trocaComId(item, prod) {

@@ -144,10 +144,8 @@ export default {
     },
     salvaUsuario(data) {
       this.addUsuario(data);
-      console.log("User", this.$store.state.usuario);
     },
     salvaEndereco(data) {
-      console.log(data);
       this.$store.state.dadosEndereco = data;
     },
     cadastrar() {

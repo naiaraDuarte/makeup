@@ -193,7 +193,6 @@ export default {
   },
   methods: {
     listarCartoesCadastrados() {
-      console.log("listarrrrr");
 
       this.$store.state.cartoes = [];
       this.$http
@@ -223,7 +222,6 @@ export default {
         bandeira: 2,
         selecionado: false,
       };
-      console.log("cartao",localStorage.getItem("usuarioId"))
       if (this.verificaId) {
         this.$http
           .post(`/cartao/${localStorage.getItem("usuarioId")}`, frm)
@@ -260,7 +258,6 @@ export default {
             this.editarCartao(frm);
             this.snackbarColor = "green";
             this.mensagem = "Cartão editado com sucesso";
-            console.log("alterar id", id);
             this.snackbar = true;
             // frm.id = res.data.cartao.id;
           })
@@ -275,7 +272,6 @@ export default {
     remove(id) {
       if (this.verificaId) {
         this.$http.delete(`/cartao/${id}`).then(() => {
-          console.log("delete id", id);
           this.removeCartao(id);
         });
       }
@@ -310,7 +306,6 @@ export default {
       this.nomeCartao = "";
     },
     getCartao(id) {
-      console.log("id", id);
       this.idCartaoCliente = id;
 
       let cartao = this.$store.state.cartoes.filter(

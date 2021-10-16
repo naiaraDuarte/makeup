@@ -329,7 +329,6 @@ export default {
     this.$http
       .get(`/pedido/${localStorage.getItem("usuarioId")}`)
       .then((res) => {
-        console.log("OMDS", res);
         res.data.todosOsPedidos.forEach((ped) => {
           let carrinho = ped.pedido.produtos;
           let cartao = ped.pedido.cartoes;
@@ -354,8 +353,6 @@ export default {
             prodTroca: [],
           });
         });
-
-        console.log(this.$store.state.pedidos);
       });
     // this.getDados("normal", "EM TRANSPORTE");
   },
@@ -367,7 +364,6 @@ export default {
       );
       this.pedidoSelecionado = this.pedidoSelecionado[0];
       this.cancelarPedido = !this.cancelarPedido;
-      console.log("perfil", this.pedidoSelecionado);
       return this.pedidoSelecionado;
     },
     getStatusProduto(status){
@@ -381,7 +377,6 @@ export default {
     },
     getDados(status) {
       let fluxo = this.conteudoSteps.filter((val) => val.nome == status);
-      console.log(fluxo)
       fluxo = fluxo[0].status;
       let valor = "aceita";
       let stepProv = [];
@@ -415,7 +410,6 @@ export default {
         null
       );
       this.exibeSnackBar("green", "Seu cancelamento foi pra análise");
-      console.log(this.pedidoSelecionado.id);
       this.cancelarPedido = false;
     },
     trocarPedido(id) {
@@ -424,7 +418,6 @@ export default {
       );
       this.pedidoSelecionado = this.pedidoSelecionado[0];
       this.trocaModal = !this.trocaModal;
-      console.log("perfil", this.pedidoSelecionado);
       return this.pedidoSelecionado;
     },
     trocaComId(item, prod) {
@@ -436,8 +429,7 @@ export default {
       };
       this.$http
         .put(`/pedido/troca/${item.id}`, frm)
-        .then((res) => {
-          console.log("troca", res);
+        .then(() => {
           this.editaStatus([item.id, "TROCA SOLICITADA", prod.id]);
           this.exibeSnackBar("green", "Sua troca foi para análise");
         });

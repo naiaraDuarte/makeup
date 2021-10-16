@@ -182,7 +182,6 @@ export default {
     listarCuponsCadastrados() {
       this.$store.state.cupons = [];
       this.$http.get(`/cupom/`).then((res) => {
-        console.log(res);
         res.data.dados.forEach((e) => {
           this.$store.state.cupons.push(e);
         });
@@ -219,7 +218,6 @@ export default {
       });
 
       this.gerarCupom = !this.gerarCupom;
-      console.log(this.$store.state.cupons);
     },
     exibeSnackBar(cor, msg) {
       this.snackbarColor = cor;
@@ -227,7 +225,6 @@ export default {
       this.snackbar = true;
     },
     editarCupom() {
-      console.log(this.id);
       let frm = {
         id: this.id,
         cod: this.cupom.toUpperCase(),

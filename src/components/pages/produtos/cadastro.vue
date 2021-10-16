@@ -388,7 +388,6 @@ export default {
     listarProdutosCadastrados() {
       this.$store.state.produtos = [];
       this.$http.get(`/produto/`).then((res) => {
-        console.log(res);
         res.data.dados.forEach((e) => {
           this.$store.state.produtos.push(e);
         });
@@ -484,7 +483,6 @@ export default {
         marcaProduto: this.marcaProduto,
       };
       this.$http.put(`/produto/${this.id}`, frm).then(() => {
-        console.log("asdd", this.descProduto);
         // this.editarProdutos(frm);
         this.listarProdutosCadastrados();
         this.id = null;
@@ -530,7 +528,6 @@ export default {
     },
     getCategoria() {
       this.$http.get(`/categoria/`).then((res) => {
-        console.log(res);
         res.data.dados.forEach((e) => {
           this.itensCategoria.push({
             id: e.id,
@@ -548,7 +545,6 @@ export default {
       let produto = this.$store.state.produtos.filter(
         (produto) => produto.id == id
       );
-      console.log("pdt", produto[0]);
       produto = produto[0];
       this.codigoProduto = produto.cod;
       this.custoProduto = produto.custo;

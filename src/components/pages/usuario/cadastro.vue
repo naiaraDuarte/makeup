@@ -606,14 +606,12 @@ export default {
       
 
       this.$http.post(`/cliente/`, frm).then((res) => {
-        console.log("formulario", res);
         frm.id = res.data.id;
         this.addUsuario(frm);
         localStorage.setItem("usuarioId", frm.id);
         this.$store.state.cadastro = true;
         this.$router.push(`/`);
-      }).catch((e) => {
-        console.log("Falha ao cadastrar", e)
+      }).catch(() => {
         this.exibeSnack("red", "Cliente já existente!");
       });
     },

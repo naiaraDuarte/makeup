@@ -44,7 +44,6 @@ export default {
     ...mapMutations(["addUsuario"]),
     ...mapMutations(["addCartao"]),
     usuario() {
-       console.log("RES1358", localStorage.getItem("usuarioId"))
       if (localStorage.getItem("usuarioId")) {
         this.$http
           .get(`/cliente/${localStorage.getItem("usuarioId")}`)
@@ -59,10 +58,8 @@ export default {
     },
     salvaUsuario(data) {
       this.addUsuario(data);
-      console.log("User", this.$store.state.usuario)
     },
     salvaEndereco(data) {
-      console.log("FDp", data)
       this.$store.state.dadosEndereco = data;
     },
     salvaCartao(data) {
@@ -81,7 +78,6 @@ export default {
     },
     salvarCashBack(data){
       this.$store.state.valeTroca = data.valor;
-      console.log("MERDA", this.$store.state.valeTroca)
     }
   },
 };

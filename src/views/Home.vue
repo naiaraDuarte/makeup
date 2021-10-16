@@ -298,7 +298,6 @@ export default {
   created() {
     this.$http.get(`/produto/`).then((res) => {
       res.data.dados.forEach((prod) => {
-        console.log("prod", prod)
         this.itens.push({
           id: prod.id,
           cod: prod.cod,
@@ -311,7 +310,6 @@ export default {
     });
     this.itensBase = this.itens;
     this.$store.state.listaProdutos = this.itens;
-    console.log("LISTA DE PRODUTOS", this.$store.state.listaProdutos)
   },
   methods: {
     getImgUrl(pic) {
@@ -346,7 +344,6 @@ export default {
         }
       });
       this.total = total;
-      console.log("PDT", pdt)
       this.editarCarrinho(pdt);
     },
 
@@ -354,7 +351,6 @@ export default {
       let index = this.$store.state.carrinho.findIndex(
         (pdt) => pdt.cod == item.cod
       );
-      console.log(index);
       if (this.$store.state.carrinho.length == 0 || index == -1) {
         this.total += parseFloat(item.preco);
         item.qtd = 1;

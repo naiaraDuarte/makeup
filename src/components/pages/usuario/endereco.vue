@@ -368,7 +368,6 @@ export default {
         tipo_logradouro: this.tipoLogradouro,
         tipo_residencia: this.tipoResidencia,
       };
-      console.log("fforjdf", frm);
       if (this.verificaId) {
         this.$http
           .put(`/endereco/${localStorage.getItem("usuarioId")}`, frm)
@@ -409,7 +408,6 @@ export default {
         tipo_residencia:
           this.itensTipoResidencia[parseInt(end.tipo_residencia) - 1],
       });
-       console.log("end.id", end.id)
       
     },
     getEndereco(id) {

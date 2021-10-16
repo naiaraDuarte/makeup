@@ -59,7 +59,6 @@ export default new Vuex.Store({
             } else {
                 state.enderecos.push(payload);
             }
-            console.log("fora else", state.enderecos)
         },
 
         //Endereco
@@ -95,7 +94,6 @@ export default new Vuex.Store({
             state.cupons.push(payload);
         },
         editarCupons(state, payload) {
-            console.log("store", payload)
             let index = state.cupons.findIndex(cupons => cupons.id == payload.id);
             Vue.set(state.cupons, index, payload);
 
@@ -133,7 +131,6 @@ export default new Vuex.Store({
         removeItemCarrinho(state, payload) {
             let index = state.carrinho.findIndex(pdt => pdt.cod == payload.cod);
             state.produtos.splice(index, 1);
-            console.log(state.produtos)
         },
 
         //Pedidos
@@ -155,7 +152,6 @@ export default new Vuex.Store({
                 state.pedidos[index].carrinho.forEach(e => {
                     state.pedidos[index].prodTroca.push(e);
                 });
-                console.log(state.pedidos[index].carrinho, "||", state.pedidos[index].prodTroca)
             }
         },
         editaParaTroca(state, payload) {
@@ -173,7 +169,6 @@ export default new Vuex.Store({
         removeItemPedido(state, payload) {
             let index = state.pedidos.findIndex(prod => prod.id == payload.id);
             state.pedidos.splice(index, 1);
-            console.log(state.pedidos)
         },
 
     },

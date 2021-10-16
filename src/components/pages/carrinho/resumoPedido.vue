@@ -155,10 +155,6 @@ export default {
     editaCashback(val) {
       this.$http
         .put(`/cashback/${localStorage.getItem("usuarioId")}`, { valor: val })
-        .then((res) => {
-          console.log("teyfve", this.$store.state.valeTroca);
-          console.log("Viadooo", res);
-        });
     },
     calcTotal() {
       let valorFinal = 0;
@@ -231,9 +227,8 @@ export default {
         },
         status: "EM PROCESSAMENTO",
       };
-      console.log("Pedidoooooos", frmB)
+      console.log(frmB)
       // this.$http.post(`/pedido/`, frmB).then((res) => {
-      //   console.log("valor", res);
       //   this.$store.state.cartoes.filter((cartao) => {
       //       cartao.selecionado = false;
       //       cartao.valor = 0;

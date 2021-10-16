@@ -232,7 +232,6 @@ export default {
       pagConfirmacao: false,
       mostrarCartao: false,
       mostrarEndereco: false,
-      marcados: [],
       totalProdutos: 0,
       frete: "0",
       snackbarColor: "",
@@ -279,7 +278,7 @@ export default {
   },
   computed: {
     habilitaBotao() {
-      if (this.frete != "0" && this.marcados.length > 0) {
+      if (this.frete != "0" && this.$store.state.cartoesEscolhidos.length > 0) {
         this.salvaValorRestante();
         return true;
       } else if (this.frete != "0" && this.totalProdutos == 0) {
@@ -309,8 +308,7 @@ export default {
     ...mapMutations(["removeCupons"]),
     ...mapMutations(["editarCartao"]),
     selecionaCartao(id) {
-      this.$store.state.cartoesEscolhidos = [];
-      let index = this.marcados.findIndex((item) => item.id == id);
+      let index = this.$store.state.cartoesEscolhidos.findIndex((item) => item.id == id);
       let ref = this.$store.state.cartoes.findIndex((item) => item.id == id);
       let restante = this.restante;
       restante = restante.replace("R$", "");
@@ -324,7 +322,7 @@ export default {
             } else {
               cartao.valor = parseFloat(restante);
             }
-            this.marcados.push(cartao);
+            this.$store.state.cartoesEscolhidos.push(cartao);
             this.editarCartao(cartao);
           }
         });
@@ -336,26 +334,21 @@ export default {
             this.editarCartao(cartao);
           }
         });
-        this.marcados.splice(index, 1);
+        this.$store.state.cartoesEscolhidos.splice(index, 1);
       }
-      this.$store.state.cartoesEscolhidos = this.marcados;
-      console.log(this.$store.state.cartoesEscolhidos, "|||||", this.marcados);
     },
     salvaValor(id, val) {
-      console.log("OOOOOOOOOOOOOOOOOOOOOOOO");
-      let index = this.marcados.findIndex((item) => item.id == id);
-      this.marcados.filter((item) => {
+      let index = this.$store.state.cartoesEscolhidos.findIndex((item) => item.id == id);
+      this.$store.state.cartoesEscolhidos.filter((item) => {
         if (item.id == id) {
           item.valor = this.restante;
-          this.marcados[index] = item;
-          this.$store.state.cartoesEscolhidos = this.marcados;
+          this.$store.state.cartoesEscolhidos[index] = item;
         }
       });
 
       val = val.replace("R$", "");
       val = val.replace(",", ".");
       this.restante = this.$n(this.totalProdutos - parseFloat(val), "currency");
-      console.log("AAAAAAAAAAAAAAa", this.$store.state.cartoesEscolhidos);
     },
     salvaValorRestante() {
       let id =
@@ -433,7 +426,6 @@ export default {
         if (cupom.cod == cupomUsado.cod) {
           cupom.quant += 1;
           this.editarCupons(cupom);
-          console.log("Valor abatido", this.$store.state.cupons);
           this.cupomUtilizado = false;
           (this.$store.state.cupomUtilizado = {
             porcen: 0,
@@ -458,7 +450,6 @@ export default {
       this.$http.post(`/frete/`, frm).then((res) => {
         this.frete = res.data.valor[0].Valor;
         this.$store.state.freteCalculado = this.frete;
-        console.log("valor", res);
       });
 
       this.frete = "22.00";
