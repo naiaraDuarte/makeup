@@ -318,10 +318,19 @@ export default {
             cartao.selecionado = true;
             this.$store.state.cartoesEscolhidos.push(cartao);
             let ref = this.$store.state.cartoesEscolhidos.findIndex((item) => item.id == id);
-            if (ref == this.$store.state.cartoesEscolhidos.length - 1) {
+            if (ref != this.$store.state.cartoesEscolhidos.length - 1) {
               cartao.valor = 0;
             } else {
+              console.log("CAIU NO ELSE")
               cartao.valor = restante;
+              this.$store.state.cartoesEscolhidos.forEach((item, i) => {
+                if (this.totalProdutos == item.valor) {
+                  item.valor = 0;
+                  if (i != this.$store.state.cartoesEscolhidos.localStorage) {
+                    this.$store.state.cartoesEscolhidos[i] = item;
+                  }
+                }
+              });
             }
             this.$store.state.cartoesEscolhidos[this.$store.state.cartoesEscolhidos-1] = cartao;
             this.editarCartao(cartao);
@@ -332,29 +341,25 @@ export default {
           if (cartao.id == id) {
             cartao.selecionado = false;
             this.$store.state.cartoesEscolhidos.splice(index, 1);
-              if (this.$store.state.cartoesEscolhidos.length > 1) {
                 let teste = this.$store.state.cartoesEscolhidos[this.$store.state.cartoesEscolhidos.length - 1].valor;
-                restante += (cartao.valor + teste);
-              }else{
-                 restante += cartao.valor;
-              }
+                restante = (cartao.valor + teste);
             cartao.valor = 0;
             this.editarCartao(cartao);
           }
         });
         console.log(this.totalProdutos, "::::::", restante)
         this.totalProdutos = restante;
-        
-        
       }
+
+      console.log('TETUYCHBJD', this.$store.state.cartoesEscolhidos)
     },
     salvaValor(id, val) {
-      if (val == 0 || val == null) {
-        return null;
-      }
       val = val.replace("R$", "");
       val = val.replace(",", ".");
       val = parseFloat(val);
+      if (val == 0 || val == null || isNaN(val)) {
+        return null;
+      }
       if (val < 10 || (this.totalProdutos - val) < 10) {
         this.exibeSnackBar("red", "O valor minimo em cada cartão é de R$10,00 reais");
         return null;
@@ -363,12 +368,15 @@ export default {
       
       this.$store.state.cartoesEscolhidos.filter((item) => {
         if (item.id == id) {
-          this.totalProdutos += item.valor;
+          if (this.totalProdutos != item.valor) {
+            this.totalProdutos += item.valor;
+          }
           item.valor = val;
           this.$store.state.cartoesEscolhidos[index] = item;
         }
       });
       this.totalProdutos = this.totalProdutos - val;
+      this.salvaValorRestante();
     },
     salvaValorRestante() {
       this.$store.state.cartoesEscolhidos[this.$store.state.cartoesEscolhidos.length - 1].valor = this.totalProdutos;
