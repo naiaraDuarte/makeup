@@ -50,7 +50,7 @@
                   <div v-if="item.selecionado == true">
                     <v-text-field
                       v-if="verificaExistenciaCartao(item) == false"
-                      @blur="salvaValor(item.id, $event.target.value)"
+                      @blur="$event.target.value = salvaValor(item.id, $event.target.value)"
                       label="Valor a pagar neste cartão"
                       class="cupom-input"
                       v-mask="['R$#,##', 'R$##,##', 'R$###,##', 'R$####,##']"
@@ -379,14 +379,21 @@ export default {
       val = val.replace(",", ".");
       val = parseFloat(val);
       if (val == 0 || val == null || isNaN(val)) {
-        return null;
+        return "";
       }
       if (val < 10 || this.totalProdutos - val < 10) {
         this.exibeSnackBar(
           "red",
           "O valor minimo em cada cartão é de R$10,00 reais"
         );
-        return null;
+        return "";
+      }
+      if (val > this.totalProdutos) {
+        this.exibeSnackBar(
+          "red",
+          "Valor maior que a compra"
+        );
+        return "";
       }
       let index = this.$store.state.cartoesEscolhidos.findIndex(
         (item) => item.id == id
@@ -403,6 +410,7 @@ export default {
       });
       this.totalProdutos = this.totalProdutos - val;
       this.salvaValorRestante();
+      return this.$n(val, "currency");
     },
     salvaValorRestante() {
       this.$store.state.cartoesEscolhidos[
