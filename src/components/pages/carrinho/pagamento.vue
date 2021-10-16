@@ -198,7 +198,7 @@
             :desconto="desconto"
             :tipoDesconto="$store.state.cupomUtilizado.tipo"
             :habilitaBotao="habilitaBotao"
-            @total="totalProdutos = $event"
+            @total="total = $event"
             pag="pagamento"
           ></resumoPedido>
         </v-col>
@@ -233,6 +233,7 @@ export default {
       mostrarCartao: false,
       mostrarEndereco: false,
       totalProdutos: 0,
+      total: 0,
       frete: "0",
       snackbarColor: "",
       mensagem: "",
@@ -260,6 +261,17 @@ export default {
       });
   },
   watch: {
+    total(newVal, oldVal) {
+      let val = newVal - oldVal;
+      //Add frete
+      if (val > 0) {
+        this.totalProdutos += val;
+      }
+      //Teve desconto
+      else {
+        this.totalProdutos = this.totalProdutos - newVal;
+      }
+    },
     enderecoEntrega(newVal) {
       this.$store.state.enderecos.filter((endereco) => {
         if (newVal == endereco.id) {
@@ -274,7 +286,7 @@ export default {
     },
     totalProdutos() {
       this.restante = this.$n(this.totalProdutos, "currency");
-      console.log(this.totalProdutos)
+      console.log(this.totalProdutos);
     },
   },
   computed: {
@@ -309,19 +321,23 @@ export default {
     ...mapMutations(["removeCupons"]),
     ...mapMutations(["editarCartao"]),
     selecionaCartao(id) {
-      let index = this.$store.state.cartoesEscolhidos.findIndex((item) => item.id == id);
-      
+      let index = this.$store.state.cartoesEscolhidos.findIndex(
+        (item) => item.id == id
+      );
+
       let restante = this.totalProdutos;
       if (index == -1) {
         this.$store.state.cartoes.filter((cartao) => {
           if (cartao.id == id) {
             cartao.selecionado = true;
             this.$store.state.cartoesEscolhidos.push(cartao);
-            let ref = this.$store.state.cartoesEscolhidos.findIndex((item) => item.id == id);
+            let ref = this.$store.state.cartoesEscolhidos.findIndex(
+              (item) => item.id == id
+            );
             if (ref != this.$store.state.cartoesEscolhidos.length - 1) {
               cartao.valor = 0;
             } else {
-              console.log("CAIU NO ELSE")
+              console.log("CAIU NO ELSE");
               cartao.valor = restante;
               this.$store.state.cartoesEscolhidos.forEach((item, i) => {
                 if (this.totalProdutos == item.valor) {
@@ -332,7 +348,9 @@ export default {
                 }
               });
             }
-            this.$store.state.cartoesEscolhidos[this.$store.state.cartoesEscolhidos-1] = cartao;
+            this.$store.state.cartoesEscolhidos[
+              this.$store.state.cartoesEscolhidos - 1
+            ] = cartao;
             this.editarCartao(cartao);
           }
         });
@@ -341,17 +359,20 @@ export default {
           if (cartao.id == id) {
             cartao.selecionado = false;
             this.$store.state.cartoesEscolhidos.splice(index, 1);
-                let teste = this.$store.state.cartoesEscolhidos[this.$store.state.cartoesEscolhidos.length - 1].valor;
-                restante = (cartao.valor + teste);
+            let teste =
+              this.$store.state.cartoesEscolhidos[
+                this.$store.state.cartoesEscolhidos.length - 1
+              ].valor;
+            restante = cartao.valor + teste;
             cartao.valor = 0;
             this.editarCartao(cartao);
           }
         });
-        console.log(this.totalProdutos, "::::::", restante)
+        console.log(this.totalProdutos, "::::::", restante);
         this.totalProdutos = restante;
       }
 
-      console.log('TETUYCHBJD', this.$store.state.cartoesEscolhidos)
+      console.log("TETUYCHBJD", this.$store.state.cartoesEscolhidos);
     },
     salvaValor(id, val) {
       val = val.replace("R$", "");
@@ -360,12 +381,17 @@ export default {
       if (val == 0 || val == null || isNaN(val)) {
         return null;
       }
-      if (val < 10 || (this.totalProdutos - val) < 10) {
-        this.exibeSnackBar("red", "O valor minimo em cada cartão é de R$10,00 reais");
+      if (val < 10 || this.totalProdutos - val < 10) {
+        this.exibeSnackBar(
+          "red",
+          "O valor minimo em cada cartão é de R$10,00 reais"
+        );
         return null;
       }
-      let index = this.$store.state.cartoesEscolhidos.findIndex((item) => item.id == id);
-      
+      let index = this.$store.state.cartoesEscolhidos.findIndex(
+        (item) => item.id == id
+      );
+
       this.$store.state.cartoesEscolhidos.filter((item) => {
         if (item.id == id) {
           if (this.totalProdutos != item.valor) {
@@ -379,11 +405,15 @@ export default {
       this.salvaValorRestante();
     },
     salvaValorRestante() {
-      this.$store.state.cartoesEscolhidos[this.$store.state.cartoesEscolhidos.length - 1].valor = this.totalProdutos;
+      this.$store.state.cartoesEscolhidos[
+        this.$store.state.cartoesEscolhidos.length - 1
+      ].valor = this.totalProdutos;
     },
-    verificaExistenciaCartao(item){
-      let teste = this.$store.state.cartoesEscolhidos.findIndex(val => item.id == val.id)
-      if (teste == (this.$store.state.cartoesEscolhidos.length - 1)) return true;
+    verificaExistenciaCartao(item) {
+      let teste = this.$store.state.cartoesEscolhidos.findIndex(
+        (val) => item.id == val.id
+      );
+      if (teste == this.$store.state.cartoesEscolhidos.length - 1) return true;
       else return false;
     },
     usarCupom() {
