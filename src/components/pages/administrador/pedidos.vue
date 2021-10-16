@@ -349,7 +349,6 @@ export default {
 
     listarPedidos() {
       this.$http.get(`/pedido/`).then((res) => {
-        console.log(res);
         res.data.dados.forEach((e) => {
           this.$store.state.pedidos.push(e);
         });
@@ -362,7 +361,6 @@ export default {
           status: this.steps[this.e1].nome,
         })
         .then((res) => {
-          console.log(res);
           this.editarPedido([id, this.steps[this.e1].nome]);
           let index = this.desserts.findIndex((e) => e.pedido == id);
           this.desserts[index].status = res.data.status;
@@ -370,12 +368,10 @@ export default {
         });
     },
     async verMais(id) {
-      console.log("jdf", id);
       this.perfilSelecionado = this.desserts.filter(
         (clientes) => clientes.acoes == id
       );
       this.steps = [];
-      console.log("291", this.perfilSelecionado);
       await this.getDados(this.perfilSelecionado[0].status);
       await this.getStatus(this.perfilSelecionado[0].status);
       this.idSelecionado = id;
@@ -426,9 +422,6 @@ export default {
             `/cashback/${localStorage.getItem("usuarioId")}`,
             this.$store.state.valeTroca
           )
-          .then((res) => {
-            console.log(res);
-          });
       }
       if (op == "add") {
         if (this.e1 != this.steps.length) {

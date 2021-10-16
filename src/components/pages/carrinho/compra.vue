@@ -206,7 +206,6 @@ export default {
       };
       this.$http.post(`/frete/`, frm).then((res) => {
         this.totalFrete = parseFloat(res.data.valor[0].Valor);
-        console.log("valor", res);
       });
     },
     ...mapMutations(["addCarrinho"]),
@@ -245,7 +244,6 @@ export default {
       let index = this.$store.state.carrinho.findIndex(
         (pdt) => pdt.cod == item.cod
       );
-      console.log(index);
       if (this.$store.state.carrinho.length == 0 || index == -1) {
         this.totalProdutos += parseFloat(item.preco);
         this.addCarrinho(item);

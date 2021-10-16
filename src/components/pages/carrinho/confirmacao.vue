@@ -135,7 +135,6 @@ export default {
     };
   },
   mounted() {
-    console.log(this.$store.state.carrinho);
     this.$http
       .get(`/cashback/${localStorage.getItem("usuarioId")}`)
       .then((res) => {
@@ -177,7 +176,6 @@ export default {
   methods: {
     marca(val) {
       this.marcados.push(val);
-      console.log(this.marcados);
     },
     calculaFrete(cep) {
       let frm = {
@@ -190,7 +188,6 @@ export default {
       };
       this.$http.post(`/frete/`, frm).then((res) => {
         this.frete = res.data.valor[0].Valor;
-        console.log("valor", res);
       });
     },
   },
@@ -199,10 +196,6 @@ export default {
 <style>
 .card-endereco {
   border: 2px solid #bbb !important;
-  /* display: flex; */
-  /* flex-direction: column;
-  justify-content: center;
-  align-items: center; */
 }
 .marcado {
   border: 2px solid #b38b57 !important;
