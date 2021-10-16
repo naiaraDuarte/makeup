@@ -357,7 +357,6 @@ export default {
     },
 
     salvar(id) {
-      console.log("aaaaaaaaaaa", id);
       this.$http
         .put(`/pedido/status/${id}`, {
           status: this.steps[this.e1].nome,
@@ -367,7 +366,6 @@ export default {
           this.editarPedido([id, this.steps[this.e1].nome]);
           let index = this.desserts.findIndex((e) => e.pedido == id);
           this.desserts[index].status = res.data.status;
-          //console.log("Não funfou", this.$store.state.pedidos);
           this.limpa();
         });
     },

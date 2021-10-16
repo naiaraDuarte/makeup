@@ -37,7 +37,6 @@
               >
                 <v-card elevation="0">
                   <div @click="selecionaCartao(item.id)">
-                    {{ $store.state.cartoesEscolhidos.length + "/////" + i}}
                     <cartao
                       :class="[
                         item.selecionado == true ? 'marcado' : 'desmarcado',
@@ -48,31 +47,26 @@
                       :id="i"
                     ></cartao>
                   </div>
-
-                  <v-text-field
-                    v-if="
-                      item.selecionado == true &&
-                      i < $store.state.cartoesEscolhidos.length - 1
-                    "
-                    @blur="salvaValor(item.id, $event.target.value)"
-                    label="Valor a pagar neste cartão"
-                    class="cupom-input"
-                    v-mask="['R$#,##', 'R$##,##', 'R$###,##', 'R$####,##']"
-                    id="cupom"
-                    required
-                  ></v-text-field>
-                  <v-text-field
-                    v-if="
-                      item.selecionado == true &&
-                      i >= $store.state.cartoesEscolhidos.length - 1
-                    "
-                    :disabled="true"
-                    v-model="restante"
-                    label="Valor a pagar neste cartão"
-                    class="cupom-input"
-                    id="cupom"
-                    required
-                  ></v-text-field>
+                  <div v-if="item.selecionado == true">
+                    <v-text-field
+                      v-if="verificaExistenciaCartao(item) == false"
+                      @blur="salvaValor(item.id, $event.target.value)"
+                      label="Valor a pagar neste cartão"
+                      class="cupom-input"
+                      v-mask="['R$#,##', 'R$##,##', 'R$###,##', 'R$####,##']"
+                      id="cupom"
+                      required
+                    ></v-text-field>
+                    <v-text-field
+                      v-if="verificaExistenciaCartao(item) == true"
+                      :disabled="true"
+                      v-model="restante"
+                      label="Valor a pagar neste cartão"
+                      class="cupom-input"
+                      id="cupom"
+                      required
+                    ></v-text-field>
+                  </div>
                 </v-card>
               </v-col>
             </v-row>
@@ -375,6 +369,11 @@ export default {
           this.$store.state.cartoesEscolhidos[index] = item;
         }
       });
+    },
+    verificaExistenciaCartao(item){
+      let teste = this.$store.state.cartoesEscolhidos.findIndex(val => item.id == val.id)
+      if (teste == (this.$store.state.cartoesEscolhidos.length - 1)) return true;
+      else return false;
     },
     usarCupom() {
       if (this.cupom == "" || this.cupom == null) {
