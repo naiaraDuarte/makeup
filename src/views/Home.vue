@@ -43,7 +43,7 @@
                     size="14"
                   ></v-rating>
 
-                  <p class="titulo-card">{{ item.nome }}</p>
+                  <p class="titulo-card" >{{ item.nome }}</p>
                 </v-col>
               </v-row>
             </v-card-title>
@@ -138,9 +138,9 @@
           aparecerá aqui, viu?
         </p>
 
-        <v-row>
+        <v-row >
           <v-col lg="12" class="mt-3">
-            <v-card elevation="0" class="px-2">
+            <v-card elevation="0" class="px-2 prod">
               <v-row v-for="(item, i) in $store.state.carrinho" :key="i">
                 <v-col>
                   <p v-if="item.qtd != 0">{{ item.nome }}</p>
@@ -241,7 +241,7 @@ export default {
       snackbarColor: "",
       mensagem: "",
       transition: "slide-y-reverse-transition",
-      imagens: ["banner1.jpg", "banner2.jpg", "banner3.png"],
+      imagens: ["banner5.png", "banner4.png", "banner6.jpg", "banner7.jpg", "banner8.jpg", "banner9.jpg"],
       slides: ["First", "Second", "Third", "Fourth", "Fifth"],
     };
   },
@@ -375,6 +375,7 @@ export default {
 .titulo-card {
   font-size: 13px;
   text-transform: uppercase;
+  height: 2vh;
 }
 .preco {
   font-size: 20px;
@@ -458,5 +459,25 @@ export default {
   opacity: 0.5;
   position: absolute;
   width: 100%;
+}
+.prod{
+  overflow-y: scroll !important;
+  overflow-x: hidden;
+  height: 25vh !important;
+}
+.prod::-webkit-scrollbar {
+  width: 3px;
+}
+
+.prod::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.prod::-webkit-scrollbar-thumb {
+  background: #bbb;
+}
+
+.prod::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 </style>
