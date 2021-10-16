@@ -274,6 +274,7 @@ export default {
     },
     totalProdutos() {
       this.restante = this.$n(this.totalProdutos, "currency");
+      console.log(this.totalProdutos)
     },
   },
   computed: {
@@ -309,20 +310,20 @@ export default {
     ...mapMutations(["editarCartao"]),
     selecionaCartao(id) {
       let index = this.$store.state.cartoesEscolhidos.findIndex((item) => item.id == id);
-      let ref = this.$store.state.cartoes.findIndex((item) => item.id == id);
-      let restante = this.restante;
-      restante = restante.replace("R$", "");
-      restante = restante.replace(",", ".");
+      
+      let restante = this.totalProdutos;
       if (index == -1) {
         this.$store.state.cartoes.filter((cartao) => {
           if (cartao.id == id) {
             cartao.selecionado = true;
-            if (ref == this.$store.state.cartoes.length - 1) {
+            this.$store.state.cartoesEscolhidos.push(cartao);
+            let ref = this.$store.state.cartoesEscolhidos.findIndex((item) => item.id == id);
+            if (ref == this.$store.state.cartoesEscolhidos.length - 1) {
               cartao.valor = 0;
             } else {
-              cartao.valor = parseFloat(restante);
+              cartao.valor = restante;
             }
-            this.$store.state.cartoesEscolhidos.push(cartao);
+            this.$store.state.cartoesEscolhidos[this.$store.state.cartoesEscolhidos-1] = cartao;
             this.editarCartao(cartao);
           }
         });
@@ -330,25 +331,37 @@ export default {
         this.$store.state.cartoes.filter((cartao) => {
           if (cartao.id == id) {
             cartao.selecionado = false;
+            this.$store.state.cartoesEscolhidos.splice(index, 1);
+              if (this.$store.state.cartoesEscolhidos.length > 1) {
+                let teste = this.$store.state.cartoesEscolhidos[this.$store.state.cartoesEscolhidos.length - 1].valor;
+                restante += (cartao.valor + teste);
+              }else{
+                 restante += cartao.valor;
+              }
             cartao.valor = 0;
             this.editarCartao(cartao);
           }
         });
-        this.$store.state.cartoesEscolhidos.splice(index, 1);
+        console.log(this.totalProdutos, "::::::", restante)
+        this.totalProdutos = restante;
+        
+        
       }
     },
     salvaValor(id, val) {
+      if (val == 0 || val == null) {
+        return null;
+      }
       let index = this.$store.state.cartoesEscolhidos.findIndex((item) => item.id == id);
+      val = val.replace("R$", "");
+      val = val.replace(",", ".");
       this.$store.state.cartoesEscolhidos.filter((item) => {
         if (item.id == id) {
-          item.valor = this.restante;
+          item.valor = parseFloat(val);
           this.$store.state.cartoesEscolhidos[index] = item;
         }
       });
-
-      val = val.replace("R$", "");
-      val = val.replace(",", ".");
-      this.restante = this.$n(this.totalProdutos - parseFloat(val), "currency");
+      this.totalProdutos = this.totalProdutos - parseFloat(val);
     },
     salvaValorRestante() {
       let id =
@@ -358,7 +371,7 @@ export default {
       );
       this.$store.state.cartoesEscolhidos.filter((item) => {
         if (item.id == id) {
-          item.valor = this.restante;
+          item.valor = this.totalProdutos;
           this.$store.state.cartoesEscolhidos[index] = item;
         }
       });
