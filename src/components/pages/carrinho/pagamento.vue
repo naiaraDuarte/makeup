@@ -352,16 +352,23 @@ export default {
       if (val == 0 || val == null) {
         return null;
       }
-      let index = this.$store.state.cartoesEscolhidos.findIndex((item) => item.id == id);
       val = val.replace("R$", "");
       val = val.replace(",", ".");
+      val = parseFloat(val);
+      if (val < 10 || (this.totalProdutos - val) < 10) {
+        this.exibeSnackBar("red", "O valor minimo em cada cartão é de R$10,00 reais");
+        return null;
+      }
+      let index = this.$store.state.cartoesEscolhidos.findIndex((item) => item.id == id);
+      
       this.$store.state.cartoesEscolhidos.filter((item) => {
         if (item.id == id) {
-          item.valor = parseFloat(val);
+          this.totalProdutos += item.valor;
+          item.valor = val;
           this.$store.state.cartoesEscolhidos[index] = item;
         }
       });
-      this.totalProdutos = this.totalProdutos - parseFloat(val);
+      this.totalProdutos = this.totalProdutos - val;
     },
     salvaValorRestante() {
       let id =
@@ -387,10 +394,6 @@ export default {
         return false;
       }
       this.cupom = this.cupom.toUpperCase();
-      // if (this.$store.state.cupons.length == 0) {
-      //   this.exibeSnackBar("red", "Nenhum cupom cadastrado");
-      //   return false;
-      // }
       this.$http.get(`/cupom/${this.cupom}`).then((res) => {
         let frm = {
           id: res.data.cupom[0].id,
@@ -413,24 +416,6 @@ export default {
 
         return true;
       });
-      // this.$store.state.cupons.filter((cupom) => {
-      //   if (cupom.cod == this.cupom && cupom.quant > 0) {
-      //     let frm = {
-      //       cod: this.cupom,
-      //       porcen: cupom.porcen,
-      //       tipo: cupom.tipo,
-      //     };
-      //     this.$store.state.cupomUtilizado = frm;
-      //     cupom.quant -= 1;
-      //     this.editarCupons(cupom);
-      //     this.cupomUtilizado = true;
-      //     this.exibeSnackBar("green", "Cupom utilizado");
-      //     return true;
-      //   } else {
-      //     this.exibeSnackBar("red", "Cupom inexistente ou esgotado");
-      //     return false;
-      //   }
-      // });
       this.cupom = "";
     },
     removerCupom() {
