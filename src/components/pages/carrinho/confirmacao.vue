@@ -30,7 +30,7 @@
                         <p>{{ item.numero }}</p>
                       </v-col>
                       <v-col lg="3">
-                        <p>{{ item.valor }}</p>
+                        <p>{{ $n( item.valor, "currency") }}</p>
                       </v-col>
                     </v-row>
                   </v-card>
@@ -135,6 +135,7 @@ export default {
     };
   },
   mounted() {
+    console.log("MELVNRDKJVNK", this.$store.state.cartoesEscolhidos)
     this.$http
       .get(`/cashback/${localStorage.getItem("usuarioId")}`)
       .then((res) => {

@@ -371,17 +371,7 @@ export default {
       this.totalProdutos = this.totalProdutos - val;
     },
     salvaValorRestante() {
-      let id =
-        this.$store.state.cartoes[this.$store.state.cartoes.length - 1].id;
-      let index = this.$store.state.cartoesEscolhidos.findIndex(
-        (item) => item.id == id
-      );
-      this.$store.state.cartoesEscolhidos.filter((item) => {
-        if (item.id == id) {
-          item.valor = this.totalProdutos;
-          this.$store.state.cartoesEscolhidos[index] = item;
-        }
-      });
+      this.$store.state.cartoesEscolhidos[this.$store.state.cartoesEscolhidos.length - 1].valor = this.totalProdutos;
     },
     verificaExistenciaCartao(item){
       let teste = this.$store.state.cartoesEscolhidos.findIndex(val => item.id == val.id)
