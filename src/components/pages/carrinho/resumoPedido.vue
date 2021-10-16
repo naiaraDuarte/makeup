@@ -222,33 +222,35 @@ export default {
         },
         //cashback utilizado
         cashback: {
-          id: 2,
-          valor: 10,
+          id: this.$store.state.usuario[1].id,
+          // valor: this.$store.state.valeTroca.valor
+          // id: 2,
+          // valor: 10,
         },
         status: "EM PROCESSAMENTO",
       };
       console.log(frmB)
-      // this.$http.post(`/pedido/`, frmB).then((res) => {
-      //   this.$store.state.cartoes.filter((cartao) => {
-      //       cartao.selecionado = false;
-      //       cartao.valor = 0;
-      //       this.editarCartao(cartao);
-      //   });
-      // });
-      // let frm = {
-      //   cliente: this.$store.state.usuario[1],
-      //   carrinho: this.$store.state.carrinho,
-      //   cartao: this.$store.state.cartoesEscolhidos,
-      //   cupom: this.$store.state.cupomUtilizado,
-      //   enderecoEntrega: this.$store.state.enderecoDeEntrega,
-      //   freteCobrado: this.$store.state.freteCalculado,
-      //   totalPago: parseFloat(
-      //     this.totalProdutos + (parseFloat(this.frete) - this.desconto)
-      //   ),
-      //   status: "EM PROCESSAMENTO",
-      //   prodTroca: [],
-      // };
-      // this.addPedido(frm);
+      this.$http.post(`/pedido/`, frmB).then(() => {
+        this.$store.state.cartoes.filter((cartao) => {
+            cartao.selecionado = false;
+            cartao.valor = 0;
+            this.editarCartao(cartao);
+        });
+      });
+      let frm = {
+        cliente: this.$store.state.usuario[1],
+        carrinho: this.$store.state.carrinho,
+        cartao: this.$store.state.cartoesEscolhidos,
+        cupom: this.$store.state.cupomUtilizado,
+        enderecoEntrega: this.$store.state.enderecoDeEntrega,
+        freteCobrado: this.$store.state.freteCalculado,
+        totalPago: parseFloat(
+          this.totalProdutos + (parseFloat(this.frete) - this.desconto)
+        ),
+        status: "EM PROCESSAMENTO",
+        prodTroca: [],
+      };
+      this.addPedido(frm);
       this.dialog = true;
     },
     redireciona() {

@@ -183,7 +183,7 @@ export default {
       },
     });
 
-    this.listarCartoesCadastrados();
+    // this.listarCartoesCadastrados();
   },
   computed: {
     verificaId() {
@@ -192,17 +192,18 @@ export default {
     },
   },
   methods: {
-    listarCartoesCadastrados() {
+    // listarCartoesCadastrados() {
+    //   console.log("listarrrrr");
 
-      this.$store.state.cartoes = [];
-      this.$http
-        .get(`/cartao/${localStorage.getItem("usuarioId")}`)
-        .then((res) => {
-          res.data.dados.forEach((e) => {
-            this.$store.state.cartoes.push(e);
-          });
-        });
-    },
+    //   this.$store.state.cartoes = [];
+    //   this.$http
+    //     .get(`/cartao/${localStorage.getItem("usuarioId")}`)
+    //     .then((res) => {
+    //       res.data.dados.forEach((e) => {
+    //         this.$store.state.cartoes.push(e);
+    //       });
+    //     });
+    // },
     ...mapMutations(["addCartao"]),
     addCartoes() {
       if (!this.verificaPreenchimento()) {

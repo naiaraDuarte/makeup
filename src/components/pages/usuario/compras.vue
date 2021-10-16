@@ -4,10 +4,10 @@
 
     <!-- <div class="compras"></div> -->
     <v-row class="mt-1 mx-3 my-3">
-      <v-col lg="12" v-if="this.$store.state.pedidos.length > 0">
+      <v-col lg="12" v-if="$store.state.pedidos.length > 0">
         <v-expansion-panels accordion>
           <v-expansion-panel
-            v-for="(item, i) in this.$store.state.pedidos"
+            v-for="(item, i) in $store.state.pedidos"
             :key="i"
           >
             <v-expansion-panel-header
@@ -324,7 +324,7 @@ export default {
       steps: [],
     };
   },
-  mounted() {
+  mounted() {   
     this.$store.state.pedidos = [];
     this.$http
       .get(`/pedido/${localStorage.getItem("usuarioId")}`)
@@ -376,6 +376,7 @@ export default {
       }
     },
     getDados(status) {
+      console.log("status", status)
       let fluxo = this.conteudoSteps.filter((val) => val.nome == status);
       fluxo = fluxo[0].status;
       let valor = "aceita";
