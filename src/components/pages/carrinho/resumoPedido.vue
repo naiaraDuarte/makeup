@@ -142,6 +142,7 @@ export default {
   },
   methods: {
     ...mapMutations(["addPedido"]),
+    ...mapMutations(["editarCartao"]),
     getImgUrl(pic) {
       return require("../../../assets/images/" + pic);
     },
@@ -206,7 +207,7 @@ export default {
       });
       let frmB = {
         valor: this.total,
-        frete: this.$store.state.freteCalculado,
+        frete: this.$store.state.freteCalculado.frete,
         produto: produtos,
         cliente: {
           id: this.$store.state.usuario[1].id,
@@ -243,7 +244,7 @@ export default {
         cartao: this.$store.state.cartoesEscolhidos,
         cupom: this.$store.state.cupomUtilizado,
         enderecoEntrega: this.$store.state.enderecoDeEntrega,
-        freteCobrado: this.$store.state.freteCalculado,
+        freteCobrado: this.$store.state.freteCalculado.frete,
         totalPago: parseFloat(
           this.totalProdutos + (parseFloat(this.frete) - this.desconto)
         ),
@@ -257,7 +258,7 @@ export default {
       this.$store.state.carrinho = [];
       this.$store.state.cartoesEscolhidos = [];
       this.$store.state.enderecoEntrega = "";
-      this.$store.state.freteCalculado = "";
+      this.$store.state.freteCalculado = {};
       this.$store.state.cupomUtilizado = {
         porcen: 0,
       };

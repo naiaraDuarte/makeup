@@ -32,7 +32,7 @@ export default new Vuex.Store({
         cupomUtilizado: {
             porcen: 0,
         },
-        freteCalculado: '',
+        freteCalculado: {},
         pedidos: [],
         trocaDeComponentesAdm: 0,
     },
@@ -92,6 +92,7 @@ export default new Vuex.Store({
         //Gestao de cupons
         addCupons(state, payload) {
             state.cupons.push(payload);
+            Vue.set(state.cupons, payload);
         },
         editarCupons(state, payload) {
             let index = state.cupons.findIndex(cupons => cupons.id == payload.id);

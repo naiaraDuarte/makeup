@@ -265,6 +265,10 @@ export default {
       .then((res) => {
         this.cashback = res.data.cashback[0];
       });
+
+      if (Object.keys(this.$store.state.freteCalculado).length > 0) {
+        this.enderecoEntrega = this.$store.state.freteCalculado.id;
+      }
   },
   watch: {
     total(newVal, oldVal) {
@@ -284,7 +288,7 @@ export default {
     enderecoEntrega(newVal) {
       this.$store.state.enderecos.filter((endereco) => {
         if (newVal == endereco.id) {
-          this.calculaFrete(endereco.cep);
+          this.calculaFrete(endereco.cep, endereco.id);
         }
       });
       this.$store.state.enderecos.filter((endereco) => {
@@ -349,7 +353,6 @@ export default {
             if (ref != this.$store.state.cartoesEscolhidos.length - 1) {
               cartao.valor = 0;
             } else {
-              console.log("CAIU NO ELSE");
               cartao.valor = restante;
               this.$store.state.cartoesEscolhidos.forEach((item, i) => {
                 if (this.totalProdutos == item.valor) {
@@ -439,21 +442,21 @@ export default {
         return false;
       }
       this.cupom = this.cupom.toUpperCase();
-      this.$http
-        .get(`/cupom/${this.cupom}`)
-        .then((res) => {
-          console.log("res",res);
-          let qtd = res.data.cupom[0].quant - 1;
-          let frm = {
-            id: res.data.cupom[0].id,
-            cod: res.data.cupom[0].cod,
-            porcen: res.data.cupom[0].porcen,
-            tipo: res.data.cupom[0].tipo,
-            quant: qtd,
-          };
-          this.$store.state.cupomUtilizado = frm;
- 
-          this.$http.patch(`/cupom/${frm.id}`, { quant: qtd }).then(() => {
+      this.$http.get(`/cupom/${this.cupom}`).then((res) => {
+        console.log(res);
+        let qtd = res.data.cupom[0].quant - 1;
+        let frm = {
+          id: res.data.cupom[0].id,
+          cod: res.data.cupom[0].cod,
+          porcen: res.data.cupom[0].porcen,
+          tipo: res.data.cupom[0].tipo,
+          quant: qtd,
+        };
+        this.$store.state.cupomUtilizado = frm;
+
+        this.$http
+          .patch(`/cupom/${frm.id}`, { quant: qtd })
+          .then(() => {
             this.cupomUtilizado = true;
             this.exibeSnackBar("green", "Cupom utilizado");
           });
@@ -485,7 +488,7 @@ export default {
         }
       });
     },
-    calculaFrete(cep) {
+    calculaFrete(cep, id) {
       let frm = {
         cep: cep.replace("-", ""),
         peso: 1,
@@ -496,11 +499,17 @@ export default {
       };
       this.$http.post(`/frete/`, frm).then((res) => {
         this.frete = res.data.valor[0].Valor;
-        this.$store.state.freteCalculado = this.frete;
+        this.$store.state.freteCalculado = {
+          id: id,
+          frete: this.frete,
+        };
       });
 
       this.frete = "22.00";
-      this.$store.state.freteCalculado = this.frete;
+      this.$store.state.freteCalculado = {
+        id: id,
+        frete: this.frete,
+      };
     },
     exibeSnackBar(cor, msg) {
       this.snackbarColor = cor;
