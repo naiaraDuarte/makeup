@@ -269,7 +269,8 @@ export default {
       }
       //Teve desconto
       else {
-        this.totalProdutos = this.totalProdutos - newVal;
+        this.totalProdutos = newVal - (oldVal - this.totalProdutos);
+        this.$store.state.cartoesEscolhidos[this.$store.state.cartoesEscolhidos.length - 1].valor = this.totalProdutos;
       }
     },
     enderecoEntrega(newVal) {
@@ -342,7 +343,7 @@ export default {
               this.$store.state.cartoesEscolhidos.forEach((item, i) => {
                 if (this.totalProdutos == item.valor) {
                   item.valor = 0;
-                  if (i != this.$store.state.cartoesEscolhidos.localStorage) {
+                  if (i != this.$store.state.cartoesEscolhidos.length - 1) {
                     this.$store.state.cartoesEscolhidos[i] = item;
                   }
                 }
@@ -431,16 +432,19 @@ export default {
       }
       this.cupom = this.cupom.toUpperCase();
       this.$http.get(`/cupom/${this.cupom}`).then((res) => {
+        console.log(res)
+        let qtd = res.data.cupom[0].quant - 1;
         let frm = {
           id: res.data.cupom[0].id,
           cod: res.data.cupom[0].cod,
           porcen: res.data.cupom[0].porcen,
           tipo: res.data.cupom[0].tipo,
+          quant: qtd,
         };
         this.$store.state.cupomUtilizado = frm;
-        let qtd = res.data.cupom[0].quant - 1;
+        
         this.$http
-          .patch(`/cupom/${res.data.cupom[0].id}`, { quant: qtd })
+          .patch(`/cupom/${frm.id}`, { quant: qtd })
           .then(() => {
             this.cupomUtilizado = true;
             this.exibeSnackBar("green", "Cupom utilizado");
