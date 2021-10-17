@@ -192,6 +192,7 @@
         <v-col lg="1"></v-col>
         <v-divider vertical></v-divider>
         <v-col lg="5" class="pl-5">
+          {{ habilitaBotao }}
           <resumoPedido
             :frete="frete"
             :cashback="cashback.valor"
@@ -292,13 +293,13 @@ export default {
   },
   computed: {
     habilitaBotao() {
-      if (this.frete != "0" && this.$store.state.cartoesEscolhidos.length > 0) {
-        this.salvaValorRestante();
+      let valFrete = parseFloat(this.frete)
+      if ((valFrete != 0 && this.$store.state.cartoesEscolhidos.length > 0) || (valFrete != 0 && this.totalProdutos == 0)) {
+        if (this.$store.state.cartoesEscolhidos.length > 0) {
+          this.salvaValorRestante();
+        }
         return true;
-      } else if (this.frete != "0" && this.totalProdutos == 0) {
-        this.salvaValorRestante();
-        return true;
-      }
+      } 
       return false;
     },
     desconto() {
