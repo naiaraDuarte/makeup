@@ -50,7 +50,12 @@
                   <div v-if="item.selecionado == true">
                     <v-text-field
                       v-if="verificaExistenciaCartao(item) == false"
-                      @blur="$event.target.value = salvaValor(item.id, $event.target.value)"
+                      @blur="
+                        $event.target.value = salvaValor(
+                          item.id,
+                          $event.target.value
+                        )
+                      "
                       label="Valor a pagar neste cartão"
                       class="cupom-input"
                       v-mask="['R$#,##', 'R$##,##', 'R$###,##', 'R$####,##']"
@@ -271,13 +276,15 @@ export default {
       //Teve desconto
       else {
         this.totalProdutos = newVal - (oldVal - this.totalProdutos);
-        this.$store.state.cartoesEscolhidos[this.$store.state.cartoesEscolhidos.length - 1].valor = this.totalProdutos;
+        this.$store.state.cartoesEscolhidos[
+          this.$store.state.cartoesEscolhidos.length - 1
+        ].valor = this.totalProdutos;
       }
     },
     enderecoEntrega(newVal) {
       this.$store.state.enderecos.filter((endereco) => {
         if (newVal == endereco.id) {
-          this.calculaFrete(endereco.cep);
+          this.calculaFrete(endereco.cep, endereco.id);
         }
       });
       this.$store.state.enderecos.filter((endereco) => {
@@ -293,13 +300,16 @@ export default {
   },
   computed: {
     habilitaBotao() {
-      let valFrete = parseFloat(this.frete)
-      if ((valFrete != 0 && this.$store.state.cartoesEscolhidos.length > 0) || (valFrete != 0 && this.totalProdutos == 0)) {
+      let valFrete = parseFloat(this.frete);
+      if (
+        (valFrete != 0 && this.$store.state.cartoesEscolhidos.length > 0) ||
+        (valFrete != 0 && this.totalProdutos == 0)
+      ) {
         if (this.$store.state.cartoesEscolhidos.length > 0) {
           this.salvaValorRestante();
         }
         return true;
-      } 
+      }
       return false;
     },
     desconto() {
@@ -339,7 +349,6 @@ export default {
             if (ref != this.$store.state.cartoesEscolhidos.length - 1) {
               cartao.valor = 0;
             } else {
-              console.log("CAIU NO ELSE");
               cartao.valor = restante;
               this.$store.state.cartoesEscolhidos.forEach((item, i) => {
                 if (this.totalProdutos == item.valor) {
@@ -391,10 +400,7 @@ export default {
         return "";
       }
       if (val > this.totalProdutos) {
-        this.exibeSnackBar(
-          "red",
-          "Valor maior que a compra"
-        );
+        this.exibeSnackBar("red", "Valor maior que a compra");
         return "";
       }
       let index = this.$store.state.cartoesEscolhidos.findIndex(
@@ -433,7 +439,7 @@ export default {
       }
       this.cupom = this.cupom.toUpperCase();
       this.$http.get(`/cupom/${this.cupom}`).then((res) => {
-        console.log(res)
+        console.log(res);
         let qtd = res.data.cupom[0].quant - 1;
         let frm = {
           id: res.data.cupom[0].id,
@@ -443,7 +449,7 @@ export default {
           quant: qtd,
         };
         this.$store.state.cupomUtilizado = frm;
-        
+
         this.$http
           .patch(`/cupom/${frm.id}`, { quant: qtd })
           .then(() => {
@@ -477,7 +483,7 @@ export default {
         }
       });
     },
-    calculaFrete(cep) {
+    calculaFrete(cep, id) {
       let frm = {
         cep: cep.replace("-", ""),
         peso: 1,
@@ -488,11 +494,17 @@ export default {
       };
       this.$http.post(`/frete/`, frm).then((res) => {
         this.frete = res.data.valor[0].Valor;
-        this.$store.state.freteCalculado = this.frete;
+        this.$store.state.freteCalculado = {
+          id: id,
+          frete: this.frete,
+        };
       });
 
       this.frete = "22.00";
-      this.$store.state.freteCalculado = this.frete;
+      this.$store.state.freteCalculado = {
+        id: id,
+        frete: this.frete,
+      };
     },
     exibeSnackBar(cor, msg) {
       this.snackbarColor = cor;

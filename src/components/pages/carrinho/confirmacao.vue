@@ -101,7 +101,7 @@
         <v-divider vertical></v-divider>
         <v-col lg="5" class="pl-5">
           <resumoPedido
-            :frete="this.$store.state.freteCalculado"
+            :frete="this.$store.state.freteCalculado.frete"
             :cashback="cashback.valor"
             :desconto="desconto"
             :habilitaBotao="habilitaBotao"
@@ -159,7 +159,7 @@ export default {
       return false;
     },
     desconto() {
-      let frete = parseFloat(this.$store.state.freteCalculado);
+      let frete = parseFloat(this.$store.state.freteCalculado.frete);
       let total = 0;
       let porcen = this.$store.state.cupomUtilizado.porcen;
       if (this.$store.state.carrinho.length > 0) {

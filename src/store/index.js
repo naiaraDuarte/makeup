@@ -32,7 +32,7 @@ export default new Vuex.Store({
         cupomUtilizado: {
             porcen: 0,
         },
-        freteCalculado: '',
+        freteCalculado: {},
         pedidos: [],
         trocaDeComponentesAdm: 0,
     },
