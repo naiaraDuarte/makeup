@@ -2,7 +2,6 @@
   <v-container fluid>
     <h1>Compras</h1>
 
-    <!-- <div class="compras"></div> -->
     <v-row class="mt-1 mx-3 my-3">
       <v-col lg="12" v-if="$store.state.pedidos.length > 0">
         <v-expansion-panels accordion>
@@ -19,7 +18,7 @@
                   <p>Pedido: {{ item.id }}</p>
                 </v-col>
                 <v-col lg="2">
-                  <p>Data pedido: 28/09</p>
+                  <p>Data pedido: {{ $moment(item.data, "YYYY-MM-DD").format("DD/MM") }}</p>
                 </v-col>
                 <v-col lg="2">
                   <p></p>
@@ -35,10 +34,9 @@
                       >
                     </v-col>
                     <v-col lg="4">
-                      <v-btn elevation="0" icon @click="trocarPedido(item.id)"
+                      <v-btn elevation="0" icon v-if="verificaTroca(item.status) == true" @click="trocarPedido(item.id)"
                         ><v-icon
                           color="#b38b57"
-                          v-if="e1 == 4 && troca == false && cancelado == false"
                           >mdi-sync</v-icon
                         ></v-btn
                       >
@@ -228,13 +226,6 @@
           >
             Fechar
           </v-btn>
-          <!-- <v-btn
-            color="blue darken-1"
-            text
-            @click="efetuarCancelamento(pedidoSelecionado.id)"
-          >
-            Cancelar
-          </v-btn> -->
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -337,6 +328,7 @@ export default {
           let frete = ped.pedido.frete;
           let status = ped.pedido.status;
           let id = ped.pedido.id;
+          let data = ped.pedido.data_cadastro;
 
           this.$store.state.pedidos.push({
             id: id,
@@ -346,6 +338,7 @@ export default {
             cupom: cupom,
             enderecoEntrega: endereco,
             freteCobrado: frete,
+            data: data,
             totalPago: parseFloat(
               this.totalProdutos + (parseFloat(this.frete) - this.desconto)
             ),
@@ -374,6 +367,11 @@ export default {
       }else{
         return true;
       }
+    },
+    verificaTroca(status){
+      let step = this.conteudoSteps.filter((val) => val.nome == status);
+      if (step[0].status == "troca" || status == 'ENTREGA REALIZADA') return true;
+      else return false;
     },
     getDados(status) {
       console.log("status", status)
@@ -431,6 +429,7 @@ export default {
       this.$http
         .put(`/pedido/troca/${item.id}`, frm)
         .then(() => {
+          prod.status = "TROCA SOLICITADA";
           this.editaStatus([item.id, "TROCA SOLICITADA", prod.id]);
           this.exibeSnackBar("green", "Sua troca foi para análise");
         });
