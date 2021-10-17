@@ -50,7 +50,12 @@
                   <div v-if="item.selecionado == true">
                     <v-text-field
                       v-if="verificaExistenciaCartao(item) == false"
-                      @blur="$event.target.value = salvaValor(item.id, $event.target.value)"
+                      @blur="
+                        $event.target.value = salvaValor(
+                          item.id,
+                          $event.target.value
+                        )
+                      "
                       label="Valor a pagar neste cartão"
                       class="cupom-input"
                       v-mask="['R$#,##', 'R$##,##', 'R$###,##', 'R$####,##']"
@@ -271,7 +276,9 @@ export default {
       //Teve desconto
       else {
         this.totalProdutos = newVal - (oldVal - this.totalProdutos);
-        this.$store.state.cartoesEscolhidos[this.$store.state.cartoesEscolhidos.length - 1].valor = this.totalProdutos;
+        this.$store.state.cartoesEscolhidos[
+          this.$store.state.cartoesEscolhidos.length - 1
+        ].valor = this.totalProdutos;
       }
     },
     enderecoEntrega(newVal) {
@@ -293,13 +300,16 @@ export default {
   },
   computed: {
     habilitaBotao() {
-      let valFrete = parseFloat(this.frete)
-      if ((valFrete != 0 && this.$store.state.cartoesEscolhidos.length > 0) || (valFrete != 0 && this.totalProdutos == 0)) {
+      let valFrete = parseFloat(this.frete);
+      if (
+        (valFrete != 0 && this.$store.state.cartoesEscolhidos.length > 0) ||
+        (valFrete != 0 && this.totalProdutos == 0)
+      ) {
         if (this.$store.state.cartoesEscolhidos.length > 0) {
           this.salvaValorRestante();
         }
         return true;
-      } 
+      }
       return false;
     },
     desconto() {
@@ -391,10 +401,7 @@ export default {
         return "";
       }
       if (val > this.totalProdutos) {
-        this.exibeSnackBar(
-          "red",
-          "Valor maior que a compra"
-        );
+        this.exibeSnackBar("red", "Valor maior que a compra");
         return "";
       }
       let index = this.$store.state.cartoesEscolhidos.findIndex(
@@ -432,31 +439,32 @@ export default {
         return false;
       }
       this.cupom = this.cupom.toUpperCase();
-      this.$http.get(`/cupom/${this.cupom}`).then((res) => {
-        console.log(res)
-        let qtd = res.data.cupom[0].quant - 1;
-        let frm = {
-          id: res.data.cupom[0].id,
-          cod: res.data.cupom[0].cod,
-          porcen: res.data.cupom[0].porcen,
-          tipo: res.data.cupom[0].tipo,
-          quant: qtd,
-        };
-        this.$store.state.cupomUtilizado = frm;
-        
-        this.$http
-          .patch(`/cupom/${frm.id}`, { quant: qtd })
-          .then(() => {
+      this.$http
+        .get(`/cupom/${this.cupom}`)
+        .then((res) => {
+          console.log("res",res);
+          let qtd = res.data.cupom[0].quant - 1;
+          let frm = {
+            id: res.data.cupom[0].id,
+            cod: res.data.cupom[0].cod,
+            porcen: res.data.cupom[0].porcen,
+            tipo: res.data.cupom[0].tipo,
+            quant: qtd,
+          };
+          this.$store.state.cupomUtilizado = frm;
+ 
+          this.$http.patch(`/cupom/${frm.id}`, { quant: qtd }).then(() => {
             this.cupomUtilizado = true;
             this.exibeSnackBar("green", "Cupom utilizado");
-          })
-          .catch((e) => {
-            this.exibeSnackBar("red", "Cupom inexistente ou esgotado", e);
-            return false;
           });
 
-        return true;
-      });
+          return true;
+        })
+        .catch((e) => {
+          console.log("ee",e)
+          this.exibeSnackBar("red", "Cupom inexistente ou esgotado", e);
+          return false;
+        });
       this.cupom = "";
     },
     removerCupom() {
