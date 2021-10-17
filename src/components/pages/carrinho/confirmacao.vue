@@ -8,7 +8,7 @@
           </p>
           <v-divider class="mb-5"></v-divider>
           <v-card elevation="0" class="mt-3">
-            <h4 class="mb-5">
+            <h4 class="mb-5" v-if="$store.state.cartoesEscolhidos.length > 0">
               <v-icon class="pl-1">mdi-credit-card-plus-outline</v-icon> Cartões escolhidos
             </h4>
             
@@ -85,16 +85,7 @@
               </v-col>
             </v-row>
             <v-row>
-              
             </v-row>
-            <!-- <v-combobox
-              class="mt-3"
-              outlined
-              dense
-              v-model="cartoes"
-              :items="itensDivisoes"
-              label="Adicionar cartões"
-            ></v-combobox> -->
           </v-card>
         </v-col>
         <v-col lg="1"></v-col>
@@ -135,7 +126,10 @@ export default {
     };
   },
   mounted() {
-    console.log("MELVNRDKJVNK", this.$store.state.cartoesEscolhidos)
+    let index = this.$store.state.cartoesEscolhidos.findIndex(item => item.valor == 0);
+    if (index != -1) {
+      this.$store.state.cartoesEscolhidos.splice(index, 1)
+    }
     this.$http
       .get(`/cashback/${localStorage.getItem("usuarioId")}`)
       .then((res) => {

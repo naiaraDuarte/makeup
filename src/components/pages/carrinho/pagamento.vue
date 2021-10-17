@@ -265,6 +265,10 @@ export default {
       .then((res) => {
         this.cashback = res.data.cashback[0];
       });
+
+      if (Object.keys(this.$store.state.freteCalculado).length > 0) {
+        this.enderecoEntrega = this.$store.state.freteCalculado.id;
+      }
   },
   watch: {
     total(newVal, oldVal) {
