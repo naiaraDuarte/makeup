@@ -42,8 +42,8 @@
     </v-card>
     <v-dialog v-model="adicionarProduto" persistent max-width="900px">
       <v-card>
-        <v-row>
-          <v-col lg="12" md="12" sm="12" cols="12" class="px-0 py-0">
+        <!-- <v-row>
+          <v-col lg="12" md="12" sm="12" cols="12" class="px-0 py-0"> -->
             <v-progress-linear :value="valorBarra"></v-progress-linear>
             <v-card elevation="0" v-if="faseCadastro == 0">
               <v-card-tittle>
@@ -112,7 +112,7 @@
                   </v-col>
                 </v-row>
                 <v-row>
-                  <v-col>
+                  <v-col class="px-8 py-8">
                     <v-textarea
                       v-model="descProduto"
                       outlined
@@ -233,10 +233,21 @@
                 </v-row>
               </v-card-text>
             </v-card>
-          </v-col>
-        </v-row>
+          <!-- </v-col>
+        </v-row> -->
+        
         <v-row class="text-right mx-1 mb-3">
-          <v-col lg="9">
+          <v-col lg="2" v-if="validacaoDePreenchimento" >
+            <v-btn
+              elevation="3"
+              color="white"
+              class="btnSubmit"
+              @click="salvarProduto()"
+              >add produto</v-btn
+            >
+          </v-col>
+          
+          <v-col lg="7">
             <v-btn
               elevation="0"
               color="white"
@@ -244,8 +255,8 @@
               @click="adicionarProduto = false"
             >
               Cancelar
-            </v-btn>
-          </v-col>
+            </v-btn>            
+          </v-col>          
           <v-col lg="3">
             <v-row class="text-right">
               <v-col class="pl-5 text-center">
@@ -266,6 +277,7 @@
                   ><v-icon>mdi-chevron-right</v-icon></v-btn
                 >
               </v-col>
+              
             </v-row>
 
             <!-- <v-snackbar v-model="snackbar" :color="snackbarColor">
@@ -279,17 +291,7 @@
             </v-snackbar> -->
           </v-col>
         </v-row>
-        <v-card-actions>
-          <v-col class="text-left" v-if="validacaoDePreenchimento">
-            <v-btn
-              elevation="3"
-              color="white"
-              class="btnSubmit"
-              @click="salvarProduto()"
-              >add produto</v-btn
-            >
-          </v-col>
-        </v-card-actions>
+        
       </v-card>
     </v-dialog>
     <v-snackbar v-model="snackbar" :color="snackbarColor">
@@ -376,7 +378,7 @@ export default {
         this.comprimentoProduto != "" &&
         this.quantidadeProduto != "" &&
         this.diametroProduto != "" &&
-        this.precoProduto != "" &&
+        // this.precoProduto != "" &&
         this.marcaProduto != ""
       ) {
         return true;

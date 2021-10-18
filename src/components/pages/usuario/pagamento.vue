@@ -217,7 +217,7 @@ export default {
       let frm = {
         status: status,
         nome: this.nomeCartao,
-        numero: this.numeroCartao.trim(),
+        numero: this.numeroCartao.replace(/\s+/g, ''),
         cvv: this.codCartao,
         data_validade: this.expCartao,
         bandeira: 2,

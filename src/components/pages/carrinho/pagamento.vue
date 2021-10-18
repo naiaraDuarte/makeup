@@ -459,14 +459,15 @@ export default {
           .then(() => {
             this.cupomUtilizado = true;
             this.exibeSnackBar("green", "Cupom utilizado");
-          })
-          .catch((e) => {
-            this.exibeSnackBar("red", "Cupom inexistente ou esgotado", e);
-            return false;
           });
 
-        return true;
-      });
+          return true;
+        })
+        .catch((e) => {
+          console.log("ee",e)
+          this.exibeSnackBar("red", "Cupom inexistente ou esgotado", e);
+          return false;
+        });
       this.cupom = "";
     },
     removerCupom() {
