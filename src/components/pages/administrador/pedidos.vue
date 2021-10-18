@@ -37,7 +37,6 @@
 
         <template v-slot:[`item.acoes`]="{ item }">
           <v-row align="center" class="mx-0">
-            <!-- <v-card v-show="false">{{ item }}</v-card> -->
             <v-btn @click="verMais(item.acoes)" icon>
               <v-icon>mdi-dots-horizontal</v-icon>
             </v-btn>
@@ -103,6 +102,15 @@
                     <v-col lg="4" class="addBorder">
                       <p><b>Dados de pagamento</b></p>
                       <p>
+                        <b>Data do pedido: </b>
+                        {{
+                          $moment(
+                            perfilSelecionado[0].data,
+                            "YYYY-MM-DD"
+                          ).format("DD/MM")
+                        }}
+                      </p>
+                      <p>
                         <b>Total da compra:</b>
                         {{
                           $n(
@@ -131,7 +139,7 @@
                       <p>{{ item.nome }}</p>
                     </v-col>
                     <v-col lg="2">
-                      <p>{{ item.preco }}</p>
+                      <p>{{ $n(parseFloat(item.custo), "currency") }}</p>
                     </v-col>
                     <v-col lg="2">
                       <p>{{ item.qtd }}</p>
@@ -203,6 +211,50 @@
         </v-card>
       </v-dialog>
     </v-row>
+    <v-dialog v-model="voltaEstoque" max-width="450">
+      <v-card>
+        <v-card-title class="text-h5">
+          Deseja voltar esses produtos para o estoque?
+        </v-card-title>
+
+        <v-card-text>
+          Só é recomendado a volta ao estoque, caso o produto não esteja com
+          defeito, caso contrário é recomendado entrar em contato com o
+          fornecedor.
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn color="green darken-1" text @click="mudaStatus(false)">
+            Falar com o fornecedor
+          </v-btn>
+
+          <v-btn color="green darken-1" text @click="mudaStatus(true)">
+            Voltar ao estoque
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="statusTroca" max-width="450">
+      <v-card>
+        <v-card-title class="text-h5"> Qual o status da troca? </v-card-title>
+
+        <v-card-text> OBSERVAÇÃO DO USUÁRIO </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn color="green darken-1" text @click="statusDaTroca(false)">
+            Rejeitar
+          </v-btn>
+
+          <v-btn color="green darken-1" text @click="statusDaTroca(true)">
+            Aceitar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 <script>
@@ -221,6 +273,9 @@ export default {
       ],
       search: "",
       dialog: false,
+      voltaEstoque: false,
+      statusTroca: false,
+      estoque: false,
       headers: [
         {
           text: "N° Pedido",
@@ -259,17 +314,11 @@ export default {
           status: "troca",
         },
         {
-          nome: "TROCA AUTORIZADA",
+          nome: "TROCA AUTORIZADA/REJEITADA",
           status: "troca",
-          valor: "aceita",
         },
         {
-          nome: "TROCA REJEITADA",
-          status: "troca",
-          valor: "rejeitada",
-        },
-        {
-          nome: "EM TRANSPORTE",
+          nome: "EM TRANSITO",
           status: "troca",
         },
         {
@@ -305,9 +354,20 @@ export default {
         let cartao = ped.pedido.cartoes;
         let cupom = ped.pedido.cupom;
         let endereco = ped.pedido.endereco[0];
-        let status = ped.pedido.status;
+        let status = ped.pedido.status.toUpperCase();
         let total = ped.pedido.valor;
         let id = ped.pedido.id;
+        let data = ped.pedido.data_cadastro;
+
+        let troca = [];
+        if (this.verificaTroca(status) == true) {
+          console.log("MERDA", this.carrinho);
+          carrinho.forEach((item) => {
+            if (this.verificaTroca(item.status) == true) {
+              troca.push(item);
+            }
+          });
+        }
 
         this.$store.state.pedidos.push({
           id: id,
@@ -318,7 +378,8 @@ export default {
           enderecoEntrega: endereco,
           totalPago: total,
           status: status,
-          prodTroca: [],
+          prodTroca: troca,
+          data: data,
         });
 
         this.desserts.push({
@@ -329,7 +390,8 @@ export default {
           status: status,
           fluxo: ped.fluxo,
           totalPago: total,
-          troca: [],
+          troca: troca,
+          data: data,
           endereco: endereco,
           acoes: id,
         });
@@ -356,6 +418,9 @@ export default {
     },
 
     salvar(id) {
+      if (this.steps[this.e1].nome == "TROCA EFETUADA") {
+        this.finalizaTroca(this.estoque);
+      }
       this.$http
         .put(`/pedido/status/${id}`, {
           status: this.steps[this.e1].nome,
@@ -372,6 +437,7 @@ export default {
         (clientes) => clientes.acoes == id
       );
       this.steps = [];
+      this.resetConteudoSteps();
       await this.getDados(this.perfilSelecionado[0].status);
       await this.getStatus(this.perfilSelecionado[0].status);
       this.idSelecionado = id;
@@ -400,28 +466,101 @@ export default {
         }
       });
     },
+    mudaStatus(val) {
+      this.estoque = val;
+      this.voltaEstoque = false;
+    },
+    finalizaTroca(val) {
+      console.log("PERFIUKLKLK", this.perfilSelecionado[0]);
+      var valorCashBack = 0;
+      if (val == true) {
+        this.perfilSelecionado[0].troca.forEach((item) => {
+          let frm = {
+            quantidadeProduto: item.quantidade,
+          };
+          valorCashBack += item.custo;
+          this.$http.patch(`/produto/${item.id}`, frm);
+        });
+      }
+
+      this.$http
+        .get(`/cashback/${this.perfilSelecionado[0].cliente.id}`)
+        .then((res) => {
+          valorCashBack += res.data.cashback[0].valor;
+          console.log("valor", valorCashBack);
+          this.$http.put(`/cashback/${this.perfilSelecionado[0].cliente.id}`, {
+            valor: valorCashBack,
+          });
+        });
+
+      let index = this.desserts.findIndex(
+        (val) => val.pedido == this.perfilSelecionado[0].pedido
+      );
+      this.desserts[index].troca = [];
+      this.perfilSelecionado[0].troca = [];
+    },
+    resetConteudoSteps() {
+      this.conteudoSteps.forEach((item, i) => {
+        if (item.nome == "TROCA REJEITADA" || item.nome == "TROCA AUTORIZADA") {
+          let reset = {
+            nome: "TROCA AUTORIZADA/REJEITADA",
+            status: "troca",
+          };
+          this.conteudoSteps.splice(i, 1, reset);
+          this.steps = [];
+          this.getDados("TROCA REJEITADA");
+        }
+      });
+    },
+    verificaTroca(status) {
+      let step = this.conteudoSteps.filter((val) => val.nome == status);
+      if (step[0].status == "troca") return true;
+      else return false;
+    },
+    statusDaTroca(val) {
+      // let index = this.conteudoSteps.findIndex(val => val.nome == "TROCA AUTORIZADA/REJEITADA")
+      this.conteudoSteps.forEach((item, i) => {
+        if (item.nome == "TROCA AUTORIZADA/REJEITADA") {
+          let autorizada = {
+            nome: "TROCA AUTORIZADA",
+            status: "troca",
+            valor: "aceita",
+          };
+          let rejeitada = {
+            nome: "TROCA REJEITADA",
+            status: "troca",
+            valor: "rejeitada",
+          };
+          if (val == false) {
+            this.conteudoSteps.splice(i, 1, rejeitada);
+            this.steps = [];
+            this.getDados("TROCA REJEITADA");
+          } else {
+            this.conteudoSteps.splice(i, 1, autorizada);
+            this.steps = [];
+            this.getDados("TROCA AUTORIZADA");
+            this.e1++;
+          }
+          this.statusTroca = false;
+        }
+      });
+      console.log(this.conteudoSteps);
+    },
     getStatus(status) {
       this.e1 = this.steps.findIndex((step) => step.nome == status);
     },
     nextStep(op) {
       if (
-        (this.steps[this.e1].nome == "EM TRANSPORTE" ||
+        (this.steps[this.e1].nome == "EM TRANSITO" ||
           this.steps[this.e1].nome == "CANCELAMENTO ACEITO") &&
-        op == "add" &&
-        this.perfilSelecionado[0].troca.length > 0
+        op == "add"
+        //  && this.perfilSelecionado[0].troca.length > 0
       ) {
-        this.editaParaTroca([
-          this.perfilSelecionado[0],
-          this.steps[this.e1].nome,
-        ]);
-        this.perfilSelecionado[0].troca.forEach((e) => {
-          this.$store.state.valeTroca.push(e.preco);
-        });
-        this.$http
-          .put(
-            `/cashback/${localStorage.getItem("usuarioId")}`,
-            this.$store.state.valeTroca
-          )
+        this.voltaEstoque = true;
+      }
+
+      if (this.steps[this.e1].nome == "TROCA SOLICITADA" && op == "add") {
+        this.statusTroca = true;
       }
       if (op == "add") {
         if (this.e1 != this.steps.length) {

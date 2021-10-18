@@ -286,7 +286,7 @@ export default {
           valor: "rejeitada",
         },
         {
-          nome: "EM TRANSPORTE",
+          nome: "EM TRANSITO",
           status: "troca",
         },
         {

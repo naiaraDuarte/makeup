@@ -36,7 +36,7 @@
           <v-row>
             <v-col lg="12">
               <p>Cupom de Troca</p>
-              <p>{{ $n(cupomTroca, "currency") }}</p>
+              <p>{{ $n(cashback, "currency") }}</p>
             </v-col>
           </v-row>
         </v-card>
@@ -46,6 +46,14 @@
 </template>
 <script>
 export default {
+  data() {
+    return {
+      cashback: 0,
+    };
+  },
+  mounted(){
+    this.getCashback();
+  },
   computed: {
     cupomTroca() {
       let valor = 0;
@@ -55,5 +63,15 @@ export default {
       return valor;
     },
   },
+  methods: {
+    getCashback(){
+      this.$http
+        .get(`/cashback/${localStorage.getItem("usuarioId")}`)
+        .then((res) => {
+          console.log("nÃO AGIENDO ")
+          this.cashback += res.data.cashback[0].valor;
+        });
+    }
+  }
 };
 </script>
