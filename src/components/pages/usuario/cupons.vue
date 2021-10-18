@@ -59,6 +59,7 @@ export default {
       let valor = 0;
       this.$store.state.valeTroca.forEach((cupom) => {
         valor += parseFloat(cupom);
+        console.log("vale troca", this.$store.state.valeTroca)
       });
       return valor;
     },

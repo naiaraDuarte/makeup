@@ -369,6 +369,7 @@ export default {
       }
     },
     verificaTroca(status){
+      console.log("status", status)
       let step = this.conteudoSteps.filter((val) => val.nome == status);
       if (step[0].status == "troca" || status == 'ENTREGA REALIZADA') return true;
       else return false;
@@ -403,13 +404,22 @@ export default {
       this.e1 = this.steps.findIndex((step) => step.nome == status);
       this.e1 += 1;
     },
-    efetuarCancelamento() {
-      this.editaStatus(
+    efetuarCancelamento() {      
+      let frm={
+        id: this.pedidoSelecionado.id,
+        status: "CANCELAMENTO SOLICITADO"
+      }
+      console.log("item.id", this.pedidoSelecionado.id)
+      this.$http
+        .put(`/pedido/status/${this.pedidoSelecionado.id}`, frm)
+        .then(() => {
+         this.editaStatus(
         [this.pedidoSelecionado.id, "CANCELAMENTO SOLICITADO"],
         null
       );
       this.exibeSnackBar("green", "Seu cancelamento foi pra análise");
       this.cancelarPedido = false;
+        });
     },
     trocarPedido(id) {
       this.pedidoSelecionado = this.$store.state.pedidos.filter(
