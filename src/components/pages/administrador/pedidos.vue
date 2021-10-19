@@ -255,6 +255,36 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-dialog v-model="statusCancelamento" max-width="450">
+      <v-card>
+        <v-card-title class="text-h5">
+          Qual o status da cancelamento?
+        </v-card-title>
+
+        <v-card-text> OBSERVAÇÃO DO USUÁRIO </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn
+            color="green darken-1"
+            text
+            @click="statusDoCancelamento(false)"
+          >
+            Rejeitar
+          </v-btn>
+
+          <v-btn
+            color="green darken-1"
+            text
+            @click="statusDoCancelamento(true)"
+          >
+            Aceitar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 <script>
@@ -275,6 +305,7 @@ export default {
       dialog: false,
       voltaEstoque: false,
       statusTroca: false,
+      statusCancelamento: false,
       estoque: false,
       headers: [
         {
@@ -325,18 +356,12 @@ export default {
           nome: "TROCA EFETUADA",
           status: "troca",
         },
-
         {
           nome: "CANCELAMENTO SOLICITADO",
           status: "cancelamento",
         },
         {
-          nome: "CANCELAMENTO REJEITADO",
-          status: "cancelamento",
-        },
-
-        {
-          nome: "CANCELAMENTO ACEITO",
+          nome: "CANCELAMENTO AUTORIZADO/REJEITADO",
           status: "cancelamento",
         },
         {
@@ -421,6 +446,10 @@ export default {
       if (this.steps[this.e1].nome == "TROCA EFETUADA") {
         this.finalizaTroca(this.estoque);
       }
+
+      if (this.steps[this.e1].nome == "CANCELAMENTO EFETUADO") {
+        this.finalizaCancelamento(this.estoque);
+      }
       this.$http
         .put(`/pedido/status/${id}`, {
           status: this.steps[this.e1].nome,
@@ -437,7 +466,7 @@ export default {
         (clientes) => clientes.acoes == id
       );
       this.steps = [];
-      this.resetConteudoSteps();
+      this.resetConteudoStepsTroca();
       await this.getDados(this.perfilSelecionado[0].status);
       await this.getStatus(this.perfilSelecionado[0].status);
       this.idSelecionado = id;
@@ -471,15 +500,16 @@ export default {
       this.voltaEstoque = false;
     },
     finalizaTroca(val) {
-      console.log("PERFIUKLKLK", this.perfilSelecionado[0]);
       var valorCashBack = 0;
       if (val == true) {
         this.perfilSelecionado[0].troca.forEach((item) => {
           let frm = {
-            quantidadeProduto: item.quantidade,
+            quantidadeProduto: item.qtde_comprada,
           };
           valorCashBack += item.custo;
-          this.$http.patch(`/produto/${item.id}`, frm);
+          this.$http.patch(`/produto/${item.id}`, frm).then(() => {
+            console.log("PERFIUKLKLK", this.perfilSelecionado[0]);
+          });
         });
       }
 
@@ -499,7 +529,31 @@ export default {
       this.desserts[index].troca = [];
       this.perfilSelecionado[0].troca = [];
     },
-    resetConteudoSteps() {
+    finalizaCancelamento(val) {
+      var valorCashBack = 0;
+      if (val == true) {
+        this.perfilSelecionado[0].carrinho.forEach((item) => {
+          let frm = {
+            quantidadeProduto: item.qtde_comprada,
+          };
+          valorCashBack += item.custo;
+          this.$http.patch(`/produto/${item.id}`, frm).then(() => {
+            console.log("PERFIUKLKLK", this.perfilSelecionado[0]);
+          });
+        });
+      }
+
+      this.$http
+        .get(`/cashback/${this.perfilSelecionado[0].cliente.id}`)
+        .then((res) => {
+          valorCashBack += res.data.cashback[0].valor;
+          console.log("valor", valorCashBack);
+          this.$http.put(`/cashback/${this.perfilSelecionado[0].cliente.id}`, {
+            valor: valorCashBack,
+          });
+        });
+    },
+    resetConteudoStepsTroca() {
       this.conteudoSteps.forEach((item, i) => {
         if (item.nome == "TROCA REJEITADA" || item.nome == "TROCA AUTORIZADA") {
           let reset = {
@@ -508,7 +562,20 @@ export default {
           };
           this.conteudoSteps.splice(i, 1, reset);
           this.steps = [];
-          this.getDados("TROCA REJEITADA");
+          this.getDados("TROCA AUTORIZADA/REJEITADA");
+        }
+      });
+    },
+    resetConteudoStepsCancelamento() {
+      this.conteudoSteps.forEach((item, i) => {
+        if (item.nome == "CANCELAMENTO ACEITO" || item.nome == "CANCELAMENTO REJEITADO") {
+          let reset = {
+            nome: "CANCELAMENTO AUTORIZADO/REJEITADO",
+            status: "troca",
+          };
+          this.conteudoSteps.splice(i, 1, reset);
+          this.steps = [];
+          this.getDados("CANCELAMENTO AUTORIZADO/REJEITADO");
         }
       });
     },
@@ -518,7 +585,6 @@ export default {
       else return false;
     },
     statusDaTroca(val) {
-      // let index = this.conteudoSteps.findIndex(val => val.nome == "TROCA AUTORIZADA/REJEITADA")
       this.conteudoSteps.forEach((item, i) => {
         if (item.nome == "TROCA AUTORIZADA/REJEITADA") {
           let autorizada = {
@@ -546,17 +612,42 @@ export default {
       });
       console.log(this.conteudoSteps);
     },
+    statusDoCancelamento(val) {
+      this.conteudoSteps.forEach((item, i) => {
+        if (item.nome == "CANCELAMENTO AUTORIZADO/REJEITADO") {
+          let autorizada = {
+            nome: "CANCELAMENTO ACEITO",
+            status: "cancelamento",
+          };
+          let rejeitada = {
+            nome: "CANCELAMENTO REJEITADO",
+            status: "cancelamento",
+          };
+          if (val == false) {
+            this.conteudoSteps.splice(i, 1, rejeitada);
+            this.steps = [];
+            this.getDados("CANCELAMENTO REJEITADO");
+          } else {
+            this.conteudoSteps.splice(i, 1, autorizada);
+            this.steps = [];
+            this.getDados("CANCELAMENTO AUTORIZADO");
+            this.e1++;
+          }
+          this.statusCancelamento = false;
+        }
+      });
+      console.log(this.conteudoSteps);
+    },
     getStatus(status) {
       this.e1 = this.steps.findIndex((step) => step.nome == status);
     },
     nextStep(op) {
-      if (
-        (this.steps[this.e1].nome == "EM TRANSITO" ||
-          this.steps[this.e1].nome == "CANCELAMENTO ACEITO") &&
-        op == "add"
-        //  && this.perfilSelecionado[0].troca.length > 0
-      ) {
+      if (this.steps[this.e1].nome == "EM TRANSITO" && op == "add") {
         this.voltaEstoque = true;
+      }
+
+      if (this.steps[this.e1].nome == "CANCELAMENTO SOLICITADO" && op == "add") {
+        this.statusCancelamento = true;
       }
 
       if (this.steps[this.e1].nome == "TROCA SOLICITADA" && op == "add") {
