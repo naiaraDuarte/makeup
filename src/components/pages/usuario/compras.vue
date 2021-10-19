@@ -245,6 +245,7 @@
                 name="input-7-4"
                 label="Motivo da troca:"
                 :counter="255"
+                id="observacao"
               ></v-textarea>
             </v-col>
           </v-row>

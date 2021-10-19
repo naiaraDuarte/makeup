@@ -106,7 +106,7 @@
                       label="Cupom"
                       :disabled="cupomUtilizado == true"
                       class="cupom-input"
-                      id="cupom"
+                      id="cupom2"
                       required
                     ></v-text-field>
                   </v-col>
