@@ -240,7 +240,7 @@
       <v-card>
         <v-card-title class="text-h5"> Qual o status da troca? </v-card-title>
 
-        <v-card-text> OBSERVAÇÃO DO USUÁRIO </v-card-text>
+        <v-card-text v-for="(item, i) in perfilSelecionado[0].carrinho" :key="i" > <p>{{item.observacao}}</p></v-card-text>
 
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -384,6 +384,7 @@ export default {
 
         this.desserts.push({
           pedido: id,
+          carrinho: carrinho,
           nome: cliente.nome,
           cpf: cliente.cpf,
           cliente: cliente,
