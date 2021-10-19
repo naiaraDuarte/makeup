@@ -240,7 +240,12 @@
       <v-card>
         <v-card-title class="text-h5"> Qual o status da troca? </v-card-title>
 
-        <v-card-text v-for="(item, i) in perfilSelecionado[0].carrinho" :key="i" > <p>{{item.observacao}}</p></v-card-text>
+        <v-card-text
+          v-for="(item, i) in perfilSelecionado[0].carrinho"
+          :key="i"
+        >
+          <p>{{ item.observacao }}</p></v-card-text
+        >
 
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -475,24 +480,13 @@ export default {
       return this.perfilSelecionado;
     },
     getDados(status) {
+      this.steps = [];
       let fluxo = this.conteudoSteps.filter((val) => val.nome == status);
       fluxo = fluxo[0].status;
-      let valor = "aceita";
+      // let valor = "aceita";
       this.conteudoSteps.forEach((e) => {
-        if (fluxo == "troca") {
-          if (e.status == fluxo) {
-            if (e.valor) {
-              if (e.valor == valor) {
-                this.steps.push(e);
-              }
-            } else {
-              this.steps.push(e);
-            }
-          }
-        } else {
-          if (e.status == fluxo) {
-            this.steps.push(e);
-          }
+        if (e.status == fluxo) {
+          this.steps.push(e);
         }
       });
     },
@@ -531,7 +525,7 @@ export default {
       this.perfilSelecionado[0].troca = [];
     },
     finalizaCancelamento(val) {
-      var valorCashBack = 0;
+      var valorCashBack = 0;console.log("VALLLLL", val)
       if (val == true) {
         this.perfilSelecionado[0].carrinho.forEach((item) => {
           let frm = {
@@ -569,10 +563,13 @@ export default {
     },
     resetConteudoStepsCancelamento() {
       this.conteudoSteps.forEach((item, i) => {
-        if (item.nome == "CANCELAMENTO ACEITO" || item.nome == "CANCELAMENTO REJEITADO") {
+        if (
+          item.nome == "CANCELAMENTO ACEITO" ||
+          item.nome == "CANCELAMENTO REJEITADO"
+        ) {
           let reset = {
             nome: "CANCELAMENTO AUTORIZADO/REJEITADO",
-            status: "troca",
+            status: "cancelamento",
           };
           this.conteudoSteps.splice(i, 1, reset);
           this.steps = [];
@@ -606,7 +603,7 @@ export default {
             this.conteudoSteps.splice(i, 1, autorizada);
             this.steps = [];
             this.getDados("TROCA AUTORIZADA");
-            this.e1++;
+            this.nextStep('add')
           }
           this.statusTroca = false;
         }
@@ -614,6 +611,7 @@ export default {
       console.log(this.conteudoSteps);
     },
     statusDoCancelamento(val) {
+      //Cancelamento nãoo mostra um trem
       this.conteudoSteps.forEach((item, i) => {
         if (item.nome == "CANCELAMENTO AUTORIZADO/REJEITADO") {
           let autorizada = {
@@ -631,8 +629,8 @@ export default {
           } else {
             this.conteudoSteps.splice(i, 1, autorizada);
             this.steps = [];
-            this.getDados("CANCELAMENTO AUTORIZADO");
-            this.e1++;
+            this.getDados("CANCELAMENTO ACEITO");
+            this.nextStep('add')
           }
           this.statusCancelamento = false;
         }
@@ -647,13 +645,35 @@ export default {
         this.voltaEstoque = true;
       }
 
-      if (this.steps[this.e1].nome == "CANCELAMENTO SOLICITADO" && op == "add") {
+      if (this.steps[this.e1].nome == "CANCELAMENTO ACEITO" && op == "add") {
+        this.voltaEstoque = true;
+      }
+
+      if (
+        this.steps[this.e1].nome == "CANCELAMENTO SOLICITADO" &&
+        op == "add"
+      ) {
         this.statusCancelamento = true;
       }
 
       if (this.steps[this.e1].nome == "TROCA SOLICITADA" && op == "add") {
         this.statusTroca = true;
       }
+
+      if (
+        this.steps[this.e1].nome == "CANCELAMENTO REJEITADO" ||
+        (this.steps[this.e1].nome == "CANCELAMENTO ACEITO" && op == "sub")
+      ) {
+        this.resetConteudoStepsCancelamento();
+      }
+      if (
+        this.steps[this.e1].nome == "TROCA REJEITADA" ||
+        (this.steps[this.e1].nome == "TROCA AUTORIZADA" && op == "sub")
+      ) {
+        this.resetConteudoStepsTroca();
+      }
+      //TROCA REJEITADA
+      //sub
       if (op == "add") {
         if (this.e1 != this.steps.length) {
           this.e1 += 1;
