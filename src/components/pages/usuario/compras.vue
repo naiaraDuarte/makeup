@@ -5,26 +5,27 @@
     <v-row class="mt-1 mx-3 my-3">
       <v-col lg="12" v-if="$store.state.pedidos.length > 0">
         <v-expansion-panels accordion>
-          <v-expansion-panel
-            v-for="(item, i) in $store.state.pedidos"
-            :key="i"
-          >
+          <v-expansion-panel v-for="(item, i) in $store.state.pedidos" :key="i">
             <v-expansion-panel-header
               v-if="item.cliente.cpf == $store.state.usuario[1].cpf"
               @click="getDados(item.status)"
             >
               <v-row class="centraliza">
-                <v-col lg="3">
+                <v-col lg="2">
                   <p>Pedido: {{ item.id }}</p>
                 </v-col>
-                <v-col lg="2">
-                  <p>Data pedido: {{ $moment(item.data, "YYYY-MM-DD").format("DD/MM") }}</p>
+                <v-col lg="3">
+                  <p>
+                    Data pedido:
+                    {{ $moment(item.data, "YYYY-MM-DD").format("DD/MM") }}
+                  </p>
                 </v-col>
-                <v-col lg="2">
-                  <p></p>
+                <v-col lg="3">
+                  <p>
+                    {{ item.status }}
+                  </p>
                 </v-col>
-                <v-col lg="2">
-                  <p></p>
+                <v-col lg="1">
                 </v-col>
                 <v-col lg="2">
                   <v-row>
@@ -34,11 +35,12 @@
                       >
                     </v-col>
                     <v-col lg="4">
-                      <v-btn elevation="0" icon v-if="verificaTroca(item.status) == true" @click="trocarPedido(item.id)"
-                        ><v-icon
-                          color="#b38b57"
-                          >mdi-sync</v-icon
-                        ></v-btn
+                      <v-btn
+                        elevation="0"
+                        icon
+                        v-if="verificaTroca(item.status) == true"
+                        @click="trocarPedido(item.id)"
+                        ><v-icon color="#b38b57">mdi-sync</v-icon></v-btn
                       >
                     </v-col>
                   </v-row>
@@ -189,23 +191,23 @@
                     </v-col>
                     <v-col lg="3" class="centraliza">
                       <p>
-                        {{
-                          $n(prod.custo, "currency")
-                        }}
+                        {{ $n(prod.custo, "currency") }}
                       </p>
                     </v-col>
                     <v-col lg="2" class="centraliza">
-                      <v-btn v-if="getStatusProduto(prod.status) == true"
+                      <v-btn
+                        v-if="getStatusProduto(prod.status) == true"
                         elevation="0"
                         icon
-                        @click="trocaComId(pedidoSelecionado, prod)"
+                        @click="efetuarTroca(pedidoSelecionado, prod)"
                         ><v-icon color="#b38b57">mdi-sync</v-icon></v-btn
                       >
-                       <v-btn v-else
+                      <v-btn
+                        v-else
                         elevation="0"
                         icon
                         :disabled="true"
-                        @click="trocaComId(pedidoSelecionado, prod)"
+                        @click="confirmarTroca = true"
                         ><v-icon color="#b38b57">mdi-sync</v-icon></v-btn
                       >
                     </v-col>
@@ -225,6 +227,42 @@
             id="fecharTroca"
           >
             Fechar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="confirmarTroca" max-width="450">
+      <v-card>
+        <v-card-title class="text-h5">
+          Vamos confirmar sua troca?
+        </v-card-title>
+        <v-card-text>
+          <v-row>
+            <v-col class="px-3">
+              <v-textarea
+                v-model="observacao"
+                outlined
+                name="input-7-4"
+                label="Motivo da troca:"
+                :counter="255"
+              ></v-textarea>
+            </v-col>
+          </v-row>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn color="blue darken-1" text @click="confirmarTroca = false">
+            Fechar
+          </v-btn>
+
+          <v-btn
+            color=" blue darken-1"
+            text
+            @click="trocaComId(pedidoSelecionado)"
+          >
+            Confirmar
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -253,6 +291,8 @@ export default {
       mensagem: "",
       snackbar: false,
       snackbarColor: "",
+      confirmarTroca: false,
+      prod: {},
       status: "CANCELAMENTO REJEITADO",
       conteudoSteps: [
         {
@@ -315,7 +355,7 @@ export default {
       steps: [],
     };
   },
-  mounted() {   
+  mounted() {
     this.$store.state.pedidos = [];
     this.$http
       .get(`/pedido/${localStorage.getItem("usuarioId")}`)
@@ -359,23 +399,29 @@ export default {
       this.cancelarPedido = !this.cancelarPedido;
       return this.pedidoSelecionado;
     },
-    getStatusProduto(status){
+    getStatusProduto(status) {
       let fluxo = this.conteudoSteps.filter((val) => val.nome == status);
       fluxo = fluxo[0].status;
       if (fluxo == "troca") {
         return false;
-      }else{
+      } else {
         return true;
       }
     },
-    verificaTroca(status){
-      console.log("status", status)
+    verificaTroca(status) {
+      console.log("status", status);
       let step = this.conteudoSteps.filter((val) => val.nome == status);
-      if (step[0].status == "troca" || status == 'ENTREGA REALIZADA') return true;
+      if (step[0].status == "troca" || status == "ENTREGA REALIZADA")
+        return true;
       else return false;
     },
+    efetuarTroca(item, prod) {
+      this.confirmarTroca = !this.confirmarTroca;
+      this.prod = prod;
+    },
+
     getDados(status) {
-      console.log("status", status)
+      console.log("status", status);
       let fluxo = this.conteudoSteps.filter((val) => val.nome == status);
       fluxo = fluxo[0].status;
       let valor = "aceita";
@@ -404,21 +450,21 @@ export default {
       this.e1 = this.steps.findIndex((step) => step.nome == status);
       this.e1 += 1;
     },
-    efetuarCancelamento() {      
-      let frm={
+    efetuarCancelamento() {
+      let frm = {
         id: this.pedidoSelecionado.id,
-        status: "CANCELAMENTO SOLICITADO"
-      }
-      console.log("item.id", this.pedidoSelecionado.id)
+        status: "CANCELAMENTO SOLICITADO",
+      };
+      console.log("item.id", this.pedidoSelecionado.id);
       this.$http
         .put(`/pedido/status/${this.pedidoSelecionado.id}`, frm)
         .then(() => {
-         this.editaStatus(
-        [this.pedidoSelecionado.id, "CANCELAMENTO SOLICITADO"],
-        null
-      );
-      this.exibeSnackBar("green", "Seu cancelamento foi pra análise");
-      this.cancelarPedido = false;
+          this.editaStatus(
+            [this.pedidoSelecionado.id, "CANCELAMENTO SOLICITADO"],
+            null
+          );
+          this.exibeSnackBar("green", "Seu cancelamento foi pra análise");
+          this.cancelarPedido = false;
         });
     },
     trocarPedido(id) {
@@ -429,20 +475,23 @@ export default {
       this.trocaModal = !this.trocaModal;
       return this.pedidoSelecionado;
     },
-    trocaComId(item, prod) {
+    trocaComId(item) {
+      let prod = this.prod;
+
       let frm = {
         produto: {
           id: prod.id,
+          observacao: this.observacao,
         },
         status: "TROCA SOLICITADA",
       };
-      this.$http
-        .put(`/pedido/troca/${item.id}`, frm)
-        .then(() => {
-          prod.status = "TROCA SOLICITADA";
-          this.editaStatus([item.id, "TROCA SOLICITADA", prod.id]);
-          this.exibeSnackBar("green", "Sua troca foi para análise");
-        });
+      console.log("dentro função", frm);
+      this.$http.put(`/pedido/troca/${item.id}`, frm).then(() => {
+        prod.status = "TROCA SOLICITADA";
+        this.editaStatus([item.id, "TROCA SOLICITADA", prod.id]);
+        this.exibeSnackBar("green", "Sua troca foi para análise");
+        this.confirmarTroca = !this.confirmarTroca;
+      });
     },
     getImgUrl(pic) {
       return require("../../../assets/images/" + pic);
