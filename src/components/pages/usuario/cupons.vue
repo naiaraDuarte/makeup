@@ -1,42 +1,36 @@
 <template>
   <v-container fluid>
-    <h1>Cupons do cliente </h1>
-    <!-- {{ $store.state.valeTroca }} -->
+    <h1>Cupons do cliente</h1>
     <v-row class="mt-3">
       <v-col lg="3" v-for="(item, i) in this.$store.state.cupons" :key="i">
-        <v-card elevation="0" class="card-cartao p-2">
+        <v-card elevation="0" class="card-cartao p-2 cashback">
           <v-row>
-            <v-col lg="8">
-              <v-row>
-                <v-col lg="12" color="blue">
-                  <span>
-                    <b>{{ item.cod }}</b>
-                  </span>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col lg="12" color="red">
-                  <span
-                    ><b>{{ item.tipo }}</b></span
-                  >
-                </v-col>
-              </v-row>
-            </v-col>
-            <v-col lg="4">
-              <span
-                ><b>{{ item.porcen }}</b></span
-              >
-            </v-col>
+              <v-col lg="8" class="centraliza flex-column">
+                <span>
+                  <b>{{ item.cod }}</b>
+                </span>
+                <span
+                  >{{ item.tipo }}</span
+                >
+              </v-col>
+              <v-divider vertical></v-divider>
+              <v-col lg="4" class="centraliza">
+                <span class="valor-cupom"
+                  >{{ item.porcen }} %</span
+                >
+              </v-col>
           </v-row>
         </v-card>
       </v-col>
-      <v-divider vertical></v-divider>
       <v-col lg="3">
-        <v-card elevation="0" class="card-cartao p-2">
+        <v-card elevation="0" class="card-cartao p-2 cashback">
           <v-row>
-            <v-col lg="12">
-              <p>Cupom de Troca</p>
-              <p>{{ $n(cashback, "currency") }}</p>
+            <v-col lg="6" class="centraliza">
+              <h4>Cashback</h4>
+            </v-col>
+            <v-divider vertical></v-divider>
+            <v-col lg="6" class="centraliza">
+              <p class="valor">{{ $n(cashback, "currency") }}</p>
             </v-col>
           </v-row>
         </v-card>
@@ -51,28 +45,53 @@ export default {
       cashback: 0,
     };
   },
-  mounted(){
+  mounted() {
     this.getCashback();
+    this.getCupom();
   },
   computed: {
     cupomTroca() {
       let valor = 0;
       this.$store.state.valeTroca.forEach((cupom) => {
         valor += parseFloat(cupom);
-        console.log("vale troca", this.$store.state.valeTroca)
+        console.log("vale troca", this.$store.state.valeTroca);
       });
       return valor;
     },
   },
   methods: {
-    getCashback(){
+    getCashback() {
       this.$http
         .get(`/cashback/${localStorage.getItem("usuarioId")}`)
         .then((res) => {
-          console.log("nÃO AGIENDO ")
           this.cashback += res.data.cashback[0].valor;
         });
-    }
-  }
+    },
+    getCupom() {
+      this.$http.get(`/cupom/`).then((res) => {
+        this.$store.state.cupons = res.data.dados;
+      });
+    },
+  },
 };
 </script>
+<style>
+.cashback {
+  padding: 5%;
+}
+.valor {
+  /* font-weight: 700; */
+  color: green;
+}
+
+.valor-cupom{
+  font-weight: 500;
+    font-size: 23px;
+    color: green;
+}
+
+.flex-column{
+  flex-direction: column;
+  padding: 6%;
+}
+</style>

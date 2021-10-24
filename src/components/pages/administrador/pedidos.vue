@@ -390,13 +390,18 @@ export default {
         let data = ped.pedido.data_cadastro;
 
         let troca = [];
-        if (this.verificaTroca(status) == true) {
-          console.log("MERDA", this.carrinho);
+        if (this.verificaTroca(status) == true && status != "TROCA EFETUADA") {
           carrinho.forEach((item) => {
             if (this.verificaTroca(item.status) == true) {
               troca.push(item);
-            }
+            } 
           });
+        } else if (
+          this.verificaTroca(status) == true &&
+          status != "CANCELAMENTO EFETUADO"
+        ) {
+              troca = carrinho;
+              console.log("entrou nessa merda", troca)
         }
 
         this.$store.state.pedidos.push({
@@ -426,6 +431,8 @@ export default {
           endereco: endereco,
           acoes: id,
         });
+
+        console.log("AAAA", this.desserts)
       });
     });
   },
@@ -525,7 +532,8 @@ export default {
       this.perfilSelecionado[0].troca = [];
     },
     finalizaCancelamento(val) {
-      var valorCashBack = 0;console.log("VALLLLL", val)
+      var valorCashBack = 0;
+      console.log("VALLLLL", val);
       if (val == true) {
         this.perfilSelecionado[0].carrinho.forEach((item) => {
           let frm = {
@@ -582,6 +590,11 @@ export default {
       if (step[0].status == "troca") return true;
       else return false;
     },
+    verificaCancelamento(status) {
+      let step = this.conteudoSteps.filter((val) => val.nome == status);
+      if (step[0].status == "cancelamento") return true;
+      else return false;
+    },
     statusDaTroca(val) {
       this.conteudoSteps.forEach((item, i) => {
         if (item.nome == "TROCA AUTORIZADA/REJEITADA") {
@@ -603,7 +616,7 @@ export default {
             this.conteudoSteps.splice(i, 1, autorizada);
             this.steps = [];
             this.getDados("TROCA AUTORIZADA");
-            this.nextStep('add')
+            this.nextStep("add");
           }
           this.statusTroca = false;
         }
@@ -630,7 +643,7 @@ export default {
             this.conteudoSteps.splice(i, 1, autorizada);
             this.steps = [];
             this.getDados("CANCELAMENTO ACEITO");
-            this.nextStep('add')
+            this.nextStep("add");
           }
           this.statusCancelamento = false;
         }

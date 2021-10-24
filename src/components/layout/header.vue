@@ -33,7 +33,7 @@
                 class="white--text btnLink"
                 @click="$router.push(`/usuario`)"
                 target="_blank"
-                id= "entrar"
+                id="entrar"
                 text
               >
                 <v-icon color="#b38b57" class="pr-3"
@@ -50,7 +50,7 @@
                 class="white--text btnLink"
                 @click="$router.push(`/usuario`)"
                 target="_blank"
-                id= "minhaConta"
+                id="minhaConta"
                 text
                 ><v-icon color="#b38b57" class="pr-3"
                   >mdi-account-circle-outline</v-icon
@@ -76,8 +76,15 @@
                 id="carrinho"
                 text
               >
-                <v-icon color="#b38b57" class="pr-3">mdi-cart-variant</v-icon
-                >Carrinho
+                <v-badge
+                  :content="messages"
+                  :value="messages"
+                  color="#b38b57"
+                  overlap
+                >
+                  <v-icon color="#b38b57" class="pr-3">mdi-cart-variant</v-icon>
+                </v-badge>
+                <span :class="$store.state.carrinho.length > 0 ? 'carrinhoNavBar' : ''"> Carrinho </span>
               </v-btn>
             </v-col>
           </v-row>
@@ -91,12 +98,18 @@ export default {
   data() {
     return {
       textField: "",
+      show: true,
     };
   },
-  watch: {
-    textField(newVal){
-      this.$store.state.busca = newVal;
+  computed: {
+    messages(){
+      return this.$store.state.carrinho.length;
     }
+  },
+  watch: {
+    textField(newVal) {
+      this.$store.state.busca = newVal;
+    },
   },
 };
 </script>
@@ -117,6 +130,9 @@ export default {
 }
 .v-btn.v-size--default {
   font-size: 0.999rem;
+}
+.carrinhoNavBar {
+  padding-left: 10px;
 }
 @media (min-width: 1264px) {
   .col-lg-6 {

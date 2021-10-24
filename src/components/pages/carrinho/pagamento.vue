@@ -176,8 +176,17 @@
                       ]"
                       @click="enderecoEntrega = item.id"
                     >
-                      <v-row>
-                        <v-col lg="12" class="centraliza">
+                      <div class="endereco">
+                        <div class="nome-endereco">
+                          <h4>{{ item.nome }}</h4>
+                        </div>
+                        <div class="cep-endereco">
+                          <span>{{ item.cep }}</span>
+                          <span>N° {{ item.numero }}</span>
+                        </div>
+                      </div>
+                      <!-- <v-row>
+                        <v-col lg="12" class="centraliza p-0">
                           <h4>{{ item.nome }}</h4>
                         </v-col>
                         <v-col lg="6" class="p-0 centraliza">
@@ -186,7 +195,7 @@
                         <v-col lg="6" class="p-0 centraliza">
                           <p>N° {{ item.numero }}</p>
                         </v-col>
-                      </v-row>
+                      </v-row> -->
                     </v-card>
                   </v-col>
                 </v-row>
@@ -197,7 +206,6 @@
         <v-col lg="1"></v-col>
         <v-divider vertical></v-divider>
         <v-col lg="5" class="pl-5">
-          {{ habilitaBotao }}
           <resumoPedido
             :frete="frete"
             :cashback="cashback.valor"
@@ -266,9 +274,9 @@ export default {
         this.cashback = res.data.cashback[0];
       });
 
-      if (Object.keys(this.$store.state.freteCalculado).length > 0) {
-        this.enderecoEntrega = this.$store.state.freteCalculado.id;
-      }
+    if (Object.keys(this.$store.state.freteCalculado).length > 0) {
+      this.enderecoEntrega = this.$store.state.freteCalculado.id;
+    }
   },
   watch: {
     total(newVal, oldVal) {
@@ -442,21 +450,21 @@ export default {
         return false;
       }
       this.cupom = this.cupom.toUpperCase();
-      this.$http.get(`/cupom/${this.cupom}`).then((res) => {
-        console.log(res);
-        let qtd = res.data.cupom[0].quant - 1;
-        let frm = {
-          id: res.data.cupom[0].id,
-          cod: res.data.cupom[0].cod,
-          porcen: res.data.cupom[0].porcen,
-          tipo: res.data.cupom[0].tipo,
-          quant: qtd,
-        };
-        this.$store.state.cupomUtilizado = frm;
+      this.$http
+        .get(`/cupom/${this.cupom}`)
+        .then((res) => {
+          console.log(res);
+          let qtd = res.data.cupom[0].quant - 1;
+          let frm = {
+            id: res.data.cupom[0].id,
+            cod: res.data.cupom[0].cod,
+            porcen: res.data.cupom[0].porcen,
+            tipo: res.data.cupom[0].tipo,
+            quant: qtd,
+          };
+          this.$store.state.cupomUtilizado = frm;
 
-        this.$http
-          .patch(`/cupom/${frm.id}`, { quant: qtd })
-          .then(() => {
+          this.$http.patch(`/cupom/${frm.id}`, { quant: qtd }).then(() => {
             this.cupomUtilizado = true;
             this.exibeSnackBar("green", "Cupom utilizado");
           });
@@ -464,7 +472,7 @@ export default {
           return true;
         })
         .catch((e) => {
-          console.log("ee",e)
+          console.log("ee", e);
           this.exibeSnackBar("red", "Cupom inexistente ou esgotado", e);
           return false;
         });
@@ -539,5 +547,19 @@ export default {
 .alinhamentoTitulo {
   display: flex;
   justify-content: space-between;
+}
+.endereco {
+  padding: 2%;
+}
+
+.nome-endereco {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 4%;
+}
+
+.cep-endereco {
+  display: flex;
+  justify-content: space-around;
 }
 </style>
