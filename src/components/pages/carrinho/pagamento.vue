@@ -206,6 +206,7 @@
         <v-col lg="1"></v-col>
         <v-divider vertical></v-divider>
         <v-col lg="5" class="pl-5">
+         
           <resumoPedido
             :frete="frete"
             :cashback="cashback.valor"
