@@ -71,7 +71,7 @@
             </v-list-item-icon>
             <v-list-item-title class="white--text">Cupons</v-list-item-title>
           </v-list-item>
-           <v-list-item link @click="troca(4)">
+          <v-list-item link @click="troca(4)">
             <v-list-item-icon>
               <v-icon class="title">mdi-ticket-percent-outline</v-icon>
             </v-list-item-icon>
@@ -113,6 +113,11 @@ export default {
   methods: {
     troca(val) {
       if (val == 5) {
+        // this.$store.state.enderecos = [];
+        // this.$store.state.usuario.splice(1, 1);
+        // this.$store.state.cadastro = false;
+        // this.$router.push(`/`);
+        localStorage.setItem("usuarioId", "");
         this.$store.state.perfil = "usuario";
         this.$store.state.trocaDeComponentesAdm = 0;
         this.$router.push(`/`);

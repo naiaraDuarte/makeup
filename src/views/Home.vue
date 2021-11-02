@@ -117,7 +117,8 @@
     </v-speed-dial>
 
     <v-bottom-sheet v-model="sheet" v-if="sheet">
-      <v-card
+      <carrinho-flutuante :total="total"></carrinho-flutuante>
+      <!-- <v-card
         class="carrinho text-center"
         :class="[$store.state.carrinho.length == 0 ? 'centraliza' : '']"
         height="500"
@@ -163,11 +164,6 @@
                         </v-col>
                         <v-col col="4">
                           <p>{{ item.qtd }}</p>
-                          <!-- <v-text-field
-                        v-model="qtdProdutos"
-                        solo
-                        dense
-                      ></v-text-field> -->
                         </v-col>
                         <v-col col="1">
                           <v-btn
@@ -209,17 +205,19 @@
             </v-btn>
           </v-col>
         </v-row>
-      </v-card>
+      </v-card> -->
     </v-bottom-sheet>
   </div>
 </template>
 
 <script>
 import jsFunctions from "../assets/js/jsFunctions";
+import carrinhoFlutuante from '../components/ui/carrinhoFlutuante.vue';
 import { mapMutations } from "vuex";
 
 export default {
   name: "Home",
+  components:  { carrinhoFlutuante },
   data() {
     return {
       itens: [],
@@ -294,7 +292,6 @@ export default {
       return false;
     }
   },
-  components: {},
   created() {
     this.$http.get(`/produto/`).then((res) => {
       res.data.dados.forEach((prod) => {

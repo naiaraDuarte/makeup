@@ -89,9 +89,7 @@ export default {
         this.mensage = "";
         return true;
       }
-      this.snackbarColor = "red";
-      this.mensagem = "Campos incompletos";
-      this.snackbar = true;
+      this.exibeSnack("red", "Campos incompletos")
       return false;
     },
     entrar() {
@@ -102,12 +100,11 @@ export default {
             usuario.email == this.email && usuario.senha == this.senha
         );
         if (usuario[0]) {
-          if (usuario[0].perfil == "adm") {
+          if (usuario[0].perfil == "adm" || localStorage.getItem("usuarioId") == "adm") {
+            localStorage.setItem("usuarioId", "adm");
             this.$router.push("/adm");
           } else {
-            this.snackbarColor = "red";
-            this.mensagem = "Login ou senha não conferem";
-            this.snackbar = true;
+            this.exibeSnack("red", "Login ou senha não conferem")
           }
         } else if (usuario[0] == null) {
           let frm = {
@@ -131,14 +128,10 @@ export default {
               }
             })
             .catch(() => {
-              this.snackbarColor = "red";
-              this.mensagem = "Login ou senha não conferem";
-              this.snackbar = true;
+              this.exibeSnack("red", "Login ou senha não conferem")
             });
         } else {
-          this.snackbarColor = "red";
-          this.mensagem = "Login ou senha não conferem";
-          this.snackbar = true;
+          this.exibeSnack("red", "Login ou senha não conferem")
         }
       }
     },

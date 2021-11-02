@@ -11,7 +11,7 @@ export default new Vuex.Store({
         usuario: [{
             perfil: "adm",
             email: "adm@gmail.com",
-            senha: "123456"
+            senha: "1234"
         }],
         enderecos: [],
         countId: 0,

@@ -69,23 +69,49 @@
               </v-btn>
             </v-col>
             <v-col lg="4">
-              <v-btn
-                class="white--text btnLink"
-                @click="$router.push(`/usuario`)"
-                target="_blank"
-                id="carrinho"
-                text
+              <v-menu
+                v-model="menu"
+                :close-on-content-click="false"
+                :nudge-width="200"
+                open-on-hover
+                bottom
+                offset-y
               >
-                <v-badge
-                  :content="messages"
-                  :value="messages"
-                  color="#b38b57"
-                  overlap
-                >
-                  <v-icon color="#b38b57" class="pr-3">mdi-cart-variant</v-icon>
-                </v-badge>
-                <span :class="$store.state.carrinho.length > 0 ? 'carrinhoNavBar' : ''"> Carrinho </span>
-              </v-btn>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    class="white--text btnLink"
+                    @click="$router.push(`/usuario`)"
+                    target="_blank"
+                    id="carrinho"
+                    v-bind="attrs"
+                    v-on="on"
+                    text
+                  >
+                    <v-badge
+                      :content="messages"
+                      :value="messages"
+                      color="#b38b57"
+                      overlap
+                    >
+                      <v-icon color="#b38b57" class="pr-3"
+                        >mdi-cart-variant</v-icon
+                      >
+                    </v-badge>
+                    <span
+                      :class="
+                        $store.state.carrinho.length > 0 ? 'carrinhoNavBar' : ''
+                      "
+                    >
+                      Carrinho
+                    </span>
+                  </v-btn>
+                </template>
+
+                <!-- <v-card>
+                  <h2>AAAAAAAA</h2> -->
+                    <!-- <carrinho-flutuante></carrinho-flutuante> -->
+                <!-- </v-card> -->
+              </v-menu>
             </v-col>
           </v-row>
         </v-col>
@@ -94,17 +120,23 @@
   </div>
 </template>
 <script>
+// import carrinhoFlutuante from "../ui/carrinhoFlutuante.vue";
 export default {
+  // components: { carrinhoFlutuante },
   data() {
     return {
       textField: "",
       show: true,
+      fav: true,
+      menu: false,
+      message: false,
+      hints: true,
     };
   },
   computed: {
-    messages(){
+    messages() {
       return this.$store.state.carrinho.length;
-    }
+    },
   },
   watch: {
     textField(newVal) {

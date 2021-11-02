@@ -30,8 +30,15 @@ export default {
     };
   },
   async mounted() {
+    if (this.verificaId) {
+      if (localStorage.getItem("usuarioId") == "adm") {
+        this.$store.state.perfil = "adm";
+        return ;
+      }
+      await this.usuario()
+    }
     this.$store.state.perfil = "usuario";
-    await this.usuario();
+    
   },
   computed: {
     verificaId() {

@@ -3,62 +3,58 @@ import { Line } from "vue-chartjs";
 
 export default {
   extends: Line,
+  props: {
+    area: Object,
+    altera: Number,
+  },
   data() {
     return {
       gradient: null,
-      gradient2: null
+      gradient2: null,
     };
   },
   mounted() {
-    this.gradient = this.$refs.canvas
-      .getContext("2d")
-      .createLinearGradient(0, 0, 0, 450);
-    this.gradient2 = this.$refs.canvas
-      .getContext("2d")
-      .createLinearGradient(0, 0, 0, 450);
+    this.gerarGrafico();
+    console.log("AREAAAAAA", this.area);
+  },
+  watch: {
+    altera() {
+      this.gerarGrafico();
+      console.log("WATCH", this.area);
+    },
+  },
+  methods: {
+    gerar_cor(opacidade = 1) {
+      let r = parseInt(Math.random() * 255);
 
-    this.gradient.addColorStop(0, "rgba(179, 139, 87, 0.5)");
-    this.gradient.addColorStop(0.5, "rgba(179, 139, 87, 0.50)");
-    this.gradient.addColorStop(1, "rgba(179, 139, 87, 0)");
+      let g = parseInt(Math.random() * 255);
 
-    this.gradient2.addColorStop(0, "rgba(0, 231, 255, 0.9)");
-    this.gradient2.addColorStop(0.5, "rgba(179, 139, 87, 0.25)");
-    this.gradient2.addColorStop(1, "rgba(179, 139, 87, 0)");
+      let b = parseInt(Math.random() * 255);
 
-    this.renderChart(
-      {
-        labels: [
-          "January",
-          "February",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July"
-        ],
-        datasets: [
-          {
-            label: "Data One",
-            borderColor: "#b38b57",
-            pointBackgroundColor: "white",
-            borderWidth: 1,
-            pointBorderColor: "white",
-            backgroundColor: this.gradient,
-            data: [40, 39, 10, 40, 39, 80, 40]
-          },
-          {
-            label: "Data Two",
-            borderColor: "#000000",
-            pointBackgroundColor: "white",
-            pointBorderColor: "white",
-            borderWidth: 1,
-            backgroundColor: this.gradient2,
-            data: [60, 55, 32, 10, 2, 12, 53]
-          }
-        ]
-      },
-      { responsive: true, maintainAspectRatio: false }
-    );
-  }
+      return `rgba(${r}, ${g}, ${b}, ${opacidade})`;
+    },
+    gerarGrafico() {
+      this.renderChart(this.area, {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          yAxes: [
+            {
+              gridLines: {
+                lineWidth: 0,
+              },
+            },
+          ],
+          xAxes: [
+            {
+              gridLines: {
+                lineWidth: 0,
+              },
+            },
+          ],
+        },
+      });
+    },
+  },
 };
 </script>
