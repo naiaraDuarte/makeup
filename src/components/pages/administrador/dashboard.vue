@@ -9,8 +9,8 @@
           </p>
         </v-col>
       </v-row>
-      <v-row>
-        <v-col lg="6">
+      <v-row class="centraliza">
+        <v-col lg="4">
           <v-dialog ref="dialog" v-model="modal" persistent width="290px">
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
@@ -36,9 +36,8 @@
               <v-btn text color="primary" @click="pesquisar()"> OK </v-btn>
             </v-date-picker>
           </v-dialog>
-          model: {{ dates }}
         </v-col>
-        <v-col lg="6">
+        <v-col lg="4">
           <v-radio-group v-model="opcao" row>
             <v-radio label="Produto" :value="0"></v-radio>
             <v-radio label="Categoria" :value="1"></v-radio>
@@ -47,7 +46,7 @@
       </v-row>
       <v-row>
         <v-col lg="12">
-          <AreaChart :area="area" :altera="altera" />
+          <AreaChart :area="area" :altera="altera" @canva="canvas = $event" />
         </v-col>
         <!-- <v-col lg="12">
           <LineChart />
@@ -74,11 +73,13 @@
 
 <script>
 // import PieChart from "../../ui/PieChart.vue";
+import { Line } from "vue-chartjs";
 import AreaChart from "../../ui/AreaChart.vue";
 // import LineChart from "../../ui/LineChart.vue";
 // import BarChart from "../../ui/BarChart.vue";
 
 export default {
+  extends: Line,
   components: {
     // PieChart,
     AreaChart,
@@ -96,31 +97,28 @@ export default {
       datasets: [],
       area: {},
       altera: 0,
+      canvas: "",
       opcao: 0,
       snackbarColor: "",
-      mensage: "",
+      mensagem: "",
       snackbar: false,
     };
   },
   mounted() {
-    this.$http.get(`/grafico/`).then(async (res) => {
-      await this.preencheData(res.data.dados);
-
-      this.area = {
-        labels: this.mes,
-        datasets: this.datasets,
-      };
-      console.log("mounted", this.area);
-      this.altera = parseInt(Math.random() * 255);
-    });
+    this.pesquisar();
   },
   computed: {
     dateRangeText() {
       this.organizaDatas();
-      return this.dates.join(" ~ ");
+      return this.formatarDatas.join(" ~ ");
     },
     dataMax() {
       return this.$moment().format("YYYY-MM-DD");
+    },
+    formatarDatas() {
+      return this.dates.map((date) => {
+        return this.$moment(date, "YYYY-MM-DD").format("DD-MM-YYYY");
+      });
     },
   },
   watch: {
@@ -135,25 +133,37 @@ export default {
     pesquisar() {
       this.$refs.dialog.save(this.dates);
       let frm = {};
-      if (this.dates.length == 0) {
-        this.exibeSnack("red", "Login ou senha não conferem");
-        return null;
-      }
-      if (this.dates.length == 1) {
-        frm = {
-          dataInicial: this.dates[0],
-          dataFinal: this.dates[0],
-          status: this.opcao,
-        };
-      } else {
-        frm = {
-          dataInicial: this.dates[0],
-          dataFinal: this.dates[1],
-          status: this.opcao,
-        };
+      let url = '/grafico/data';
+
+      switch (this.dates.length) {
+        case 0:
+          frm = {
+            dataInicial: null,
+            dataFinal: null,
+            status: this.opcao,
+          };
+          url = '/grafico/';
+          console.log(url)
+          break;
+        case 1:
+          frm = {
+            dataInicial: this.dates[0],
+            dataFinal: this.dates[0],
+            status: this.opcao,
+          };
+          console.log(url)
+          break;
+        case 2:
+          frm = {
+            dataInicial: this.dates[0],
+            dataFinal: this.dates[1],
+            status: this.opcao,
+          };
+          console.log(url)
       }
 
-      this.$http.post(`/grafico/`, frm).then(async (res) => {
+      this.$http.post(`${url}`, frm).then(async (res) => {
+        console.log("DATsfsd", res.data.dados);
         await this.preencheData(res.data.dados);
 
         this.area = {
@@ -166,10 +176,12 @@ export default {
     },
     preencheData(data) {
       this.datasets = [];
+      this.mes = [];
       data.forEach((e) => {
         if (e.total != null) {
           let index = this.datasets.findIndex((d) => d.id == e.id);
           let cor = this.gerar_cor();
+
           if (index == -1) {
             this.datasets.push({
               id: e.id,
@@ -182,8 +194,8 @@ export default {
           } else {
             this.datasets[index].data.push(e.total);
           }
-          if (this.mes.findIndex((m) => e.mes_completo == m) == -1) {
-            this.mes.push(e.mes_completo);
+          if (this.mes.findIndex((m) => e.completo == m) == -1) {
+            this.mes.push(e.completo);
           }
         }
       });
