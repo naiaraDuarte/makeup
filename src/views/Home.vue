@@ -79,14 +79,14 @@
         </v-col>
       </v-row>
     </v-container>
-    <v-snackbar v-model="snackbar" :color="snackbarColor">
+    <!-- <v-snackbar v-model="snackbar" :color="snackbarColor">
       <h4 style="font-weight: 100">{{ mensagem }}</h4>
       <template v-slot:action="{ attrs }">
         <v-btn text icon v-bind="attrs" @click="snackbar = false">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </template>
-    </v-snackbar>
+    </v-snackbar> -->
     <v-speed-dial
       id="create"
       width="800"

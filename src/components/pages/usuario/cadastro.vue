@@ -479,7 +479,7 @@ export default {
       image: null,
       date: "",
       forca: 0,
-      tipoTelefone: "",
+      tipoTelefone: "",      
       itensTipoTelefone: ["Celular", "Fixo"],
 
       //Alterações

@@ -552,7 +552,7 @@ export default {
       this.custoProduto = produto.custo;
       this.nomeProduto = produto.nome;
       this.descProduto = produto.descricao;
-      this.categoriaProduto = produto.fk_categoria;
+      this.categoriaProduto = this.itensCategoria[(produto.fk_categoria) - 1].nome;
       this.tipoProduto = produto.tipo;
       this.pesoProduto = produto.peso;
       this.alturaProduto = produto.altura;
