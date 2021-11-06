@@ -378,6 +378,7 @@ export default {
   },
   mounted() {
     this.$http.get(`/pedido/`).then((res) => {
+      console.log("CVFDVF", res.data.todosOsPedidos);
       res.data.todosOsPedidos.forEach((ped) => {
         let cliente = ped.pedido.cliente[0];
         let carrinho = ped.pedido.produtos;
@@ -394,13 +395,13 @@ export default {
           carrinho.forEach((item) => {
             if (this.verificaTroca(item.status) == true) {
               troca.push(item);
-            } 
+            }
           });
         } else if (
           this.verificaTroca(status) == true &&
           status != "CANCELAMENTO EFETUADO"
         ) {
-              troca = carrinho;
+          troca = carrinho;
         }
 
         this.$store.state.pedidos.push({
@@ -431,6 +432,8 @@ export default {
           acoes: id,
         });
       });
+
+      console.log(this.desserts);
     });
   },
   watch: {
@@ -506,8 +509,7 @@ export default {
             quantidadeProduto: item.qtde_comprada,
           };
           valorCashBack += item.custo;
-          this.$http.patch(`/produto/${item.id}`, frm).then(() => {
-          });
+          this.$http.patch(`/produto/${item.id}`, frm).then(() => {});
         });
       }
 
@@ -534,8 +536,7 @@ export default {
             quantidadeProduto: item.qtde_comprada,
           };
           valorCashBack += item.custo;
-          this.$http.patch(`/produto/${item.id}`, frm).then(() => {
-          });
+          this.$http.patch(`/produto/${item.id}`, frm).then(() => {});
         });
       }
 
@@ -579,12 +580,40 @@ export default {
     },
     verificaTroca(status) {
       let step = this.conteudoSteps.filter((val) => val.nome == status);
-      if (step[0].status == "troca") return true;
+      let stepsRetirados = [
+        {
+          nome: "TROCA AUTORIZADA",
+          status: "troca",
+          valor: "aceita",
+        },
+        {
+          nome: "TROCA REJEITADA",
+          status: "troca",
+          valor: "rejeitada",
+        },
+      ];
+
+      let stepR = stepsRetirados.filter((val) => val.nome == status);
+      if (step.length > 0 && step[0].status == "troca") return true;
+      else if(stepR.length > 0 && stepR[0].status == "troca") return true;
       else return false;
     },
     verificaCancelamento(status) {
       let step = this.conteudoSteps.filter((val) => val.nome == status);
+      let stepsRetirados = [
+        {
+          nome: "CANCELAMENTO ACEITO",
+          status: "cancelamento",
+        },
+        {
+          nome: "CANCELAMENTO REJEITADO",
+          status: "cancelamento",
+        },
+      ];
+
+      let stepR = stepsRetirados.filter((val) => val.nome == status);
       if (step[0].status == "cancelamento") return true;
+      else if(stepR[0].status == "cancelamento") return true;
       else return false;
     },
     statusDaTroca(val) {
