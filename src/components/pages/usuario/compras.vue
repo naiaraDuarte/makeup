@@ -6,7 +6,8 @@
       <v-col lg="12" v-if="$store.state.pedidos.length > 0">
         <v-expansion-panels accordion>
           <v-expansion-panel v-for="(item, i) in $store.state.pedidos" :key="i">
-            <v-expansion-panel-header
+            <v-expansion-panel-header 
+              :class="getColor(item.status)"
               v-if="item.cliente.cpf == $store.state.usuario[1].cpf"
               @click="getDados(item.status)"
             >
@@ -20,12 +21,14 @@
                     {{ $moment(item.data, "YYYY-MM-DD").format("DD/MM") }}
                   </p>
                 </v-col>
-                <v-col lg="3">
+                <v-col lg="4">
                   <p>
                     {{ item.status }}
                   </p>
                 </v-col>
-                <v-col lg="1"> </v-col>
+                <!-- <v-col lg="1">
+                  <v-badge :color="getColor(item.status)" bordered></v-badge>
+                </v-col> -->
                 <v-col lg="2">
                   <v-row>
                     <v-col lg="4">
@@ -47,50 +50,55 @@
               </v-row>
             </v-expansion-panel-header>
             <v-expansion-panel-content>
-              <v-row>
+              <!-- <v-row>
                 <v-col lg="3">
                   <p>Produtos:</p>
                 </v-col>
-              </v-row>
+              </v-row> -->
               <v-row
                 v-for="(prod, i) in getItems(item.carrinho)"
                 :key="i"
-                class="alinhamentoProd"
+                class="alinhamentoProd centraliza"
               >
-                <v-col lg="1">
+                <v-col lg="2">
                   <v-img
                     height="80"
                     width="80"
                     :src="getImgUrl(prod.imagem)"
                   ></v-img>
                 </v-col>
-                
-                <v-col lg="2">
-                  <p>{{ prod.nome }}</p>
+
+                <v-col lg="3" class="centraliza">
+                  <span>{{ prod.nome }}</span>
                 </v-col>
                 <v-col lg="2">
-                  <p> Quant: {{ prod.quantity }}</p>
+                  <p>Quant: {{ prod.quantity }}</p>
                 </v-col>
                 <v-col lg="2">
                   <p>{{ $n(prod.custo, "currency") }}</p>
                 </v-col>
-                
                 <v-col lg="2">
-                  <p>
-                    <v-rating
-                      :value="4.5"
-                      color="#deb887"
-                      dense
-                      half-increments
-                      readonly
-                      size="14"
-                    ></v-rating>
-                  </p>
-                </v-col>
-                <v-col lg="2">
-                  <v-btn class="btnFilter ampliarBtn" elevation="0"
-                    >Avaliar</v-btn
-                  >
+                  <!-- <v-row class="centraliza p-0">
+                    <v-col class="centraliza p-0">
+                      <p>
+                        <v-rating
+                          :value="4.5"
+                          color="#deb887"
+                          dense
+                          half-increments
+                          readonly
+                          size="14"
+                        ></v-rating>
+                      </p>
+                    </v-col>
+                  </v-row> -->
+                  <v-row class="p-0">
+                    <v-col>
+                      <v-btn class="btnFilter ampliarBtn" elevation="0"
+                        >Avaliar</v-btn
+                      >
+                    </v-col>
+                  </v-row>
                 </v-col>
               </v-row>
               <v-row>
@@ -303,57 +311,70 @@ export default {
         {
           nome: "EM PROCESSAMENTO",
           status: "normal",
+          color: 'ok'
         },
         {
           nome: "PAGAMENTO REALIZADO",
           status: "normal",
+          color: 'ok'
         },
         {
           nome: "EM TRANSPORTE",
           status: "normal",
+          color: 'ok'
         },
         {
           nome: "ENTREGA REALIZADA",
           status: "normal",
+          color: 'ok'
         },
         {
           nome: "TROCA SOLICITADA",
           status: "troca",
+          color: 'alerta'
         },
         {
           nome: "TROCA AUTORIZADA",
           status: "troca",
           valor: "aceita",
+          color: 'alerta'
         },
         {
           nome: "TROCA REJEITADA",
           status: "troca",
           valor: "rejeitada",
+          color: 'problema'
         },
         {
           nome: "EM TRANSITO",
           status: "troca",
+          color: 'alerta'
         },
         {
           nome: "TROCA EFETUADA",
           status: "troca",
+          color: 'ok'
         },
         {
           nome: "CANCELAMENTO SOLICITADO",
           status: "cancelamento",
+          color: 'problema'
         },
         {
           nome: "CANCELAMENTO REJEITADO",
           status: "cancelamento",
+          color: 'problema'
         },
 
         {
           nome: "CANCELAMENTO ACEITO",
           status: "cancelamento",
+          color: 'problema'
         },
         {
           nome: "CANCELAMENTO EFETUADO",
           status: "cancelamento",
+          color: 'problema'
         },
       ],
       e1: 1,
@@ -413,6 +434,11 @@ export default {
         return true;
       }
     },
+    getColor(status){
+      let fluxo = this.conteudoSteps.filter((val) => val.nome == status);
+      fluxo = fluxo[0].color;
+      return fluxo;
+    },
     getItems(items) {
       let tempObj = {};
       let result = [];
@@ -426,11 +452,11 @@ export default {
         }
       }
 
-      console.log("AMOR TEU", result, tempObj)
+      console.log("AMOR TEU", result, tempObj);
 
       // And if you want to formet in a different way then
       for (const key in result) {
-        result[key].quantity = tempObj[result[key].id]
+        result[key].quantity = tempObj[result[key].id];
       }
       console.log(result);
       return result;
@@ -548,5 +574,17 @@ export default {
 .alinhamentoProd {
   display: flex;
   align-items: center;
+}
+
+.ok{
+  border-left: 5px solid #43A047;
+}
+
+.alerta{
+  border-left: 5px solid #FFF176;
+}
+
+.problema {
+  border-left: 5px solid #D32F2F;
 }
 </style>
