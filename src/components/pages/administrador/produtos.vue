@@ -65,7 +65,7 @@
                   <v-col lg="5">
                     <v-text-field
                       v-model="nomeProduto"
-                      :counter="10"
+                      :counter="50"
                       label="Nome"
                       required
                     ></v-text-field>
@@ -251,7 +251,7 @@
             <v-btn
               elevation="0"
               color="white"
-              class="btnSubmit mx-1 mb-3"
+              class="btnSubmit alinhamento"
               @click="adicionarProduto = false"
             >
               Cancelar
@@ -591,3 +591,4 @@ export default {
   },
 };
 </script>
+

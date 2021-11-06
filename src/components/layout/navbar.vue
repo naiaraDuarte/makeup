@@ -79,6 +79,12 @@
           </v-list-item>
           <v-list-item link @click="troca(5)">
             <v-list-item-icon>
+              <v-icon class="title">mdi-ticket-percent-outline</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title class="white--text">Categorias</v-list-item-title>
+          </v-list-item>
+          <v-list-item link @click="troca(6)">
+            <v-list-item-icon>
               <v-icon class="title">mdi-exit-to-app</v-icon>
             </v-list-item-icon>
             <v-list-item-title class="white--text">Sair</v-list-item-title>
@@ -112,7 +118,7 @@ export default {
   components: {},
   methods: {
     troca(val) {
-      if (val == 5) {
+      if (val == 6) {
         // this.$store.state.enderecos = [];
         // this.$store.state.usuario.splice(1, 1);
         // this.$store.state.cadastro = false;

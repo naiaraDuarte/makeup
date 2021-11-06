@@ -28,13 +28,13 @@
 </template>
 
 <script>
-import adicionarProduto from "../components/pages/produtos/cadastro.vue";
-import visualizar from "../components/pages/produtos/visualizacao.vue";
+import adicionarProduto from "../components/pages/administrador/produtos.vue";
+// import visualizar from "../components/pages/produtos/visualizacao.vue";
 
 export default {
   components: {
     adicionarProduto,
-    visualizar,
+    // visualizar,
   },
 
   data: () => ({

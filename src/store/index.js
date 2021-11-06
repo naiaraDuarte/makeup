@@ -35,6 +35,7 @@ export default new Vuex.Store({
         freteCalculado: {},
         pedidos: [],
         trocaDeComponentesAdm: 0,
+        categorias: [],
     },
     mutations: {
 
@@ -170,6 +171,17 @@ export default new Vuex.Store({
         removeItemPedido(state, payload) {
             let index = state.pedidos.findIndex(prod => prod.id == payload.id);
             state.pedidos.splice(index, 1);
+        },
+        addCategoria(state, payload) {
+            state.categorias.push(payload);
+        },
+        editarCategoria(state, payload) {
+            let index = state.categorias.findIndex(categoria => categoria.id == payload.id);
+            Vue.set(state.categorias, index, payload);
+        },
+        removeCategoria(state, payload) {
+            let index = state.categorias.findIndex(categoria => categoria.id == payload);
+            state.categorias.splice(index, 1);
         },
 
     },
