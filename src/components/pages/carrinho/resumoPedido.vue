@@ -154,8 +154,9 @@ export default {
       this.$store.state.concluir = true;
     },
     editaCashback(val) {
-      this.$http
-        .put(`/cashback/${localStorage.getItem("usuarioId")}`, { valor: val })
+      this.$http.put(`/cashback/${localStorage.getItem("usuarioId")}`, {
+        valor: val,
+      });
     },
     calcTotal() {
       let valorFinal = 0;
@@ -171,13 +172,12 @@ export default {
         );
       }
       // 10 - 100 = 90
-      if ((valorFinal - this.cashback) < 0) {
+      if (valorFinal - this.cashback < 0) {
         let sobraCashbach = (valorFinal - this.cashback) * -1;
         this.$store.state.valeTroca = sobraCashbach;
         this.valorDescontoCashback = valorFinal;
         valorFinal = 0;
-      } 
-      else {
+      } else {
         valorFinal = valorFinal - this.cashback;
         this.valorDescontoCashback = this.cashback;
         this.$store.state.valeTroca = 0;
@@ -188,7 +188,139 @@ export default {
       this.$emit("total", this.total);
       return valorFinal;
     },
+    randomTime(start, end) {
+      var diff = end.getTime() - start.getTime();
+      var new_diff = diff * Math.random();
+      var date = new Date(start.getTime() + new_diff);
+      return date;
+    },
     comprar() {
+      // let conteudoSteps = [
+      //   {
+      //     nome: "EM PROCESSAMENTO",
+      //     status: "normal",
+      //   },
+      //   {
+      //     nome: "PAGAMENTO REALIZADO",
+      //     status: "normal",
+      //   },
+      //   {
+      //     nome: "EM TRANSPORTE",
+      //     status: "normal",
+      //   },
+      //   {
+      //     nome: "ENTREGA REALIZADA",
+      //     status: "normal",
+      //   },
+      //   {
+      //     nome: "TROCA SOLICITADA",
+      //     status: "troca",
+      //   },
+      //   {
+      //     nome: "TROCA AUTORIZADA",
+      //     status: "troca",
+      //     valor: "aceita",
+      //   },
+      //   {
+      //     nome: "TROCA REJEITADA",
+      //     status: "troca",
+      //     valor: "rejeitada",
+      //   },
+      //   {
+      //     nome: "EM TRANSITO",
+      //     status: "troca",
+      //   },
+      //   {
+      //     nome: "TROCA EFETUADA",
+      //     status: "troca",
+      //   },
+      //   {
+      //     nome: "CANCELAMENTO SOLICITADO",
+      //     status: "cancelamento",
+      //   },
+      //   {
+      //     nome: "CANCELAMENTO REJEITADO",
+      //     status: "cancelamento",
+      //   },
+
+      //   {
+      //     nome: "CANCELAMENTO ACEITO",
+      //     status: "cancelamento",
+      //   },
+      //   {
+      //     nome: "CANCELAMENTO EFETUADO",
+      //     status: "cancelamento",
+      //   },
+      // ];
+      // for (let i = 0; i < 100; i++) {
+      //   // Produto do pedido
+
+      //   let produtos = [];
+
+      //   for (let t = 0; t < Math.floor(Math.random() * 5); t++) {
+      //     let id_produto = Math.floor(Math.random() * 30);
+      //     let qtd = Math.floor(Math.random() * 10);
+      //     let preco = Math.floor(Math.random() * 50).toString() + ",00";
+
+      //     produtos.push({
+      //       id: id_produto,
+      //       quantidade: qtd,
+      //       preco: preco,
+      //     });
+      //   }
+
+      //   //STATUS
+      //   let status = conteudoSteps[Math.floor(Math.random() * 13)].nome;
+
+      //   //Cliente
+      //   let cliente = Math.floor(Math.random() * 10);
+      //   let cashback = cliente;
+      //   let valorCashback = Math.floor(Math.random() * 150).toString() + ",00";
+
+      //   let decideCupom = Math.floor(Math.random() * 10);
+      //   let cupom = null;
+      //   if (decideCupom < 5) {
+      //     cupom = Math.floor(Math.random() * 10);
+      //   }
+
+      //   let valor = Math.floor(Math.random() * 300).toString() + ",00";
+      //   let frete = Math.floor(Math.random() * 50).toString() + ",00";
+
+      //   let dataCompra = this.randomTime(new Date("10-01-2020 10:30"), new Date("10-30-2021 02:10"));
+      //   let frm = {
+      //     status: status,
+      //     valor: valor,
+      //     frete: frete,
+      //     produto: produtos,
+      //     dataCadastro: dataCompra,
+      //     cliente: {
+      //       id: cliente,
+      //     },
+      //     endereco: {
+      //       cep: "",
+      //       numero: "",
+      //       id: cliente,
+      //     },
+      //     cartao: [
+      //       {
+      //         id: cliente + 1,
+      //         credito: valor,
+      //       }
+      //     ],
+      //     cupom: {
+      //       id: cupom,
+      //     },
+      //     cashback: {
+      //       id: cashback.toString(),
+      //       valor: valorCashback,
+      //     },
+      //   };
+      //   this.$http.post(`/pedido/`, frm).then(() => {
+      //     console.log("FORMULARIO", frm);
+      //   });
+      // }
+
+      this.$http.post(`/pedido/`, frm).then(() => {});
       this.editaCashback(this.$store.state.valeTroca);
       let produtos = [];
       let cartoes = [];
