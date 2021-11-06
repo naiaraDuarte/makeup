@@ -15,13 +15,11 @@ export default {
   },
   mounted() {
     this.gerarGrafico();
-    console.log("AREAAAAAA", this.area);
     this.$emit("canva", this.$refs.canvas);
   },
   watch: {
     altera() {
       this.gerarGrafico();
-      console.log("WATCH", this.area);
     },
   },
   methods: {

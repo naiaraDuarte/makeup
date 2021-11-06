@@ -25,8 +25,7 @@
                     {{ item.status }}
                   </p>
                 </v-col>
-                <v-col lg="1">
-                </v-col>
+                <v-col lg="1"> </v-col>
                 <v-col lg="2">
                   <v-row>
                     <v-col lg="4">
@@ -54,7 +53,7 @@
                 </v-col>
               </v-row>
               <v-row
-                v-for="(prod, i) in item.carrinho"
+                v-for="(prod, i) in removeItensDuplicados(item.carrinho)"
                 :key="i"
                 class="alinhamentoProd"
               >
@@ -409,8 +408,40 @@ export default {
         return true;
       }
     },
+    getItems(items) {
+      let tempObj = {};
+
+      for (const item of items) {
+        if (tempObj[item.id] == undefined) {
+          tempObj[item.id] = 1;
+        } else {
+          tempObj[item.id] += 1;
+        }
+      }
+
+      //console.log(tempObj)
+
+      // And if you want to formet in a different way then
+      let newTemp = [];
+      for (const key in tempObj) {
+        let objNew = {
+          quantity: tempObj[key],
+          type: key,
+        };
+        newTemp.push(objNew);
+      }
+      console.log(newTemp);
+      return newTemp;
+    },
+    removeItensDuplicados(arr) {
+      var novaArr = arr.filter(function (a) {
+        return !this[JSON.stringify(a)] && (this[JSON.stringify(a)] = true);
+      }, Object.create(null));
+
+      console.log("NOVO", novaArr);
+      return novaArr;
+    },
     verificaTroca(status) {
-      console.log("status", status);
       let step = this.conteudoSteps.filter((val) => val.nome == status);
       if (step[0].status == "troca" || status == "ENTREGA REALIZADA")
         return true;
@@ -422,7 +453,6 @@ export default {
     },
 
     getDados(status) {
-      console.log("status", status);
       let fluxo = this.conteudoSteps.filter((val) => val.nome == status);
       fluxo = fluxo[0].status;
       let valor = "aceita";
@@ -456,7 +486,6 @@ export default {
         id: this.pedidoSelecionado.id,
         status: "CANCELAMENTO SOLICITADO",
       };
-      console.log("item.id", this.pedidoSelecionado.id);
       this.$http
         .put(`/pedido/status/${this.pedidoSelecionado.id}`, frm)
         .then(() => {
@@ -486,7 +515,6 @@ export default {
         },
         status: "TROCA SOLICITADA",
       };
-      console.log("dentro função", frm);
       this.$http.put(`/pedido/troca/${item.id}`, frm).then(() => {
         prod.status = "TROCA SOLICITADA";
         this.editaStatus([item.id, "TROCA SOLICITADA", prod.id]);

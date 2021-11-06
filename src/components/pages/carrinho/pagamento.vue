@@ -308,7 +308,6 @@ export default {
     },
     totalProdutos() {
       this.restante = this.$n(this.totalProdutos, "currency");
-      console.log(this.totalProdutos);
     },
   },
   computed: {
@@ -392,11 +391,8 @@ export default {
             this.editarCartao(cartao);
           }
         });
-        console.log(this.totalProdutos, "::::::", restante);
         this.totalProdutos = restante;
       }
-
-      console.log("TETUYCHBJD", this.$store.state.cartoesEscolhidos);
     },
     salvaValor(id, val) {
       val = val.replace("R$", "");
@@ -454,7 +450,6 @@ export default {
       this.$http
         .get(`/cupom/${this.cupom}`)
         .then((res) => {
-          console.log(res);
           let qtd = res.data.cupom[0].quant - 1;
           let frm = {
             id: res.data.cupom[0].id,
@@ -473,7 +468,6 @@ export default {
           return true;
         })
         .catch((e) => {
-          console.log("ee", e);
           this.exibeSnackBar("red", "Cupom inexistente ou esgotado", e);
           return false;
         });

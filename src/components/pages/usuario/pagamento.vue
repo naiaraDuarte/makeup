@@ -193,7 +193,6 @@ export default {
   },
   methods: {
     // listarCartoesCadastrados() {
-    //   console.log("listarrrrr");
 
     //   this.$store.state.cartoes = [];
     //   this.$http

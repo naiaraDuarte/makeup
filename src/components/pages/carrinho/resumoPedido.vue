@@ -362,7 +362,6 @@ export default {
         },
         status: "EM PROCESSAMENTO",
       };
-      console.log(frmB)
       this.$http.post(`/pedido/`, frmB).then(() => {
         this.$store.state.cartoes.filter((cartao) => {
             cartao.selecionado = false;

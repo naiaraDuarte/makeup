@@ -143,7 +143,6 @@ export default {
             status: this.opcao,
           };
           url = '/grafico/';
-          console.log(url)
           break;
         case 1:
           frm = {
@@ -151,7 +150,6 @@ export default {
             dataFinal: this.dates[0],
             status: this.opcao,
           };
-          console.log(url)
           break;
         case 2:
           frm = {
@@ -159,18 +157,15 @@ export default {
             dataFinal: this.dates[1],
             status: this.opcao,
           };
-          console.log(url)
       }
 
       this.$http.post(`${url}`, frm).then(async (res) => {
-        console.log("DATsfsd", res.data.dados);
         await this.preencheData(res.data.dados);
 
         this.area = {
           labels: this.mes,
           datasets: this.datasets,
         };
-        console.log(this.area);
         this.altera = parseInt(Math.random() * 255);
       });
     },

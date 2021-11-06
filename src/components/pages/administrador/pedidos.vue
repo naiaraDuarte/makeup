@@ -401,7 +401,6 @@ export default {
           status != "CANCELAMENTO EFETUADO"
         ) {
               troca = carrinho;
-              console.log("entrou nessa merda", troca)
         }
 
         this.$store.state.pedidos.push({
@@ -431,8 +430,6 @@ export default {
           endereco: endereco,
           acoes: id,
         });
-
-        console.log("AAAA", this.desserts)
       });
     });
   },
@@ -510,7 +507,6 @@ export default {
           };
           valorCashBack += item.custo;
           this.$http.patch(`/produto/${item.id}`, frm).then(() => {
-            console.log("PERFIUKLKLK", this.perfilSelecionado[0]);
           });
         });
       }
@@ -519,7 +515,6 @@ export default {
         .get(`/cashback/${this.perfilSelecionado[0].cliente.id}`)
         .then((res) => {
           valorCashBack += res.data.cashback[0].valor;
-          console.log("valor", valorCashBack);
           this.$http.put(`/cashback/${this.perfilSelecionado[0].cliente.id}`, {
             valor: valorCashBack,
           });
@@ -533,7 +528,6 @@ export default {
     },
     finalizaCancelamento(val) {
       var valorCashBack = 0;
-      console.log("VALLLLL", val);
       if (val == true) {
         this.perfilSelecionado[0].carrinho.forEach((item) => {
           let frm = {
@@ -541,7 +535,6 @@ export default {
           };
           valorCashBack += item.custo;
           this.$http.patch(`/produto/${item.id}`, frm).then(() => {
-            console.log("PERFIUKLKLK", this.perfilSelecionado[0]);
           });
         });
       }
@@ -550,7 +543,6 @@ export default {
         .get(`/cashback/${this.perfilSelecionado[0].cliente.id}`)
         .then((res) => {
           valorCashBack += res.data.cashback[0].valor;
-          console.log("valor", valorCashBack);
           this.$http.put(`/cashback/${this.perfilSelecionado[0].cliente.id}`, {
             valor: valorCashBack,
           });
@@ -621,7 +613,6 @@ export default {
           this.statusTroca = false;
         }
       });
-      console.log(this.conteudoSteps);
     },
     statusDoCancelamento(val) {
       //Cancelamento nãoo mostra um trem
@@ -648,7 +639,6 @@ export default {
           this.statusCancelamento = false;
         }
       });
-      console.log(this.conteudoSteps);
     },
     getStatus(status) {
       this.e1 = this.steps.findIndex((step) => step.nome == status);
