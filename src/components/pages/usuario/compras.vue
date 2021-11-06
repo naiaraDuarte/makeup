@@ -53,20 +53,28 @@
                 </v-col>
               </v-row>
               <v-row
-                v-for="(prod, i) in removeItensDuplicados(item.carrinho)"
+                v-for="(prod, i) in getItems(item.carrinho)"
                 :key="i"
                 class="alinhamentoProd"
               >
-                <v-col lg="2">
+                <v-col lg="1">
                   <v-img
                     height="80"
                     width="80"
                     :src="getImgUrl(prod.imagem)"
                   ></v-img>
                 </v-col>
-                <v-col lg="3">
+                
+                <v-col lg="2">
                   <p>{{ prod.nome }}</p>
                 </v-col>
+                <v-col lg="2">
+                  <p> Quant: {{ prod.quantity }}</p>
+                </v-col>
+                <v-col lg="2">
+                  <p>{{ $n(prod.custo, "currency") }}</p>
+                </v-col>
+                
                 <v-col lg="2">
                   <p>
                     <v-rating
@@ -78,9 +86,6 @@
                       size="14"
                     ></v-rating>
                   </p>
-                </v-col>
-                <v-col lg="2">
-                  <p>{{ $n(prod.custo, "currency") }}</p>
                 </v-col>
                 <v-col lg="2">
                   <v-btn class="btnFilter ampliarBtn" elevation="0"
@@ -410,28 +415,25 @@ export default {
     },
     getItems(items) {
       let tempObj = {};
+      let result = [];
 
       for (const item of items) {
         if (tempObj[item.id] == undefined) {
           tempObj[item.id] = 1;
+          result.push(item);
         } else {
           tempObj[item.id] += 1;
         }
       }
 
-      //console.log(tempObj)
+      console.log("AMOR TEU", result, tempObj)
 
       // And if you want to formet in a different way then
-      let newTemp = [];
-      for (const key in tempObj) {
-        let objNew = {
-          quantity: tempObj[key],
-          type: key,
-        };
-        newTemp.push(objNew);
+      for (const key in result) {
+        result[key].quantity = tempObj[result[key].id]
       }
-      console.log(newTemp);
-      return newTemp;
+      console.log(result);
+      return result;
     },
     removeItensDuplicados(arr) {
       var novaArr = arr.filter(function (a) {
