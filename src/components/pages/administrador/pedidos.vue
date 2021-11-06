@@ -328,6 +328,28 @@ export default {
       e1: 1,
       steps: [],
       idSelecionado: null,
+      stepsTroca: [
+        {
+          nome: "TROCA AUTORIZADA",
+          status: "troca",
+          valor: "aceita",
+        },
+        {
+          nome: "TROCA REJEITADA",
+          status: "troca",
+          valor: "rejeitada",
+        },
+      ],
+      stepsCancelamento: [
+        {
+          nome: "CANCELAMENTO ACEITO",
+          status: "cancelamento",
+        },
+        {
+          nome: "CANCELAMENTO REJEITADO",
+          status: "cancelamento",
+        },
+      ],
       conteudoSteps: [
         {
           nome: "EM PROCESSAMENTO",
@@ -481,21 +503,47 @@ export default {
       this.steps = [];
       this.resetConteudoStepsTroca();
       await this.getDados(this.perfilSelecionado[0].status);
-      await this.getStatus(this.perfilSelecionado[0].status);
+      // await this.getStatus(this.perfilSelecionado[0].status);
       this.idSelecionado = id;
       this.dialog = !this.dialog;
       return this.perfilSelecionado;
     },
     getDados(status) {
       this.steps = [];
+      // if (status == "TROCA AUTORIZADA") {
+      //   status =
+      // }
       let fluxo = this.conteudoSteps.filter((val) => val.nome == status);
-      fluxo = fluxo[0].status;
-      // let valor = "aceita";
-      this.conteudoSteps.forEach((e) => {
-        if (e.status == fluxo) {
-          this.steps.push(e);
-        }
-      });
+      let stepsTroca = this.stepsTroca.filter((val) => val.nome == status);
+      let stepsCancelamento = this.stepsCancelamento.filter(
+        (val) => val.nome == status
+      );
+
+      if (fluxo.length > 0) {
+        this.conteudoSteps.forEach((e) => {
+          if (e.status == fluxo[0].status) {
+            this.steps.push(e);
+          }
+        });
+      }
+
+      if (stepsTroca.length > 0) {
+        this.stepsTroca.forEach((e) => {
+          if (e.status == stepsTroca[0].status) {
+            this.steps.push(e);
+          }
+        });
+      }
+      if (
+        stepsCancelamento.length > 0 
+      ) {
+        this.stepsCancelamento.forEach((e) => {
+          if (e.status == stepsCancelamento[0].status) {
+            this.steps.push(e);
+          }
+        });
+      }
+      this.e1 = this.steps.findIndex((step) => step.nome == status);
     },
     mudaStatus(val) {
       this.estoque = val;
@@ -580,40 +628,16 @@ export default {
     },
     verificaTroca(status) {
       let step = this.conteudoSteps.filter((val) => val.nome == status);
-      let stepsRetirados = [
-        {
-          nome: "TROCA AUTORIZADA",
-          status: "troca",
-          valor: "aceita",
-        },
-        {
-          nome: "TROCA REJEITADA",
-          status: "troca",
-          valor: "rejeitada",
-        },
-      ];
-
-      let stepR = stepsRetirados.filter((val) => val.nome == status);
+      let stepR = this.stepsTroca.filter((val) => val.nome == status);
       if (step.length > 0 && step[0].status == "troca") return true;
-      else if(stepR.length > 0 && stepR[0].status == "troca") return true;
+      else if (stepR.length > 0 && stepR[0].status == "troca") return true;
       else return false;
     },
     verificaCancelamento(status) {
       let step = this.conteudoSteps.filter((val) => val.nome == status);
-      let stepsRetirados = [
-        {
-          nome: "CANCELAMENTO ACEITO",
-          status: "cancelamento",
-        },
-        {
-          nome: "CANCELAMENTO REJEITADO",
-          status: "cancelamento",
-        },
-      ];
-
-      let stepR = stepsRetirados.filter((val) => val.nome == status);
+      let stepR = this.stepsCancelamento.filter((val) => val.nome == status);
       if (step[0].status == "cancelamento") return true;
-      else if(stepR[0].status == "cancelamento") return true;
+      else if (stepR[0].status == "cancelamento") return true;
       else return false;
     },
     statusDaTroca(val) {
@@ -669,9 +693,9 @@ export default {
         }
       });
     },
-    getStatus(status) {
-      this.e1 = this.steps.findIndex((step) => step.nome == status);
-    },
+    // getStatus(status) {
+    //   this.e1 = this.steps.findIndex((step) => step.nome == status);
+    // },
     nextStep(op) {
       if (this.steps[this.e1].nome == "EM TRANSITO" && op == "add") {
         this.voltaEstoque = true;

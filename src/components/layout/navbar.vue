@@ -73,13 +73,13 @@
           </v-list-item>
           <v-list-item link @click="troca(4)">
             <v-list-item-icon>
-              <v-icon class="title">mdi-ticket-percent-outline</v-icon>
+              <v-icon class="title">mdi-brush</v-icon>
             </v-list-item-icon>
             <v-list-item-title class="white--text">Produtos</v-list-item-title>
           </v-list-item>
           <v-list-item link @click="troca(5)">
             <v-list-item-icon>
-              <v-icon class="title">mdi-ticket-percent-outline</v-icon>
+              <v-icon class="title">mdi-file-document-outline</v-icon>
             </v-list-item-icon>
             <v-list-item-title class="white--text">Categorias</v-list-item-title>
           </v-list-item>
