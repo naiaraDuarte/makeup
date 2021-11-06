@@ -1,6 +1,8 @@
 <template>
   <v-container fluid>
-    <h1>Cupons do cliente</h1>
+    <p class="mb-3 tituloModalCarrinho">
+      <v-icon class="pb-1" large>mdi-chevron-double-right</v-icon>Cupons
+    </p>
     <v-row class="mt-3">
       <v-col lg="3" v-for="(item, i) in this.$store.state.cupons" :key="i">
         <v-card elevation="0" class="card-cartao p-2 cashback">

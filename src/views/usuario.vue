@@ -89,7 +89,7 @@ export default {
       selectedItem: 0,
       items: [
         { text: "Conta", icon: "mdi-account" },
-        { text: "Pagamento", icon: "mdi-currency-usd" },
+        { text: "Cartões", icon: "mdi-credit-card-multiple-outline" },
         { text: "Compras", icon: "mdi-gift" },
         { text: "Cupons", icon: "mdi-ticket-percent" },
         { text: "Sair", icon: "mdi-exit-to-app" },

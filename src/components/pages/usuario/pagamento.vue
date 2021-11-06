@@ -1,6 +1,8 @@
 <template>
   <v-container fluid>
-    <h2 v-show="mostra">Pagamento</h2>
+    <p class="mb-3 tituloModalCarrinho">
+      <v-icon class="pb-1" large>mdi-chevron-double-right</v-icon>Cartões
+    </p>
     <div class="pagamento"></div>
 
     <form id="Pagamento">

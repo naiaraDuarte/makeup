@@ -1,12 +1,14 @@
 <template>
   <v-container fluid>
-    <h1>Compras</h1>
+    <p class="mb-3 tituloModalCarrinho">
+      <v-icon class="pb-1" large>mdi-chevron-double-right</v-icon>Compras
+    </p>
 
     <v-row class="mt-1 mx-3 my-3">
       <v-col lg="12" v-if="$store.state.pedidos.length > 0">
         <v-expansion-panels accordion>
           <v-expansion-panel v-for="(item, i) in $store.state.pedidos" :key="i">
-            <v-expansion-panel-header 
+            <v-expansion-panel-header
               :class="getColor(item.status)"
               v-if="item.cliente.cpf == $store.state.usuario[1].cpf"
               @click="getDados(item.status)"
@@ -311,70 +313,70 @@ export default {
         {
           nome: "EM PROCESSAMENTO",
           status: "normal",
-          color: 'ok'
+          color: "ok",
         },
         {
           nome: "PAGAMENTO REALIZADO",
           status: "normal",
-          color: 'ok'
+          color: "ok",
         },
         {
           nome: "EM TRANSPORTE",
           status: "normal",
-          color: 'ok'
+          color: "ok",
         },
         {
           nome: "ENTREGA REALIZADA",
           status: "normal",
-          color: 'ok'
+          color: "ok",
         },
         {
           nome: "TROCA SOLICITADA",
           status: "troca",
-          color: 'alerta'
+          color: "alerta",
         },
         {
           nome: "TROCA AUTORIZADA",
           status: "troca",
           valor: "aceita",
-          color: 'alerta'
+          color: "alerta",
         },
         {
           nome: "TROCA REJEITADA",
           status: "troca",
           valor: "rejeitada",
-          color: 'problema'
+          color: "problema",
         },
         {
           nome: "EM TRANSITO",
           status: "troca",
-          color: 'alerta'
+          color: "alerta",
         },
         {
           nome: "TROCA EFETUADA",
           status: "troca",
-          color: 'ok'
+          color: "ok",
         },
         {
           nome: "CANCELAMENTO SOLICITADO",
           status: "cancelamento",
-          color: 'problema'
+          color: "problema",
         },
         {
           nome: "CANCELAMENTO REJEITADO",
           status: "cancelamento",
-          color: 'problema'
+          color: "problema",
         },
 
         {
           nome: "CANCELAMENTO ACEITO",
           status: "cancelamento",
-          color: 'problema'
+          color: "problema",
         },
         {
           nome: "CANCELAMENTO EFETUADO",
           status: "cancelamento",
-          color: 'problema'
+          color: "problema",
         },
       ],
       e1: 1,
@@ -434,7 +436,7 @@ export default {
         return true;
       }
     },
-    getColor(status){
+    getColor(status) {
       let fluxo = this.conteudoSteps.filter((val) => val.nome == status);
       fluxo = fluxo[0].color;
       return fluxo;
@@ -576,15 +578,15 @@ export default {
   align-items: center;
 }
 
-.ok{
-  border-left: 5px solid #43A047;
+.ok {
+  border-left: 5px solid #81c784;
 }
 
-.alerta{
-  border-left: 5px solid #FFF176;
+.alerta {
+  border-left: 5px solid #fff59d;
 }
 
 .problema {
-  border-left: 5px solid #D32F2F;
+  border-left: 5px solid #e57373;
 }
 </style>
