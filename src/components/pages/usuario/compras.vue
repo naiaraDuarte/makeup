@@ -388,6 +388,7 @@ export default {
     this.$http
       .get(`/pedido/${localStorage.getItem("usuarioId")}`)
       .then((res) => {
+        console.log("BD", res)
         res.data.todosOsPedidos.forEach((ped) => {
           let carrinho = ped.pedido.produtos;
           let cartao = ped.pedido.cartoes;
