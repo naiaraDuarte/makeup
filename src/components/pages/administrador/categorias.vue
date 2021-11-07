@@ -108,6 +108,7 @@ import { mapMutations } from "vuex";
 export default {
   data() {
     return {
+      search:"",
       nome: "",
       mgLucro: "",
       snackbar: false,
@@ -178,7 +179,7 @@ export default {
         mgLucro: this.mgLucro,
       };
       this.$http.post(`/categoria/`, frm).then((res) => {
-        this.frm.id = res.data.categoria.id;
+        frm.id = res.data.dados.id;
         this.addCategoria(frm);
         this.exibeSnackBar("green", "Categoria adicionada");
         this.limparCategoria();
