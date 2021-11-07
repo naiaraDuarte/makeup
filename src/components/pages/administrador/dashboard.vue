@@ -48,6 +48,9 @@
         <v-col lg="12">
           <AreaChart :area="area" :altera="altera" @canva="canvas = $event" />
         </v-col>
+        <v-col lg="12">
+          <AreaChart :area="area" :altera="altera" @canva="canvas = $event" />
+        </v-col>
         <!-- <v-col lg="12">
           <LineChart />
         </v-col> -->

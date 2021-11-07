@@ -534,6 +534,7 @@ export default {
           }
         });
       }
+      //fALTA COLOCAR O COD NO PRODUTO A SER TROCADO
       if (
         stepsCancelamento.length > 0 
       ) {
