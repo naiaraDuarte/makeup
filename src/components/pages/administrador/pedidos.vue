@@ -502,17 +502,14 @@ export default {
       );
       this.steps = [];
       this.resetConteudoStepsTroca();
-      await this.getDados(this.perfilSelecionado[0].status);
+      await this.getDados(this.perfilSelecionado[0].status, 0);
       // await this.getStatus(this.perfilSelecionado[0].status);
       this.idSelecionado = id;
       this.dialog = !this.dialog;
       return this.perfilSelecionado;
     },
-    getDados(status) {
+    getDados(status, e) {
       this.steps = [];
-      // if (status == "TROCA AUTORIZADA") {
-      //   status =
-      // }
       let fluxo = this.conteudoSteps.filter((val) => val.nome == status);
       let stepsTroca = this.stepsTroca.filter((val) => val.nome == status);
       let stepsCancelamento = this.stepsCancelamento.filter(
@@ -527,23 +524,24 @@ export default {
         });
       }
 
-      if (stepsTroca.length > 0) {
-        this.stepsTroca.forEach((e) => {
-          if (e.status == stepsTroca[0].status) {
-            this.steps.push(e);
-          }
-        });
+      if (e != 1) {
+        if (stepsTroca.length > 0) {
+          this.stepsTroca.forEach((e) => {
+            if (e.status == stepsTroca[0].status) {
+              this.steps.push(e);
+            }
+          });
+        }
+        //fALTA COLOCAR O COD NO PRODUTO A SER TROCADO
+        if (stepsCancelamento.length > 0) {
+          this.stepsCancelamento.forEach((e) => {
+            if (e.status == stepsCancelamento[0].status) {
+              this.steps.push(e);
+            }
+          });
+        }
       }
-      //fALTA COLOCAR O COD NO PRODUTO A SER TROCADO
-      if (
-        stepsCancelamento.length > 0 
-      ) {
-        this.stepsCancelamento.forEach((e) => {
-          if (e.status == stepsCancelamento[0].status) {
-            this.steps.push(e);
-          }
-        });
-      }
+
       this.e1 = this.steps.findIndex((step) => step.nome == status);
     },
     mudaStatus(val) {
@@ -607,7 +605,7 @@ export default {
           };
           this.conteudoSteps.splice(i, 1, reset);
           this.steps = [];
-          this.getDados("TROCA AUTORIZADA/REJEITADA");
+          this.getDados("TROCA AUTORIZADA/REJEITADA", 1);
         }
       });
     },
@@ -623,7 +621,7 @@ export default {
           };
           this.conteudoSteps.splice(i, 1, reset);
           this.steps = [];
-          this.getDados("CANCELAMENTO AUTORIZADO/REJEITADO");
+          this.getDados("CANCELAMENTO AUTORIZADO/REJEITADO", 1);
         }
       });
     },
@@ -657,11 +655,11 @@ export default {
           if (val == false) {
             this.conteudoSteps.splice(i, 1, rejeitada);
             this.steps = [];
-            this.getDados("TROCA REJEITADA");
+            this.getDados("TROCA REJEITADA", 1);
           } else {
             this.conteudoSteps.splice(i, 1, autorizada);
             this.steps = [];
-            this.getDados("TROCA AUTORIZADA");
+            this.getDados("TROCA AUTORIZADA", 1);
             this.nextStep("add");
           }
           this.statusTroca = false;
@@ -683,11 +681,11 @@ export default {
           if (val == false) {
             this.conteudoSteps.splice(i, 1, rejeitada);
             this.steps = [];
-            this.getDados("CANCELAMENTO REJEITADO");
+            this.getDados("CANCELAMENTO REJEITADO", 1);
           } else {
             this.conteudoSteps.splice(i, 1, autorizada);
             this.steps = [];
-            this.getDados("CANCELAMENTO ACEITO");
+            this.getDados("CANCELAMENTO ACEITO", 1);
             this.nextStep("add");
           }
           this.statusCancelamento = false;
