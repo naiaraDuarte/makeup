@@ -208,7 +208,7 @@ export default {
      removeCategorias(id) {
       this.$http.delete(`/categoria/${id}`).then(() => {
         this.removeCategoria(id);
-        this.exibeSnackBar("green", "Produto removido");
+        this.exibeSnackBar("green", "Categoria removida");
       });
     },
   },

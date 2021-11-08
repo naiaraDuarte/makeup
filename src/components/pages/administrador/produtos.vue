@@ -44,200 +44,195 @@
       <v-card>
         <!-- <v-row>
           <v-col lg="12" md="12" sm="12" cols="12" class="px-0 py-0"> -->
-            <v-progress-linear :value="valorBarra"></v-progress-linear>
-            <v-card elevation="0" v-if="faseCadastro == 0">
-              <v-card-tittle>
-                <h2 class="cor-letra text-center mt-5 pt-5">
-                  Vamos lá, me informe os dados do produto...
-                </h2>
-              </v-card-tittle>
-              <v-card-text>
-                <v-row class="mt-5 mx-3 my-3">
-                  <v-col lg="3">
+        <v-progress-linear :value="valorBarra"></v-progress-linear>
+        <v-card elevation="0" v-if="faseCadastro == 0">
+          <v-card-tittle>
+            <h2 class="cor-letra text-center mt-5 pt-5">
+              Vamos lá, me informe os dados do produto...
+            </h2>
+          </v-card-tittle>
+          <v-card-text>
+            <v-row class="mt-5 mx-3 my-3">
+              <v-col lg="3">
+                <v-text-field
+                  v-model="codigoProduto"
+                  :counter="10"
+                  type="number"
+                  label="Código"
+                  required
+                ></v-text-field>
+              </v-col>
+              <v-col lg="5">
+                <v-text-field
+                  v-model="nomeProduto"
+                  :counter="50"
+                  label="Nome"
+                  required
+                ></v-text-field>
+              </v-col>
+              <v-col lg="4">
+                <v-text-field
+                  v-model="custoProduto"
+                  :counter="10"
+                  label="Custo"
+                  required
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            <v-row class="mt-5 mx-3 my-3">
+              <v-col lg="4">
+                <!-- Colocar um auto complete -->
+                <v-text-field
+                  :counter="10"
+                  v-model="marcaProduto"
+                  label="Marca"
+                  required
+                ></v-text-field>
+              </v-col>
+              <v-col lg="4">
+                <v-combobox
+                  v-model="categoriaProduto"
+                  :items="itensCategoria"
+                  label="Categoria"
+                  id="categoria"
+                  item-text="nome"
+                  item-value="id"
+                  return-object
+                  clearable
+                  required
+                ></v-combobox>
+              </v-col>
+              <v-col lg="4">
+                <v-text-field
+                  v-model="tipoProduto"
+                  :counter="10"
+                  label="Tipo"
+                  required
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col class="px-8 py-8">
+                <v-textarea
+                  v-model="descProduto"
+                  outlined
+                  name="input-7-4"
+                  label="Descrição do Produto"
+                  :counter="255"
+                ></v-textarea>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+        <v-card elevation="0" v-else>
+          <v-card-title>
+            <h2 class="cor-letra text-center mt-5 pt-5">
+              Continuando, me informe os dados do produto...
+            </h2>
+          </v-card-title>
+          <v-card-text>
+            <v-row class="mt-5 mx-3 my-3">
+              <v-col lg="3">
+                <v-row>
+                  <v-col lg="12">
+                    <h4 class="cor-letra">Faça upload da imagem do produto</h4>
+                  </v-col>
+                  <v-col>
+                    <input
+                      v-show="false"
+                      ref="inputUpload"
+                      @change="image = $event.target.files[0]"
+                      accept="image/*"
+                      type="file"
+                    />
+                    <v-row v-if="image">
+                      <v-col class="text-right">
+                        <v-btn icon @click="image = null"
+                          ><v-icon>mdi-close</v-icon></v-btn
+                        >
+                      </v-col>
+                    </v-row>
+                    <v-card elevation="0" @click="$refs.inputUpload.click()">
+                      <v-img v-if="image" :src="url"></v-img>
+                      <v-img
+                        v-if="!image"
+                        src="../../../assets/images/img-default.jpg"
+                      ></v-img>
+                    </v-card>
+                  </v-col>
+                </v-row>
+              </v-col>
+              <v-col lg="9">
+                <v-row class="mt-5 mx-4 pt-5">
+                  <v-col lg="6">
                     <v-text-field
-                      v-model="codigoProduto"
+                      v-model="pesoProduto"
                       :counter="10"
                       type="number"
-                      label="Código"
+                      label="Peso do produto"
                       required
                     ></v-text-field>
                   </v-col>
-                  <v-col lg="5">
+                  <v-col lg="6">
                     <v-text-field
-                      v-model="nomeProduto"
-                      :counter="50"
-                      label="Nome"
-                      required
-                    ></v-text-field>
-                  </v-col>
-                  <v-col lg="4">
-                    <v-text-field
-                      v-model="custoProduto"
+                      v-model="alturaProduto"
                       :counter="10"
-                      label="Custo"
+                      type="number"
+                      label="Altura do produto"
                       required
                     ></v-text-field>
                   </v-col>
                 </v-row>
-                <v-row class="mt-5 mx-3 my-3">
-                  <v-col lg="4">
+                <v-row class="mx-4">
+                  <v-col lg="6">
+                    <v-text-field
+                      v-model="comprimentoProduto"
+                      :counter="10"
+                      type="number"
+                      label="Comprimento do produto"
+                      required
+                    ></v-text-field>
+                  </v-col>
+                  <v-col lg="6">
                     <!-- Colocar um auto complete -->
                     <v-text-field
+                      v-model="quantidadeProduto"
                       :counter="10"
-                      v-model="marcaProduto"
-                      label="Marca"
+                      label="Quantidade do produto a cadastrar"
+                      type="number"
                       required
                     ></v-text-field>
                   </v-col>
-                  <v-col lg="4">
-                    <v-combobox
-                      v-model="categoriaProduto"
-                      :items="itensCategoria"
-                      label="Categoria"
-                      id="categoria"
-                      item-text="nome"
-                      item-value="id"
-                      return-object
-                      clearable
-                      required
-                    ></v-combobox>
-                  </v-col>
-                  <v-col lg="4">
+                </v-row>
+                <v-row class="mx-3">
+                  <v-col lg="6">
                     <v-text-field
-                      v-model="tipoProduto"
+                      v-model="diametroProduto"
                       :counter="10"
-                      label="Tipo"
+                      label="Diametro do produto"
+                      type="number"
+                      required
+                    ></v-text-field>
+                  </v-col>
+                  <v-col lg="6">
+                    <v-text-field
+                      v-model="larguraProduto"
+                      :counter="10"
+                      type="number"
+                      label="Largura do produto"
                       required
                     ></v-text-field>
                   </v-col>
                 </v-row>
-                <v-row>
-                  <v-col class="px-8 py-8">
-                    <v-textarea
-                      v-model="descProduto"
-                      outlined
-                      name="input-7-4"
-                      label="Descrição do Produto"
-                      :counter="255"
-                    ></v-textarea>
-                  </v-col>
-                </v-row>
-              </v-card-text>
-            </v-card>
-            <v-card elevation="0" v-else>
-              <v-card-title>
-                <h2 class="cor-letra text-center mt-5 pt-5">
-                  Continuando, me informe os dados do produto...
-                </h2>
-              </v-card-title>
-              <v-card-text>
-                <v-row class="mt-5 mx-3 my-3">
-                  <v-col lg="3">
-                    <v-row>
-                      <v-col lg="12">
-                        <h4 class="cor-letra">
-                          Faça upload da imagem do produto
-                        </h4>
-                      </v-col>
-                      <v-col>
-                        <input
-                          v-show="false"
-                          ref="inputUpload"
-                          @change="image = $event.target.files[0]"
-                          accept="image/*"
-                          type="file"
-                        />
-                        <v-row v-if="image">
-                          <v-col class="text-right">
-                            <v-btn icon @click="image = null"
-                              ><v-icon>mdi-close</v-icon></v-btn
-                            >
-                          </v-col>
-                        </v-row>
-                        <v-card
-                          elevation="0"
-                          @click="$refs.inputUpload.click()"
-                        >
-                          <v-img v-if="image" :src="url"></v-img>
-                          <v-img
-                            v-if="!image"
-                            src="../../../assets/images/img-default.jpg"
-                          ></v-img>
-                        </v-card>
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                  <v-col lg="9">
-                    <v-row class="mt-5 mx-4 pt-5">
-                      <v-col lg="6">
-                        <v-text-field
-                          v-model="pesoProduto"
-                          :counter="10"
-                          type="number"
-                          label="Peso do produto"
-                          required
-                        ></v-text-field>
-                      </v-col>
-                      <v-col lg="6">
-                        <v-text-field
-                          v-model="alturaProduto"
-                          :counter="10"
-                          type="number"
-                          label="Altura do produto"
-                          required
-                        ></v-text-field>
-                      </v-col>
-                    </v-row>
-                    <v-row class="mx-4">
-                      <v-col lg="6">
-                        <v-text-field
-                          v-model="comprimentoProduto"
-                          :counter="10"
-                          type="number"
-                          label="Comprimento do produto"
-                          required
-                        ></v-text-field>
-                      </v-col>
-                      <v-col lg="6">
-                        <!-- Colocar um auto complete -->
-                        <v-text-field
-                          v-model="quantidadeProduto"
-                          :counter="10"
-                          label="Quantidade do produto a cadastrar"
-                          type="number"
-                          required
-                        ></v-text-field>
-                      </v-col>
-                    </v-row>
-                    <v-row class="mx-3">
-                      <v-col lg="6">
-                        <v-text-field
-                          v-model="diametroProduto"
-                          :counter="10"
-                          label="Diametro do produto"
-                          type="number"
-                          required
-                        ></v-text-field>
-                      </v-col>
-                      <v-col lg="6">
-                        <v-text-field
-                          v-model="larguraProduto"
-                          :counter="10"
-                          type="number"
-                          label="Largura do produto"
-                          required
-                        ></v-text-field>
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                </v-row>
-              </v-card-text>
-            </v-card>
-          <!-- </v-col>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+        <!-- </v-col>
         </v-row> -->
-        
+
         <v-row class="text-right mx-1 mb-3">
-          <v-col lg="2" v-if="validacaoDePreenchimento" >
+          <v-col lg="2" v-if="verificaPreenchimento">
             <v-btn
               elevation="3"
               color="white"
@@ -246,7 +241,7 @@
               >add produto</v-btn
             >
           </v-col>
-          
+
           <v-col lg="7">
             <v-btn
               elevation="0"
@@ -255,8 +250,8 @@
               @click="adicionarProduto = false"
             >
               Cancelar
-            </v-btn>            
-          </v-col>          
+            </v-btn>
+          </v-col>
           <v-col lg="3">
             <v-row class="text-right">
               <v-col class="pl-5 text-center">
@@ -277,21 +272,9 @@
                   ><v-icon>mdi-chevron-right</v-icon></v-btn
                 >
               </v-col>
-              
             </v-row>
-
-            <!-- <v-snackbar v-model="snackbar" :color="snackbarColor">
-              <h4 style="font-weight: 100">{{ mensagem }}</h4>
-
-              <template v-slot:action="{ attrs }">
-                <v-btn text icon v-bind="attrs" @click="snackbar = false">
-                  <v-icon>mdi-close</v-icon>
-                </v-btn>
-              </template>
-            </v-snackbar> -->
           </v-col>
         </v-row>
-        
       </v-card>
     </v-dialog>
     <v-snackbar v-model="snackbar" :color="snackbarColor">
@@ -363,28 +346,6 @@ export default {
       }
       return null;
     },
-    validacaoDePreenchimento() {
-      //validação provisória
-      if (
-        this.codigoProduto != "" &&
-        this.custoProduto != "" &&
-        this.nomeProduto != "" &&
-        this.descProduto != "" &&
-        this.categoriaProduto != "" &&
-        this.tipoProduto != "" &&
-        this.pesoProduto != "" &&
-        this.larguraProduto != "" &&
-        this.alturaProduto != "" &&
-        this.comprimentoProduto != "" &&
-        this.quantidadeProduto != "" &&
-        this.diametroProduto != "" &&
-        // this.precoProduto != "" &&
-        this.marcaProduto != ""
-      ) {
-        return true;
-      }
-      return false;
-    },
   },
   methods: {
     listarProdutosCadastrados() {
@@ -413,7 +374,6 @@ export default {
         (this.comprimentoProduto = ""),
         (this.quantidadeProduto = ""),
         (this.diametroProduto = ""),
-        (this.precoProduto = ""),
         (this.marcaProduto = ""),
         (this.id = null),
         (this.image = null);
@@ -450,11 +410,11 @@ export default {
         comprimentoProduto: this.comprimentoProduto,
         quantidadeProduto: this.quantidadeProduto,
         diametroProduto: this.diametroProduto,
-        precoProduto: this.precoProduto,
         marcaProduto: this.marcaProduto,
       };
       this.$http.post(`/produto/`, frm).then((res) => {
-        this.frm.id = res.data.produto.id;
+        console.log("res", res)
+        frm.id = res.data.dados.id;
         this.addProduto(frm);
         this.exibeSnackBar("green", "Produto adicionado");
         this.limparCampos();
@@ -467,6 +427,13 @@ export default {
     },
     ...mapMutations(["editarProdutos"]),
     editarProduto() {
+       if (!this.verificaPreenchimento()) {
+        this.snackbarColor = "#b38b57";
+        this.mensagem = "Todos os dados devem ser preenchidos";
+        this.snackbar = true;
+        return false;
+      }
+      this.mensagem = "";
       let frm = {
         id: this.id,
         codigoProduto: this.codigoProduto,
@@ -481,7 +448,6 @@ export default {
         comprimentoProduto: this.comprimentoProduto,
         quantidadeProduto: this.quantidadeProduto,
         diametroProduto: this.diametroProduto,
-        precoProduto: this.precoProduto,
         marcaProduto: this.marcaProduto,
       };
       this.$http.put(`/produto/${this.id}`, frm).then(() => {
@@ -521,7 +487,6 @@ export default {
         this.comprimentoProduto != "" &&
         this.quantidadeProduto != "" &&
         this.diametroProduto != "" &&
-        this.precoProduto != "" &&
         this.marcaProduto != ""
       ) {
         return true;
@@ -552,7 +517,8 @@ export default {
       this.custoProduto = produto.custo;
       this.nomeProduto = produto.nome;
       this.descProduto = produto.descricao;
-      this.categoriaProduto = this.itensCategoria[(produto.fk_categoria) - 1].nome;
+      this.categoriaProduto =
+        this.itensCategoria[produto.fk_categoria - 1].nome;
       this.tipoProduto = produto.tipo;
       this.pesoProduto = produto.peso;
       this.alturaProduto = produto.altura;
