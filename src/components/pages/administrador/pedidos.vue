@@ -202,7 +202,7 @@
             <v-btn
               color="#b38b57"
               class="btnFilter"
-              @click="salvar(perfilSelecionado[0].pedido)"
+              @click="salvar(perfilSelecionado[0])"
               text
             >
               Salvar
@@ -404,6 +404,7 @@ export default {
       res.data.todosOsPedidos.forEach((ped) => {
         let cliente = ped.pedido.cliente[0];
         let carrinho = ped.pedido.produtos;
+        console.log("carrinhoiiiiiiii", carrinho)
         let cartao = ped.pedido.cartoes;
         let cupom = ped.pedido.cupom;
         let endereco = ped.pedido.endereco[0];
@@ -477,7 +478,8 @@ export default {
       });
     },
 
-    salvar(id) {
+    salvar(ps) {
+      let id = ps.pedido;
       if (this.steps[this.e1].nome == "TROCA EFETUADA") {
         this.finalizaTroca(this.estoque);
       }
@@ -488,6 +490,7 @@ export default {
       this.$http
         .put(`/pedido/status/${id}`, {
           status: this.steps[this.e1].nome,
+          id_produto: ps.carrinho[0].id
         })
         .then((res) => {
           this.editarPedido([id, this.steps[this.e1].nome]);
