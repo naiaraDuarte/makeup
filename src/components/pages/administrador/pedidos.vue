@@ -170,7 +170,12 @@
                   </v-stepper>
 
                   <div class="centraliza mt-5">
-                    <v-btn class="mx-2" text @click="nextStep('sub')">
+                    <v-btn
+                      class="mx-2"
+                      text
+                      @click="nextStep('sub')"
+                      :disabled="desabilita"
+                    >
                       <!-- {{ steps[e1 - 1].nome }} -->
                       Voltar
                     </v-btn>
@@ -178,6 +183,7 @@
                       class="mx-2"
                       color="primary"
                       @click="nextStep('add')"
+                      :disabled="desabilita"
                       v-if="e1 != steps.length - 1"
                     >
                       ir
@@ -328,6 +334,7 @@ export default {
       e1: 1,
       steps: [],
       idSelecionado: null,
+      desabilita: false,
       stepsTroca: [
         {
           nome: "TROCA AUTORIZADA",
@@ -404,7 +411,6 @@ export default {
       res.data.todosOsPedidos.forEach((ped) => {
         let cliente = ped.pedido.cliente[0];
         let carrinho = ped.pedido.produtos;
-        console.log("carrinhoiiiiiiii", carrinho)
         let cartao = ped.pedido.cartoes;
         let cupom = ped.pedido.cupom;
         let endereco = ped.pedido.endereco[0];
@@ -490,7 +496,7 @@ export default {
       this.$http
         .put(`/pedido/status/${id}`, {
           status: this.steps[this.e1].nome,
-          id_produto: ps.carrinho[0].id
+          id_produto: ps.carrinho[0].id,
         })
         .then((res) => {
           this.editarPedido([id, this.steps[this.e1].nome]);
@@ -514,12 +520,19 @@ export default {
     getDados(status, e) {
       this.steps = [];
       let fluxo = this.conteudoSteps.filter((val) => val.nome == status);
+      // fluxo = fluxo[0];
       let stepsTroca = this.stepsTroca.filter((val) => val.nome == status);
       let stepsCancelamento = this.stepsCancelamento.filter(
         (val) => val.nome == status
       );
 
       if (fluxo.length > 0) {
+        if (fluxo[0].valor && fluxo[0].valor == "rejeitada") {
+          this.desabilita = true;
+        } else {
+          this.desabilita = false;
+        }
+
         this.conteudoSteps.forEach((e) => {
           if (e.status == fluxo[0].status) {
             this.steps.push(e);
