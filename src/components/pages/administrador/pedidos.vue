@@ -132,25 +132,26 @@
                     v-for="(item, i) in perfilSelecionado[0].troca"
                     :key="i"
                   >
-                    <v-col lg="2">
+                    <v-col lg="1">
                       <p>{{ item.cod }}</p>
                     </v-col>
-                    <v-col lg="5">
+                    <v-col lg="3">
                       <p>{{ item.nome }}</p>
                     </v-col>
-                    <v-col lg="2">
+                    <v-col lg="1">
                       <p>{{ $n(parseFloat(item.custo), "currency") }}</p>
                     </v-col>
-                    <v-col lg="2">
-                      <p>{{ item.qtd }}</p>
+                    <v-col lg="5">
+                      <!-- ARRUMAR TÁ DANDO LOOP -->
+                      <!-- <step :e1="e1" :steps="getDadosNovamente(item.status, 1)" /> -->
                     </v-col>
                   </v-row>
                 </v-col>
 
-                <v-col lg="12">
-                  <p><b>Histórico de compras</b></p>
+                <v-col lg="12" v-else>
+                  <!-- <p><b>Histórico de compras</b></p> -->
 
-                  <v-stepper alt-labels elevation="0">
+                  <!-- <v-stepper alt-labels elevation="0">
                     <v-stepper v-model="e1">
                       <v-stepper-header elevation="0" style="box-shadow: none">
                         <template v-for="(item, i) in steps">
@@ -167,8 +168,8 @@
                         </template>
                       </v-stepper-header>
                     </v-stepper>
-                  </v-stepper>
-
+                  </v-stepper> -->
+                  <step :e1="e1" :steps="steps" />
                   <div class="centraliza mt-5">
                     <v-btn
                       class="mx-2"
@@ -176,7 +177,6 @@
                       @click="nextStep('sub')"
                       :disabled="desabilita"
                     >
-                      <!-- {{ steps[e1 - 1].nome }} -->
                       Voltar
                     </v-btn>
                     <v-btn
@@ -187,16 +187,7 @@
                       v-if="e1 != steps.length - 1"
                     >
                       ir
-                      <!-- {{ steps[e1 + 1].nome }} -->
                     </v-btn>
-                    <!-- <v-btn
-                      class="mx-2"
-                      color="primary"
-                      @click="nextStep('add')"
-                      v-else
-                    >
-                      Finalizado
-                    </v-btn> -->
                   </div>
                 </v-col>
               </v-row>
@@ -300,7 +291,11 @@
 </template>
 <script>
 import { mapMutations } from "vuex";
+import step from "../../ui/step.vue";
 export default {
+  components: {
+    step,
+  },
   data() {
     return {
       situacao: true,
@@ -466,11 +461,12 @@ export default {
     });
   },
   watch: {
-    steps(val) {
-      if (this.e1 > val) {
-        this.e1 = val;
-      }
-    },
+    // steps(val) {
+    //   if (this.e1 > val) {
+    //     this.e1 = val;
+    //     console.log(val)
+    //   }
+    // },
   },
   methods: {
     ...mapMutations(["editarPedido"]),
@@ -511,7 +507,8 @@ export default {
       );
       this.steps = [];
       this.resetConteudoStepsTroca();
-      await this.getDados(this.perfilSelecionado[0].status, 0);
+      this.mudanca = parseInt(Math.random() * 255);
+      // await this.getDados(this.perfilSelecionado[0].status, 0);
       // await this.getStatus(this.perfilSelecionado[0].status);
       this.idSelecionado = id;
       this.dialog = !this.dialog;
@@ -559,6 +556,7 @@ export default {
       }
 
       this.e1 = this.steps.findIndex((step) => step.nome == status);
+      return this.steps;
     },
     mudaStatus(val) {
       this.estoque = val;
