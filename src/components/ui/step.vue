@@ -29,5 +29,10 @@ export default {
     e1: Number,
     steps: Array
   },
+  watch: {
+    e1(){
+      console.log(this.steps, this.e1)
+    }
+  }
 };
 </script>

@@ -47,9 +47,10 @@
     <v-row justify="center">
       <v-dialog
         v-model="dialog"
+
         persistent
         max-width="1000px"
-        v-if="idSelecionado != null"
+        v-if="idSelecionado != null && dialog == true"
       >
         <v-card>
           <v-card-title>
@@ -143,33 +144,13 @@
                     </v-col>
                     <v-col lg="5">
                       <!-- ARRUMAR TÁ DANDO LOOP -->
-                      <!-- <step :e1="e1" :steps="getDadosNovamente(item.status, 1)" /> -->
+                      <step :e1="e1" :steps="getDados(item.status, 1)" />
                     </v-col>
                   </v-row>
                 </v-col>
 
                 <v-col lg="12" v-else>
-                  <!-- <p><b>Histórico de compras</b></p> -->
-
-                  <!-- <v-stepper alt-labels elevation="0">
-                    <v-stepper v-model="e1">
-                      <v-stepper-header elevation="0" style="box-shadow: none">
-                        <template v-for="(item, i) in steps">
-                          <v-stepper-step
-                            :key="`${i}-step`"
-                            :complete="e1 > i"
-                            :step="i"
-                            class="centraliza letra"
-                          >
-                            {{ item.nome }}
-                          </v-stepper-step>
-
-                          <v-divider v-if="i !== steps" :key="i"></v-divider>
-                        </template>
-                      </v-stepper-header>
-                    </v-stepper>
-                  </v-stepper> -->
-                  <step :e1="e1" :steps="steps" />
+                  <step :e1="e1" :steps="getDados(perfilSelecionado[0].status, 0)" />
                   <div class="centraliza mt-5">
                     <v-btn
                       class="mx-2"
@@ -402,7 +383,6 @@ export default {
   },
   mounted() {
     this.$http.get(`/pedido/`).then((res) => {
-      console.log("CVFDVF", res.data.todosOsPedidos);
       res.data.todosOsPedidos.forEach((ped) => {
         let cliente = ped.pedido.cliente[0];
         let carrinho = ped.pedido.produtos;
