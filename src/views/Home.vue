@@ -300,7 +300,7 @@ export default {
           cod: prod.cod,
           src: prod.imagem,
           nome: prod.nome,
-          preco: prod.custo,
+          preco: prod.preco,
           qtd: prod.quantidade,
         });
       });

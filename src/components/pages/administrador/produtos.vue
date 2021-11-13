@@ -33,7 +33,7 @@
             <v-btn id="editarProduto" @click="getProduto(item.id)" icon>
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
-            <v-btn id="deletarProduto" @click="removeProduto(item.id)" icon>
+            <v-btn id="deletarProduto" @click="remover(item.id)" icon>
               <v-icon>mdi-delete</v-icon>
             </v-btn>
           </v-row>
@@ -298,7 +298,7 @@
               color="white"
               class="btnSubmit"
               id="deletarProduto"
-              @click="sim = true"
+              @click="removeProduto"
             >
               Sim
             </v-btn>
@@ -323,7 +323,6 @@ export default {
   components: {},
   data() {
     return {
-      sim: false,
       search: "",
       remove: false,
       txtDoBotao: "Continuar",
@@ -393,24 +392,6 @@ export default {
       this.adicionarProduto = !this.adicionarProduto;
       this.limparProduto();
     },
-    limparCampos() {
-      (this.codigoProduto = ""),
-        (this.custoProduto = ""),
-        (this.nomeProduto = ""),
-        (this.descProduto = ""),
-        (this.categoriaProduto = ""),
-        (this.tipoProduto = ""),
-        (this.pesoProduto = ""),
-        (this.larguraProduto = ""),
-        (this.alturaProduto = ""),
-        (this.comprimentoProduto = ""),
-        (this.quantidadeProduto = ""),
-        (this.diametroProduto = ""),
-        (this.marcaProduto = ""),
-        (this.id = null),
-        (this.image = null);
-      this.faseCadastro = 0;
-    },
     PreviewImage() {
       var oFReader = new FileReader();
       oFReader.readAsDataURL(document.getElementById("uploadImage").files[0]);
@@ -444,6 +425,7 @@ export default {
         diametroProduto: this.diametroProduto,
         marcaProduto: this.marcaProduto,
       };
+      console.log(frm.categoriaProduto.id);
       this.$http.post(`/produto/`, frm).then((res) => {
         console.log("res", res);
         frm.id = res.data.dados.id;
@@ -482,6 +464,7 @@ export default {
         diametroProduto: this.diametroProduto,
         marcaProduto: this.marcaProduto,
       };
+      console.log(frm.categoriaProduto)
       this.$http.put(`/produto/${this.id}`, frm).then(() => {
         // this.editarProdutos(frm);
         this.listarProdutosCadastrados();
@@ -491,23 +474,21 @@ export default {
       });
     },
     ...mapMutations(["removeProdutos"]),
-    removeProduto(id) {
+    remover(id) {
+      this.id = id;
       this.remove = !this.remove;
-      console.log("sim", this.sim)
-
-      if (this.sim == true) {
-        this.$http.delete(`/produto/${id}`).then(() => {
-          this.removeProdutos(id);
-          this.exibeSnackBar("green", "Produto removido");
-          this.sim = false;
-          this.remove = !this.remove;
-        });
-      }
+    },
+    removeProduto() {
+      this.$http.delete(`/produto/${this.id}`).then(() => {
+        this.removeProdutos(this.id);
+        this.remove = !this.remove;
+        this.id = null;
+        this.exibeSnackBar("green", "Produto removido");
+      });
     },
     salvarProduto() {
       if (this.id == null) this.addProdutos();
       else this.editarProduto(this.id);
-
       this.limparProduto();
       this.idProduto = null;
       this.adicionarProduto = !this.adicionarProduto;
@@ -570,20 +551,21 @@ export default {
       this.marcaProduto = produto.marca;
     },
     limparProduto() {
-      (this.codigoProduto = ""),
-        (this.custoProduto = ""),
-        (this.nomeProduto = ""),
-        (this.descProduto = ""),
-        (this.categoriaProduto = ""),
-        (this.tipoProduto = ""),
-        (this.pesoProduto = ""),
-        (this.larguraProduto = ""),
-        (this.alturaProduto = ""),
-        (this.comprimentoProduto = ""),
-        (this.quantidadeProduto = ""),
-        (this.diametroProduto = ""),
-        (this.precoProduto = ""),
-        (this.marcaProduto = "");
+      this.codigoProduto = "";
+      this.custoProduto = "";
+      this.nomeProduto = "";
+      this.descProduto = "";
+      this.categoriaProduto = "";
+      this.tipoProduto = "";
+      this.pesoProduto = "";
+      this.larguraProduto = "";
+      this.alturaProduto = "";
+      this.comprimentoProduto = "";
+      this.quantidadeProduto = "";
+      this.diametroProduto = "";
+      this.precoProduto = "";
+      this.marcaProduto = "";
+      this.faseCadastro = 0;
     },
     trocaValores() {
       if (this.faseCadastro == 0) {
