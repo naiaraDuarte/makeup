@@ -47,7 +47,6 @@
     <v-row justify="center">
       <v-dialog
         v-model="dialog"
-
         persistent
         max-width="1000px"
         v-if="idSelecionado != null && dialog == true"
@@ -139,18 +138,32 @@
                     <v-col lg="3">
                       <p>{{ item.nome }}</p>
                     </v-col>
-                    <v-col lg="1">
+                    <v-col lg="2">
                       <p>{{ $n(parseFloat(item.custo), "currency") }}</p>
                     </v-col>
-                    <v-col lg="5">
-                      <!-- ARRUMAR TÁ DANDO LOOP -->
-                      <step :e1="e1" :steps="getDados(item.status, 1)" />
+                    <v-col lg="2">
+                      <p>{{ item.status }}</p>
+                      <!-- <step :e1="e1" :steps="getDados(item.status, 1)" /> -->
+                    </v-col>
+                    <v-col lg="1">
+                      <v-btn
+                        elevation="0"
+                        icon
+                        @click="
+                          editarStatusTroca(
+                            perfilSelecionado[0].pedido,
+                            item.id,
+                            item.status
+                          )
+                        "
+                        ><v-icon>mdi-pencil-outline</v-icon></v-btn
+                      >
                     </v-col>
                   </v-row>
                 </v-col>
 
                 <v-col lg="12" v-else>
-                  <step :e1="e1" :steps="getDados(perfilSelecionado[0].status, 0)" />
+                  <step :e1="e1" :steps="steps" />
                   <div class="centraliza mt-5">
                     <v-btn
                       class="mx-2"
@@ -189,6 +202,62 @@
         </v-card>
       </v-dialog>
     </v-row>
+    <v-dialog
+      v-model="modalDeTrocaUnica"
+      persistent
+      max-width="800px"
+      v-if="idSelecionado != null && modalDeTrocaUnica == true"
+    >
+      <v-card>
+        <v-card-title>
+          <v-row>
+            <v-col lg="12" class="espacamentoEntreEl px-5">
+              <span class="text-h5">Troca de status de item </span>
+            </v-col>
+          </v-row>
+        </v-card-title>
+        <v-divider></v-divider>
+        <v-card-text>
+          <v-container>
+            <v-row class="espacamentoEntreEl px-2 mt-2">
+              <v-col lg="12" class="dados"> </v-col>
+              <v-col lg="12">
+                <step :e1="e1" :steps="trocaUnica.steps" />
+                <div class="centraliza mt-5">
+                  <v-btn
+                    class="mx-2"
+                    text
+                    @click="nextStep('sub')"
+                  >
+                    Voltar
+                  </v-btn>
+                  <v-btn
+                    class="mx-2"
+                    color="primary"
+                    @click="nextStep('add')"
+                    v-if="e1 != steps.length - 1"
+                  >
+                    ir
+                  </v-btn>
+                </div>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn text @click="modalDeTrocaUnica = false"> Cancelar </v-btn>
+          <v-btn
+            color="#b38b57"
+            class="btnFilter"
+            @click="salvarTrocaUnica()"
+            text
+          >
+            Salvar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <v-dialog v-model="voltaEstoque" max-width="450">
       <v-card>
         <v-card-title class="text-h5">
@@ -311,6 +380,8 @@ export default {
       steps: [],
       idSelecionado: null,
       desabilita: false,
+      trocaUnica: {},
+      modalDeTrocaUnica: false,
       stepsTroca: [
         {
           nome: "TROCA AUTORIZADA",
@@ -481,6 +552,19 @@ export default {
           this.limpa();
         });
     },
+    salvarTrocaUnica(){
+      console.log("Vai salvar nessa merda");
+    },
+    editarStatusTroca(idPedido, idTroca, status) {
+      console.log(idPedido, idTroca, status);
+      this.trocaUnica = {
+        idPedido: idPedido,
+        idTroca: idTroca, 
+        status: status,
+        steps: this.getDados(status)
+      }
+      this.modalDeTrocaUnica = true;
+    },
     async verMais(id) {
       this.perfilSelecionado = this.desserts.filter(
         (clientes) => clientes.acoes == id
@@ -488,7 +572,7 @@ export default {
       this.steps = [];
       this.resetConteudoStepsTroca();
       this.mudanca = parseInt(Math.random() * 255);
-      // await this.getDados(this.perfilSelecionado[0].status, 0);
+      await this.getDados(this.perfilSelecionado[0].status, 0);
       // await this.getStatus(this.perfilSelecionado[0].status);
       this.idSelecionado = id;
       this.dialog = !this.dialog;
