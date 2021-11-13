@@ -388,7 +388,6 @@ export default {
     this.$http
       .get(`/pedido/${localStorage.getItem("usuarioId")}`)
       .then((res) => {
-        console.log("BD", res)
         res.data.todosOsPedidos.forEach((ped) => {
           let carrinho = ped.pedido.produtos;
           let cartao = ped.pedido.cartoes;
@@ -455,13 +454,10 @@ export default {
         }
       }
 
-      console.log("AMOR TEU", result, tempObj);
-
       // And if you want to formet in a different way then
       for (const key in result) {
         result[key].quantity = tempObj[result[key].id];
       }
-      console.log(result);
       return result;
     },
     removeItensDuplicados(arr) {
@@ -469,7 +465,6 @@ export default {
         return !this[JSON.stringify(a)] && (this[JSON.stringify(a)] = true);
       }, Object.create(null));
 
-      console.log("NOVO", novaArr);
       return novaArr;
     },
     verificaTroca(status) {

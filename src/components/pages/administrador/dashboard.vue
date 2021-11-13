@@ -18,6 +18,7 @@
                 label="Selecione um periodo"
                 prepend-icon="mdi-calendar"
                 readonly
+                id="calendar"
                 v-bind="attrs"
                 v-on="on"
               ></v-text-field>
@@ -48,9 +49,9 @@
         <v-col lg="12">
           <AreaChart :area="area" :altera="altera" @canva="canvas = $event" />
         </v-col>
-        <v-col lg="12">
+        <!-- <v-col lg="12">
           <AreaChart :area="area" :altera="altera" @canva="canvas = $event" />
-        </v-col>
+        </v-col> -->
         <!-- <v-col lg="12">
           <LineChart />
         </v-col> -->
@@ -169,6 +170,8 @@ export default {
           labels: this.mes,
           datasets: this.datasets,
         };
+
+        console.log(this.area)
         this.altera = parseInt(Math.random() * 255);
       });
     },
