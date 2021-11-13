@@ -12,6 +12,7 @@
           label="Search"
           id="search"
           single-line
+          id= "search"
           hide-details
         ></v-text-field>
       </v-card-title>
@@ -491,12 +492,17 @@ export default {
       if (this.steps[this.e1].nome == "CANCELAMENTO EFETUADO") {
         this.finalizaCancelamento(this.estoque);
       }
+       console.log("sjsj", ps.carrinho[0])
       this.$http
         .put(`/pedido/status/${id}`, {
           status: this.steps[this.e1].nome,
-          id_produto: ps.carrinho[0].id,
-        })
+          id_produto: ps.carrinho[0].id, 
+          fk_produto: ps.carrinho[0].fk_produto,
+        
+        })    
+       
         .then((res) => {
+          console.log("jj", this.steps[this.e1])
           this.editarPedido([id, this.steps[this.e1].nome]);
           let index = this.desserts.findIndex((e) => e.pedido == id);
           this.desserts[index].status = res.data.status;
