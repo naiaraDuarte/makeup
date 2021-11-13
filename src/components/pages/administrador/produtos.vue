@@ -427,7 +427,6 @@ export default {
       };
       console.log(frm.categoriaProduto.id);
       this.$http.post(`/produto/`, frm).then((res) => {
-        console.log("res", res);
         frm.id = res.data.dados.id;
         this.addProduto(frm);
         this.exibeSnackBar("green", "Produto adicionado");

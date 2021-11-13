@@ -10,6 +10,7 @@
           v-model="search"
           append-icon="mdi-magnify"
           label="Search"
+          id="search"
           single-line
           id= "search"
           hide-details
@@ -408,7 +409,6 @@ export default {
   },
   mounted() {
     this.$http.get(`/pedido/`).then((res) => {
-      console.log("CVFDVF", res.data.todosOsPedidos);
       res.data.todosOsPedidos.forEach((ped) => {
         let cliente = ped.pedido.cliente[0];
         let carrinho = ped.pedido.produtos;
@@ -462,8 +462,6 @@ export default {
           acoes: id,
         });
       });
-
-      console.log(this.desserts);
     });
   },
   watch: {

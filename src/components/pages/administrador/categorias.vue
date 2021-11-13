@@ -142,7 +142,6 @@ export default {
           });
         });
       });
-      console.log(this.$store.state.categorias);
     },
     gerar() {
       this.adicionarCategoria = !this.adicionarCategoria;
@@ -192,7 +191,6 @@ export default {
         mgLucro: this.mgLucro,
       };
       this.$http.put(`/categoria/${this.id}`, frm).then(() => {
-           console.log("dentro")
         this.editarCategoria(frm);
         this.exibeSnackBar("green", "Editado com sucesso!!!");
        
@@ -200,7 +198,6 @@ export default {
       });
     },
     exibeSnackBar(cor, msg) {
-        console.log("snack")
       this.snackbarColor = cor;
       this.mensagem = msg;
       this.snackbar = true;

@@ -170,6 +170,8 @@ export default {
           labels: this.mes,
           datasets: this.datasets,
         };
+
+        console.log(this.area)
         this.altera = parseInt(Math.random() * 255);
       });
     },

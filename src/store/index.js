@@ -174,7 +174,6 @@ export default new Vuex.Store({
             state.pedidos.splice(index, 1);
         },
         addCategoria(state, payload) {
-            console.log("adicionar")
             state.categorias.push(payload);
         },
         editarCategoria(state, payload) {
