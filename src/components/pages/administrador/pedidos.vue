@@ -11,8 +11,7 @@
           append-icon="mdi-magnify"
           label="Search"
           id="search"
-          single-line
-          id= "search"
+          single-line          
           hide-details
         ></v-text-field>
       </v-card-title>

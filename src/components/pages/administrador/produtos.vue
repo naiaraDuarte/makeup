@@ -28,6 +28,20 @@
         locale="pt-br"
         :search="search"
       >
+      <template v-slot:[`item.ativo`]="{ item }">
+          <v-row align="center" class="mx-0">
+            <v-rating
+              :value="item.ativo"
+              color="green"
+              dense
+              half-increments
+              readonly
+              size="14"
+            ></v-rating>
+
+            <!-- <div class="grey--text ms-4">{{ item.ativo }}</div> -->
+          </v-row>
+        </template>
         <template v-slot:[`item.acoes`]="{ item }">
           <v-row align="center" class="mx-0 mr-4">
             <v-btn id="editarProduto" @click="getProduto(item.id)" icon>
@@ -74,7 +88,9 @@
                 <v-text-field
                   v-model="custoProduto"
                   :counter="10"
+                  type="number"
                   label="Custo"
+                  v-mask="['R$#,##', 'R$##,##', 'R$###,##', 'R$####,##']"
                   required
                 ></v-text-field>
               </v-col>
@@ -279,33 +295,59 @@
     </v-dialog>
     <v-dialog v-model="remove" persistent max-width="600px">
       <v-card>
-        <v-row align="center" class="mx-0 mr-4">
-          <v-col>
-            <h2>Deseja remover esse produto?</h2>
-          </v-col>
-        </v-row>
-        <v-row class="mx-0 mr-4 mb-5 alinhamento">
-          <v-col>
-            <v-btn
-              elevation="0"
-              color="white"
-              class="btnSubmit"
-              @click="remove = false"
-              >Cancelar</v-btn
-            >
-            <v-btn
-              elevation="3"
-              color="white"
-              class="btnSubmit"
-              id="deletarProduto"
-              @click="removeProduto"
-            >
-              Sim
-            </v-btn>
-          </v-col>
-        </v-row>
+        <v-card-title class="text-h5"> Motivo da inativação </v-card-title>
+        <v-card-text>
+          <v-row>
+            <v-col lg="6">
+              <v-combobox
+                v-model="inativacaoProduto"
+                :items="itensInativacao"
+                label="Categoria inativação"
+                id="inativacao"
+                item-text="nome"
+                item-value="id"
+                return-object
+                clearable
+                required
+              ></v-combobox>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col class="px-3">
+              <v-textarea
+                v-model="obsInativacao"
+                outlined
+                name="input-7-4"
+                label="Motivo da inativação:"
+                :counter="255"
+                id="observacao"
+              ></v-textarea>
+            </v-col>
+          </v-row>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            elevation="0"
+            color="white"
+            class="btnSubmit"
+            @click="remove = false"
+            >Cancelar</v-btn
+          >
+          <v-btn
+            elevation="3"
+            color="white"
+            class="btnSubmit"
+            id="deletarProduto"
+            @click="removeProduto"
+          >
+            Confirmar
+          </v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
+
     <v-snackbar v-model="snackbar" :color="snackbarColor">
       <h4 style="font-weight: 100">{{ mensagem }}</h4>
       <template v-slot:action="{ attrs }">
@@ -323,6 +365,8 @@ export default {
   components: {},
   data() {
     return {
+      inativacaoProduto: "",
+      obsInativacao: "",
       search: "",
       remove: false,
       txtDoBotao: "Continuar",
@@ -350,10 +394,12 @@ export default {
       snackbarColor: "",
       adicionarProduto: false,
       itensCategoria: [],
+      itensInativacao: [],
       headers: [
         { text: "Produto", value: "nome" },
         { text: "Marca", value: "marca" },
-        { text: "Quantidade", value: "quant" },
+        { text: "Quantidade", value: "quantidade" },
+        { text: "Ativo", value: "ativo" },        
         { text: "Ações", value: "acoes" },
       ],
     };
@@ -361,6 +407,8 @@ export default {
   created() {},
   mounted() {
     this.listarProdutosCadastrados();
+    this.getCategoria();
+    this.getMotivoInativacao();
   },
   activated() {
     this.trocaValores();
@@ -379,16 +427,17 @@ export default {
     },
   },
   methods: {
-    listarProdutosCadastrados() {
+    listarProdutosCadastrados() {     
       this.$store.state.produtos = [];
       this.$http.get(`/produto/`).then((res) => {
+         console.log("produtos", res)
         res.data.dados.forEach((e) => {
-          this.$store.state.produtos.push(e);
+          this.$store.state.produtos.push(e);          
         });
-      });
+        console.log(this.$store.state.produtos)
+      });     
     },
     gerar() {
-      this.getCategoria();
       this.adicionarProduto = !this.adicionarProduto;
       this.limparProduto();
     },
@@ -463,7 +512,7 @@ export default {
         diametroProduto: this.diametroProduto,
         marcaProduto: this.marcaProduto,
       };
-      console.log(frm.categoriaProduto)
+      console.log(frm.categoriaProduto);
       this.$http.put(`/produto/${this.id}`, frm).then(() => {
         // this.editarProdutos(frm);
         this.listarProdutosCadastrados();
@@ -478,11 +527,16 @@ export default {
       this.remove = !this.remove;
     },
     removeProduto() {
-      this.$http.delete(`/produto/${this.id}`).then(() => {
+      let frm = {
+        id: this.id,
+        observacao: this.obsInativacao,
+        categoriaInativacao: this.inativacaoProduto,
+      };
+      this.$http.put(`/produto/inativacao/${this.id}`,frm).then(() => {
         this.removeProdutos(this.id);
         this.remove = !this.remove;
         this.id = null;
-        this.exibeSnackBar("green", "Produto removido");
+        this.exibeSnackBar("green", "Inativado com sucesso!");
       });
     },
     salvarProduto() {
@@ -511,6 +565,16 @@ export default {
         return true;
       }
       return false;
+    },
+    getMotivoInativacao() {
+      this.$http.get(`/inativacao/`).then((res) => {
+        res.data.dados.forEach((e) => {
+          this.itensInativacao.push({
+            id: e.id,
+            nome: e.nome,
+          });
+        });
+      });
     },
     getCategoria() {
       this.$http.get(`/categoria/`).then((res) => {
