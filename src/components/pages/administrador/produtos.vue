@@ -277,6 +277,35 @@
         </v-row>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="remove" persistent max-width="600px">
+      <v-card>
+        <v-row align="center" class="mx-0 mr-4">
+          <v-col>
+            <h2>Deseja remover esse produto?</h2>
+          </v-col>
+        </v-row>
+        <v-row class="mx-0 mr-4 mb-5 alinhamento">
+          <v-col>
+            <v-btn
+              elevation="0"
+              color="white"
+              class="btnSubmit"
+              @click="remove = false"
+              >Cancelar</v-btn
+            >
+            <v-btn
+              elevation="3"
+              color="white"
+              class="btnSubmit"
+              id="deletarProduto"
+              @click="sim = true"
+            >
+              Sim
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-card>
+    </v-dialog>
     <v-snackbar v-model="snackbar" :color="snackbarColor">
       <h4 style="font-weight: 100">{{ mensagem }}</h4>
       <template v-slot:action="{ attrs }">
@@ -294,6 +323,9 @@ export default {
   components: {},
   data() {
     return {
+      sim: false,
+      search: "",
+      remove: false,
       txtDoBotao: "Continuar",
       faseCadastro: 0,
       codigoProduto: "",
@@ -413,7 +445,7 @@ export default {
         marcaProduto: this.marcaProduto,
       };
       this.$http.post(`/produto/`, frm).then((res) => {
-        console.log("res", res)
+        console.log("res", res);
         frm.id = res.data.dados.id;
         this.addProduto(frm);
         this.exibeSnackBar("green", "Produto adicionado");
@@ -427,7 +459,7 @@ export default {
     },
     ...mapMutations(["editarProdutos"]),
     editarProduto() {
-       if (!this.verificaPreenchimento()) {
+      if (!this.verificaPreenchimento()) {
         this.snackbarColor = "#b38b57";
         this.mensagem = "Todos os dados devem ser preenchidos";
         this.snackbar = true;
@@ -460,10 +492,17 @@ export default {
     },
     ...mapMutations(["removeProdutos"]),
     removeProduto(id) {
-      this.$http.delete(`/produto/${id}`).then(() => {
-        this.removeProdutos(id);
-        this.exibeSnackBar("green", "Produto removido");
-      });
+      this.remove = !this.remove;
+      console.log("sim", this.sim)
+
+      if (this.sim == true) {
+        this.$http.delete(`/produto/${id}`).then(() => {
+          this.removeProdutos(id);
+          this.exibeSnackBar("green", "Produto removido");
+          this.sim = false;
+          this.remove = !this.remove;
+        });
+      }
     },
     salvarProduto() {
       if (this.id == null) this.addProdutos();
@@ -512,6 +551,7 @@ export default {
       let produto = this.$store.state.produtos.filter(
         (produto) => produto.id == id
       );
+      console.log("noems do store", produto[0]);
       produto = produto[0];
       this.codigoProduto = produto.cod;
       this.custoProduto = produto.custo;
@@ -557,4 +597,10 @@ export default {
   },
 };
 </script>
+<style>
+.alinhamento {
+  display: flex;
+  justify-content: end;
+}
+</style>
 

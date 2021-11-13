@@ -166,6 +166,7 @@ export default new Vuex.Store({
         editarPedido(state, payload) {
             let index = state.pedidos.findIndex(pdt => pdt.id == payload[0]);
             state.pedidos[index].status = payload[1];
+            console.log("auuuuu", state.pedidos[index].status)
             Vue.set(state.pedidos, index, state.pedidos[index]);
         },
         removeItemPedido(state, payload) {

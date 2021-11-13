@@ -11,6 +11,7 @@
           append-icon="mdi-magnify"
           label="Search"
           single-line
+          id= "search"
           hide-details
         ></v-text-field>
       </v-card-title>
@@ -404,7 +405,6 @@ export default {
       res.data.todosOsPedidos.forEach((ped) => {
         let cliente = ped.pedido.cliente[0];
         let carrinho = ped.pedido.produtos;
-        console.log("carrinhoiiiiiiii", carrinho)
         let cartao = ped.pedido.cartoes;
         let cupom = ped.pedido.cupom;
         let endereco = ped.pedido.endereco[0];
@@ -487,12 +487,17 @@ export default {
       if (this.steps[this.e1].nome == "CANCELAMENTO EFETUADO") {
         this.finalizaCancelamento(this.estoque);
       }
+       console.log("sjsj", ps.carrinho[0])
       this.$http
         .put(`/pedido/status/${id}`, {
           status: this.steps[this.e1].nome,
-          id_produto: ps.carrinho[0].id
-        })
+          id_produto: ps.carrinho[0].id, 
+          fk_produto: ps.carrinho[0].fk_produto,
+        
+        })    
+       
         .then((res) => {
+          console.log("jj", this.steps[this.e1])
           this.editarPedido([id, this.steps[this.e1].nome]);
           let index = this.desserts.findIndex((e) => e.pedido == id);
           this.desserts[index].status = res.data.status;
