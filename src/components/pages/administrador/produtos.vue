@@ -29,14 +29,27 @@
         :search="search"
       >
       <template v-slot:[`item.ativo`]="{ item }">
-          <v-row align="center" class="mx-0">
+           <v-row align="center" class="mx-0">
+            <!-- <v-switch -->
+      <!-- v-model="item.ativo"      
+      :value="item.ativo" 
+      readonly
+    ></v-switch> -->
             <v-rating
+            v-if="item.ativo"
               :value="item.ativo"
               color="green"
-              dense
-              half-increments
+              dense              
               readonly
-              size="14"
+              size="18"
+            ></v-rating>
+                <v-rating
+            v-else
+              :value="!item.ativo"
+              color="red"
+              dense              
+              readonly
+              size="18"
             ></v-rating>
 
             <!-- <div class="grey--text ms-4">{{ item.ativo }}</div> -->
