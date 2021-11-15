@@ -125,7 +125,7 @@
                     <p>{{ item.nome }}</p>
                   </v-col>
                   <v-col lg="2">
-                    <p>{{ $n(parseFloat(item.custo), "currency") }}</p>
+                    <p>{{ $n(parseFloat(item.preco), "currency") }}</p>
                   </v-col>
                   <v-col lg="2">
                     <p>{{ item.status }}</p>
@@ -135,11 +135,7 @@
                       elevation="0"
                       icon
                       @click="
-                        editarStatusTroca(
-                          selecionado.pedido,
-                          item.id,
-                          item.status
-                        )
+                        editarStatusTroca(selecionado, item.id, item.status)
                       "
                       ><v-icon>mdi-pencil-outline</v-icon></v-btn
                     >
@@ -150,12 +146,7 @@
               <v-col lg="12" v-else>
                 <step :e1="e1" :steps="steps" />
                 <div class="centraliza mt-5">
-                  <v-btn
-                    class="mx-2"
-                    text
-                    @click="controleStep('sub')"
-                    :disabled="desabilita"
-                  >
+                  <v-btn class="mx-2" text @click="controleStep('sub')" :disabled="steps[e1].nome == selecionado.status">
                     Voltar
                   </v-btn>
                   <v-btn
@@ -186,7 +177,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="voltaEstoque" max-width="450">
+    <v-dialog v-model="voltaEstoque" persistent max-width="450">
       <v-card>
         <v-card-title class="text-h5">
           Deseja voltar esses produtos para o estoque?
@@ -225,7 +216,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="decisaoModal" max-width="450">
+    <v-dialog v-model="decisaoModal" persistent max-width="450">
       <v-card>
         <v-card-title class="text-h5"> Autorizar ou rejeitar?</v-card-title>
 
@@ -268,7 +259,7 @@
               <v-col lg="12">
                 <step :e1="e1" :steps="steps" />
                 <div class="centraliza mt-5">
-                  <v-btn class="mx-2" text @click="controleStep('sub')">
+                  <v-btn class="mx-2" text @click="controleStep('sub')" :disabled="steps[e1].nome == trocaUnica.status">
                     Voltar
                   </v-btn>
                   <v-btn
@@ -409,49 +400,54 @@ export default {
     };
   },
   mounted() {
-    this.$http.get(`/pedido/`).then((res) => {
-      res.data.todosOsPedidos.forEach((ped) => {
-        let cliente = ped.pedido.cliente[0];
-        let carrinho = ped.pedido.produtos;
-        let endereco = ped.pedido.endereco[0];
-        let status = ped.pedido.status.toUpperCase();
-        let total = ped.pedido.valor;
-        let id = ped.pedido.id;
-        let data = ped.pedido.data_cadastro;
-
-        let troca = [];
-        if (this.buscaFluxo(status) == "troca" && status != "TROCA EFETUADA") {
-          carrinho.forEach((item) => {
-            troca.push(item);
-          });
-        } else if (
-          this.buscaFluxo(status) == true &&
-          status != "CANCELAMENTO EFETUADO"
-        ) {
-          troca = carrinho;
-        }
-
-        this.dados.push({
-          pedido: id,
-          carrinho: carrinho,
-          nome: cliente.nome,
-          cpf: cliente.cpf,
-          cliente: cliente,
-          status: status,
-          fluxo: ped.fluxo,
-          totalPago: total,
-          troca: troca,
-          data: data,
-          endereco: endereco,
-          acoes: id,
-        });
-      });
-    });
+    this.dados = [];
+    this.pegaRegistros();
   },
   methods: {
     ...mapMutations(["editarPedido"]),
     ...mapMutations(["editaParaTroca"]),
+    pegaRegistros() {
+      this.$http.get(`/pedido/`).then((res) => {
+        res.data.todosOsPedidos.forEach((ped) => {
+          let cliente = ped.pedido.cliente[0];
+          let carrinho = ped.pedido.produtos;
+          let endereco = ped.pedido.endereco[0];
+          let status = ped.pedido.status.toUpperCase();
+          let total = ped.pedido.valor;
+          let id = ped.pedido.id;
+          let data = ped.pedido.data_cadastro;
 
+          let troca = [];
+          if (
+            this.buscaFluxo(status) == "troca" 
+          ) {
+            carrinho.forEach((item) => {
+              troca.push(item);
+            });
+          } else if (
+            this.buscaFluxo(status) == true &&
+            status != "CANCELAMENTO EFETUADO"
+          ) {
+            troca = carrinho;
+          }
+
+          this.dados.push({
+            pedido: id,
+            carrinho: carrinho,
+            nome: cliente.nome,
+            cpf: cliente.cpf,
+            cliente: cliente,
+            status: status,
+            fluxo: ped.fluxo,
+            totalPago: total,
+            troca: troca,
+            data: data,
+            endereco: endereco,
+            acoes: id,
+          });
+        });
+      });
+    },
     buscaFluxo(status) {
       let steps = this.conteudoSteps.concat(
         this.stepsTroca,
@@ -522,16 +518,17 @@ export default {
 
       if (e != 1) {
         if (stepsTroca.length > 0) {
-          this.stepsTroca.forEach((e) => {
-            if (e.status == stepsTroca[0].status) {
-              this.steps.push(e);
+          this.stepsTroca.forEach((f) => {
+            if (f.status == stepsTroca[0].status && f.nome == status) {
+              this.$store.state.stepTrocaAceita[1] = f;
+              this.steps = this.$store.state.stepTrocaAceita;
             }
           });
         }
         if (stepsCancelamento.length > 0) {
-          this.stepsCancelamento.forEach((e) => {
-            if (e.status == stepsCancelamento[0].status) {
-              this.steps.push(e);
+          this.stepsCancelamento.forEach((f) => {
+            if (f.status == stepsCancelamento[0].status) {
+              this.steps.push(f);
             }
           });
         }
@@ -584,7 +581,7 @@ export default {
           } else {
             this.conteudoSteps.splice(i, 1, this.stepsTroca[0]);
             this.getSteps("TROCA AUTORIZADA", 1);
-            this.controleStep("add");
+            // this.controleStep("add");
           }
         }
         if (
@@ -598,16 +595,17 @@ export default {
           } else {
             this.conteudoSteps.splice(i, 1, this.stepsCancelamento[0]);
             this.getSteps("CANCELAMENTO ACEITO", 1);
-            this.controleStep("add");
+            //this.controleStep("add");
           }
         }
         this.decisaoModal = false;
       });
     },
-    editarStatusTroca(idPedido, idTroca, status) {
-      console.log(idPedido, idTroca, status);
+    editarStatusTroca(pedido, idTroca, status) {
+      console.log(pedido, idTroca, status);
+      this.getSteps(status, 0);
       this.trocaUnica = {
-        idPedido: idPedido,
+        pedido: pedido,
         idTroca: idTroca,
         status: status,
         steps: this.steps,
@@ -618,7 +616,7 @@ export default {
       let id = ps.pedido;
 
       if (this.steps[this.e1].nome == "CANCELAMENTO EFETUADO") {
-        this.finalizaCancelamento(this.estoque);
+        this.finaliza(this.estoque, ps.carrinho);
       }
       this.$http.put(`/pedido/status/${id}`, {
         status: this.steps[this.e1].nome,
@@ -628,18 +626,36 @@ export default {
       let index = this.dados.findIndex((e) => e.pedido == id);
       this.dados[index].status = this.steps[this.e1].nome;
       this.limpa();
+      this.dados = [];
+      this.pegaRegistros();
     },
     salvarTrocaUnica() {
-      console.log("Vai salvar nessa merda");
+      if (this.steps[this.e1].nome == "TROCA EFETUADA") {
+        let item = this.trocaUnica.pedido.troca.filter(
+          (e) => e.pedido == this.trocaUnica.idTroca
+        );
+        this.finaliza(this.estoque, item);
+      }
+      this.$http.put(`/pedido/status/${this.trocaUnica.pedido.pedido}`, {
+        status: this.steps[this.e1].nome,
+        id_produto: this.trocaUnica.idTroca,
+      });
+
+      // let index = this.dados.findIndex(
+      //   (e) => e.pedido == this.trocaUnica.pedido.pedido
+      // );
+      // this.dados[index].troca.status = this.steps[this.e1].nome;
+      this.dados = [];
+      this.pegaRegistros();
+      this.limpa();
+      this.modalDeTrocaUnica = false;
     },
-    finalizaCancelamento(val) {
+    finaliza(val, items) {
       var valorCashBack = 0;
       if (val == true) {
-        this.selecionado.carrinho.forEach((item) => {
+        items.forEach((item) => {
           valorCashBack += item.preco;
-          this.$http.patch(`/produto/${item.id}`, {
-            quantidadeProduto: item.qtde_comprada,
-          });
+          this.$http.patch(`/produto/${item.id}`);
         });
       }
 
@@ -651,10 +667,10 @@ export default {
         valor: valorCashBack,
       });
 
-      let index = this.desserts.findIndex(
+      let index = this.dados.findIndex(
         (val) => val.pedido == this.selecionado.pedido
       );
-      this.desserts[index].troca = [];
+      this.dados[index].troca = [];
       this.selecionado.troca = [];
     },
     limpa() {

@@ -38,6 +38,24 @@ export default new Vuex.Store({
     pedidos: [],
     trocaDeComponentesAdm: 0,
     categorias: [],
+    stepTrocaAceita: [
+      {
+        nome: "TROCA SOLICITADA",
+        status: "troca"
+      },
+      {
+        nome: "TROCA AUTORIZADA/REJEITADA",
+        status: "troca"
+      },
+      {
+        nome: "EM TRANSITO",
+        status: "troca"
+      },
+      {
+        nome: "TROCA EFETUADA",
+        status: "troca"
+      }
+    ],
   },
   mutations: {
     //Usuário
