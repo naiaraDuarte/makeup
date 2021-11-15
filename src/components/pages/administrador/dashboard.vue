@@ -34,7 +34,7 @@
               <v-btn text color="primary" @click="modal = false">
                 Cancelar
               </v-btn>
-              <v-btn text color="primary" @click="pesquisar()"> OK </v-btn>
+              <v-btn text color="primary" @click="chama()"> OK </v-btn>
             </v-date-picker>
           </v-dialog>
         </v-col>
@@ -57,7 +57,7 @@
                   <v-row>
                     <v-col lg="12">
                       Produtos vendidos
-                      <h1>2.000</h1>
+                      <h1>{{ produtoMaisVendido.total }}</h1>
                     </v-col>
                   </v-row>
                 </v-card-text>
@@ -67,12 +67,13 @@
                 <v-card-text>
                   <v-row>
                     <v-col lg="8">
-                      Produto mais vendido 
+                      Produto mais vendido
                       <h3>{{ produtoMaisVendido.nome }}</h3>
                     </v-col>
                     <v-divider vertical></v-divider>
                     <v-col lg="4" class="alinhamento-coluna">
-                      <h2>{{ produtoMaisVendido.qtd }}</h2><h4>produtos</h4>
+                      <h2>{{ produtoMaisVendido.qtd }}</h2>
+                      <h4>produtos</h4>
                     </v-col>
                   </v-row>
                 </v-card-text>
@@ -169,17 +170,21 @@ export default {
     },
   },
   methods: {
+    chama() {
+      this.pesquisar();
+      this.itensVendidos();
+    },
     itensVendidos() {
       let frm = {
         dataInicial: this.dates[0],
         dataFinal: this.dates[1],
       };
       this.$http.post(`/grafico/produtoVendido`, frm).then(async (res) => {
-        console.log("VEIO", res);
         this.produtoMaisVendido = {
           nome: res.data[0].nome,
-          qtd: res.data[0].produtos
-        }
+          qtd: res.data[0].produtos,
+          total: res.data[1].produtos
+        };
       });
     },
     organizaDatas() {
@@ -270,7 +275,7 @@ export default {
 };
 </script>
 <style scoped>
-.alinhamento-coluna{
+.alinhamento-coluna {
   display: flex;
   flex-direction: column;
   justify-content: center;
