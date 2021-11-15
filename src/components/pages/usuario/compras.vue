@@ -77,7 +77,7 @@
                   <p>Quant: {{ prod.quantity }}</p>
                 </v-col>
                 <v-col lg="2">
-                  <p>{{ $n(prod.custo, "currency") }}</p>
+                  <p>{{ $n(prod.preco, "currency") }}</p>
                 </v-col>
                 <v-col lg="2">
                   <!-- <v-row class="centraliza p-0">
@@ -205,7 +205,7 @@
                     </v-col>
                     <v-col lg="3" class="centraliza">
                       <p>
-                        {{ $n(prod.custo, "currency") }}
+                        {{ $n(prod.preco, "currency") }}
                       </p>
                     </v-col>
                     <v-col lg="2" class="centraliza">
@@ -388,6 +388,7 @@ export default {
     this.$http
       .get(`/pedido/${localStorage.getItem("usuarioId")}`)
       .then((res) => {
+        console.log(res)
         res.data.todosOsPedidos.forEach((ped) => {
           let carrinho = ped.pedido.produtos;
           let cartao = ped.pedido.cartoes;
@@ -545,6 +546,7 @@ export default {
         prod.status = "TROCA SOLICITADA";
         this.editaStatus([item.id, "TROCA SOLICITADA", prod.id]);
         this.exibeSnackBar("green", "Sua troca foi para análise");
+        this.observacao = "";
         this.confirmarTroca = !this.confirmarTroca;
       });
     },
