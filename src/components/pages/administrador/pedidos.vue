@@ -20,18 +20,9 @@
         locale="pt-br"
         :search="search"
       >
-        <template v-slot:[`item.avaliacao`]="{ item }">
-          <v-row align="center" class="mx-0">
-            <v-rating
-              :value="item.avaliacao"
-              color="amber"
-              dense
-              half-increments
-              readonly
-              size="14"
-            ></v-rating>
-
-            <div class="grey--text ms-4">{{ item.avaliacao }}</div>
+        <template v-slot:[`item.alerta`]="{ item }">
+          <v-row align="center" class="mx-0" v-if="item.alerta == true">
+            <v-icon color="#E53935">mdi-alert-circle</v-icon>
           </v-row>
         </template>
 
@@ -146,7 +137,12 @@
               <v-col lg="12" v-else>
                 <step :e1="e1" :steps="steps" />
                 <div class="centraliza mt-5">
-                  <v-btn class="mx-2" text @click="controleStep('sub')" :disabled="steps[e1].nome == selecionado.status">
+                  <v-btn
+                    class="mx-2"
+                    text
+                    @click="controleStep('sub')"
+                    :disabled="steps[e1].nome == selecionado.status"
+                  >
                     Voltar
                   </v-btn>
                   <v-btn
@@ -259,7 +255,12 @@
               <v-col lg="12">
                 <step :e1="e1" :steps="steps" />
                 <div class="centraliza mt-5">
-                  <v-btn class="mx-2" text @click="controleStep('sub')" :disabled="steps[e1].nome == trocaUnica.status">
+                  <v-btn
+                    class="mx-2"
+                    text
+                    @click="controleStep('sub')"
+                    :disabled="steps[e1].nome == trocaUnica.status"
+                  >
                     Voltar
                   </v-btn>
                   <v-btn
@@ -319,6 +320,7 @@ export default {
         { text: "Nome", value: "nome" },
         { text: "CPF", value: "cpf" },
         { text: "Status", value: "status" },
+        { text: "", value: "alerta" },
         { text: "Ações", value: "acoes" },
       ],
       dados: [],
@@ -416,12 +418,12 @@ export default {
           let total = ped.pedido.valor;
           let id = ped.pedido.id;
           let data = ped.pedido.data_cadastro;
+          let exibeAlerta = false;
 
           let troca = [];
-          if (
-            this.buscaFluxo(status) == "troca" 
-          ) {
+          if (this.buscaFluxo(status) == "troca") {
             carrinho.forEach((item) => {
+              if (item.status != "TROCA EFETUADA") exibeAlerta = true;
               troca.push(item);
             });
           } else if (
@@ -443,6 +445,7 @@ export default {
             troca: troca,
             data: data,
             endereco: endereco,
+            alerta: exibeAlerta,
             acoes: id,
           });
         });
