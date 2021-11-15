@@ -596,7 +596,7 @@ export default {
             this.getSteps("CANCELAMENTO REJEITADO", 1);
           } else {
             this.conteudoSteps.splice(i, 1, this.stepsCancelamento[0]);
-            this.getSteps("CANCELAMENTO ACEITO", 1)
+            this.getSteps("CANCELAMENTO ACEITO", 1);
           }
         }
         this.decisaoModal = false;
@@ -657,10 +657,9 @@ export default {
 
       this.$http.get(`/cashback/${this.selecionado.cliente.id}`).then((res) => {
         valorCashBack += res.data.cashback[0].valor;
-      });
-
-      this.$http.put(`/cashback/${this.selecionado.cliente.id}`, {
-        valor: valorCashBack,
+        this.$http.put(`/cashback/${this.selecionado.cliente.id}`, {
+          valor: valorCashBack,
+        });
       });
 
       let index = this.dados.findIndex(

@@ -52,17 +52,27 @@
         <v-col lg="4">
           <v-row>
             <v-col>
-              <v-card>
+              <v-card elevation="1">
                 <v-card-text>
                   <v-row>
-                    <v-col lg="6">
+                    <v-col lg="12">
                       Produtos vendidos
                       <h1>2.000</h1>
                     </v-col>
+                  </v-row>
+                </v-card-text>
+              </v-card>
+
+              <v-card class="mt-2" elevation="1">
+                <v-card-text>
+                  <v-row>
+                    <v-col lg="8">
+                      Produto mais vendido 
+                      <h3>{{ produtoMaisVendido.nome }}</h3>
+                    </v-col>
                     <v-divider vertical></v-divider>
-                    <v-col lg="6">
-                      Produto mais vendido
-                      <h1>Base</h1>
+                    <v-col lg="4" class="alinhamento-coluna">
+                      <h2>{{ produtoMaisVendido.qtd }}</h2><h4>produtos</h4>
                     </v-col>
                   </v-row>
                 </v-card-text>
@@ -132,10 +142,12 @@ export default {
       snackbarColor: "",
       mensagem: "",
       snackbar: false,
+      produtoMaisVendido: {},
     };
   },
   mounted() {
     this.pesquisar();
+    this.itensVendidos();
   },
   computed: {
     dateRangeText() {
@@ -157,6 +169,19 @@ export default {
     },
   },
   methods: {
+    itensVendidos() {
+      let frm = {
+        dataInicial: this.dates[0],
+        dataFinal: this.dates[1],
+      };
+      this.$http.post(`/grafico/produtoVendido`, frm).then(async (res) => {
+        console.log("VEIO", res);
+        this.produtoMaisVendido = {
+          nome: res.data[0].nome,
+          qtd: res.data[0].produtos
+        }
+      });
+    },
     organizaDatas() {
       this.dates.sort();
     },
@@ -244,3 +269,11 @@ export default {
   },
 };
 </script>
+<style scoped>
+.alinhamento-coluna{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+</style>
