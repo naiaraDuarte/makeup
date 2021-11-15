@@ -12,7 +12,6 @@
           label="Search"
           id="search"
           single-line
-          id= "search"
           hide-details
         ></v-text-field>
       </v-card-title>
