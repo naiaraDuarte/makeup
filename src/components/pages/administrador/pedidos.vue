@@ -229,10 +229,7 @@
       <v-card>
         <v-card-title class="text-h5"> Autorizar ou rejeitar?</v-card-title>
 
-        <v-card-text
-          v-for="(item, i) in selecionado.carrinho"
-          :key="i"
-        >
+        <v-card-text v-for="(item, i) in selecionado.carrinho" :key="i">
           <p>{{ item.observacao }}</p></v-card-text
         >
 
@@ -252,7 +249,7 @@
     <v-dialog
       v-model="modalDeTrocaUnica"
       persistent
-      max-width="800px"
+      max-width="1200px"
       v-if="idSelecionado != null && modalDeTrocaUnica == true"
     >
       <v-card>
@@ -271,11 +268,7 @@
               <v-col lg="12">
                 <step :e1="e1" :steps="trocaUnica.steps" />
                 <div class="centraliza mt-5">
-                  <v-btn
-                    class="mx-2"
-                    text
-                    @click="controleStep('sub')"
-                  >
+                  <v-btn class="mx-2" text @click="controleStep('sub')">
                     Voltar
                   </v-btn>
                   <v-btn
@@ -473,7 +466,7 @@ export default {
         (clientes) => clientes.acoes == id
       )[0];
       this.resetConteudoSteps();
-      await this.getSteps(this.selecionado.status);
+      await this.getSteps(this.selecionado.status, 0);
       this.idSelecionado = id;
       this.dialog = !this.dialog;
       return this.selecionado;
@@ -482,13 +475,18 @@ export default {
       this.steps = [];
       this.conteudoSteps = this.$store.state.conteudoSteps;
     },
-    getSteps(status) {
+    getSteps(status, e) {
       this.steps = [];
-      let provizorio = [];
-      let itemSteps = this.conteudoSteps.concat(
-        this.stepsTroca,
-        this.stepsCancelamento
-      );
+      let itemSteps = [];
+      if (e == 0) {
+        itemSteps = this.conteudoSteps;
+      } else {
+        itemSteps = this.conteudoSteps.concat(
+          this.stepsTroca,
+          this.stepsCancelamento
+        );
+      }
+
       let fluxo = itemSteps.filter((val) => val.nome == status)[0];
 
       if (fluxo) {
@@ -497,17 +495,16 @@ export default {
         } else {
           this.desabilita = false;
         }
-
-        this.conteudoSteps.forEach((e) => {
+        console.log(itemSteps);
+        itemSteps.forEach((e) => {
           if (e.status == fluxo.status) {
-            provizorio.push(e);
+            this.steps.push(e);
           }
         });
       }
 
-      this.e1 = provizorio.findIndex((step) => step.nome == status);
-      this.steps = provizorio;
-      return provizorio;
+      this.e1 = this.steps.findIndex((step) => step.nome == status);
+      return this.steps;
     },
     controleStep(op) {
       let step = this.steps[this.e1].nome;
@@ -541,7 +538,10 @@ export default {
     },
     decisao(val) {
       this.conteudoSteps.forEach((item, i) => {
-        if (item.nome == "TROCA AUTORIZADA/REJEITADA" && this.steps[0].status == "troca") {
+        if (
+          item.nome == "TROCA AUTORIZADA/REJEITADA" &&
+          this.steps[0].status == "troca"
+        ) {
           this.steps = [];
           if (val == false) {
             this.conteudoSteps.splice(i, 1, this.stepsTroca[1]);
@@ -551,9 +551,11 @@ export default {
             this.getSteps("TROCA AUTORIZADA", 1);
             this.controleStep("add");
           }
-          
         }
-        if (item.nome == "CANCELAMENTO AUTORIZADO/REJEITADO" && this.steps[0].status == "cancelamento") {
+        if (
+          item.nome == "CANCELAMENTO AUTORIZADO/REJEITADO" &&
+          this.steps[0].status == "cancelamento"
+        ) {
           this.steps = [];
           if (val == false) {
             this.conteudoSteps.splice(i, 1, this.stepsCancelamento[1]);
@@ -571,10 +573,10 @@ export default {
       console.log(idPedido, idTroca, status);
       this.trocaUnica = {
         idPedido: idPedido,
-        idTroca: idTroca, 
+        idTroca: idTroca,
         status: status,
-        steps: this.getSteps(status)
-      }
+        steps: this.getSteps(status, 1),
+      };
       this.modalDeTrocaUnica = true;
     },
     salvar(ps) {
@@ -592,7 +594,7 @@ export default {
       this.dados[index].status = this.steps[this.e1].nome;
       this.limpa();
     },
-    salvarTrocaUnica(){
+    salvarTrocaUnica() {
       console.log("Vai salvar nessa merda");
     },
     finalizaCancelamento(val) {
@@ -606,11 +608,9 @@ export default {
         });
       }
 
-      this.$http
-        .get(`/cashback/${this.selecionado.cliente.id}`)
-        .then((res) => {
-          valorCashBack += res.data.cashback[0].valor;
-        });
+      this.$http.get(`/cashback/${this.selecionado.cliente.id}`).then((res) => {
+        valorCashBack += res.data.cashback[0].valor;
+      });
 
       this.$http.put(`/cashback/${this.selecionado.cliente.id}`, {
         valor: valorCashBack,
