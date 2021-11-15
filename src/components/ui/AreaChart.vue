@@ -36,6 +36,12 @@ export default {
       this.renderChart(this.area, {
         responsive: true,
         maintainAspectRatio: false,
+        legend: {
+          display: true,
+          labels: {
+            hidden: true,
+          },
+        },
         scales: {
           yAxes: [
             {

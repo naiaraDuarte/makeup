@@ -46,16 +46,38 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col lg="12">
+        <v-col lg="8">
           <AreaChart :area="area" :altera="altera" @canva="canvas = $event" />
         </v-col>
-        <v-col lg="12">
-          <v-radio-group v-model="fluxo" row>
-            <v-radio label="Troca" value="TROCA"></v-radio>
-            <v-radio label="Cancelamento" value="CANCE"></v-radio>
-          </v-radio-group>
-          <AreaChart :area="area1" :altera="altera1" @canva="canvas = $event" />
+        <v-col lg="4">
+          <v-row>
+            <v-col>
+              <v-card>
+                <v-card-text>
+                  <v-row>
+                    <v-col lg="6">
+                      Produtos vendidos
+                      <h1>2.000</h1>
+                    </v-col>
+                    <v-divider vertical></v-divider>
+                    <v-col lg="6">
+                      Produto mais vendido
+                      <h1>Base</h1>
+                    </v-col>
+                  </v-row>
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col lg="8">
+              <PieChart />
+            </v-col>
+          </v-row>
         </v-col>
+        <!-- <v-col lg="12">
+          <AreaChart :area="area" :altera="altera" @canva="canvas = $event" />
+        </v-col> -->
         <!-- <v-col lg="12">
           <LineChart />
         </v-col> -->
@@ -80,7 +102,7 @@
 </template>
 
 <script>
-// import PieChart from "../../ui/PieChart.vue";
+import PieChart from "../../ui/PieChart.vue";
 import { Line } from "vue-chartjs";
 import AreaChart from "../../ui/AreaChart.vue";
 // import LineChart from "../../ui/LineChart.vue";
@@ -89,7 +111,7 @@ import AreaChart from "../../ui/AreaChart.vue";
 export default {
   extends: Line,
   components: {
-    // PieChart,
+    PieChart,
     AreaChart,
     // LineChart,
     // BarChart,
@@ -104,12 +126,9 @@ export default {
       mes: [],
       datasets: [],
       area: {},
-      area1: {},
-      altera1: 0,
       altera: 0,
       canvas: "",
-      opcao: 0,
-      fluxo: 'TROCA',
+      opcao: 1,
       snackbarColor: "",
       mensagem: "",
       snackbar: false,
@@ -144,7 +163,7 @@ export default {
     pesquisar() {
       this.$refs.dialog.save(this.dates);
       let frm = {};
-      let url = '/grafico/data';
+      let url = "/grafico/data";
 
       switch (this.dates.length) {
         case 0:
@@ -153,7 +172,7 @@ export default {
             dataFinal: null,
             status: this.opcao,
           };
-          url = '/grafico/';
+          url = "/grafico/";
           break;
         case 1:
           frm = {
@@ -178,21 +197,8 @@ export default {
           datasets: this.datasets,
         };
 
-        console.log(this.area)
+        console.log(this.area);
         this.altera = parseInt(Math.random() * 255);
-      });
-
-      frm.fluxo = this.fluxo;
-
-      this.$http.post(`${url}`, frm).then(async (res) => {
-        console.log("SONO", res.data.dados)
-        await this.preencheData(res.data.dados);
-        
-        this.area1 = {
-          labels: this.mes,
-          datasets: this.datasets,
-        };
-        this.altera1 = parseInt(Math.random() * 255);
       });
     },
     preencheData(data) {
