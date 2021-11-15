@@ -10,7 +10,6 @@
           v-model="search"
           append-icon="mdi-magnify"
           label="Search"
-          id="search"
           single-line
           hide-details
         ></v-text-field>
@@ -50,7 +49,7 @@
         v-model="dialog"
         persistent
         max-width="1000px"
-        v-if="idSelecionado != null"
+        v-if="idSelecionado != null && dialog == true"
       >
         <v-card>
           <v-card-title>
@@ -133,43 +132,38 @@
                     v-for="(item, i) in perfilSelecionado[0].troca"
                     :key="i"
                   >
-                    <v-col lg="2">
+                    <v-col lg="1">
                       <p>{{ item.cod }}</p>
                     </v-col>
-                    <v-col lg="5">
+                    <v-col lg="3">
                       <p>{{ item.nome }}</p>
                     </v-col>
                     <v-col lg="2">
                       <p>{{ $n(parseFloat(item.custo), "currency") }}</p>
                     </v-col>
                     <v-col lg="2">
-                      <p>{{ item.qtd }}</p>
+                      <p>{{ item.status }}</p>
+                      <!-- <step :e1="e1" :steps="getDados(item.status, 1)" /> -->
+                    </v-col>
+                    <v-col lg="1">
+                      <v-btn
+                        elevation="0"
+                        icon
+                        @click="
+                          editarStatusTroca(
+                            perfilSelecionado[0].pedido,
+                            item.id,
+                            item.status
+                          )
+                        "
+                        ><v-icon>mdi-pencil-outline</v-icon></v-btn
+                      >
                     </v-col>
                   </v-row>
                 </v-col>
 
-                <v-col lg="12">
-                  <p><b>Histórico de compras</b></p>
-
-                  <v-stepper alt-labels elevation="0">
-                    <v-stepper v-model="e1">
-                      <v-stepper-header elevation="0" style="box-shadow: none">
-                        <template v-for="(item, i) in steps">
-                          <v-stepper-step
-                            :key="`${i}-step`"
-                            :complete="e1 > i"
-                            :step="i"
-                            class="centraliza letra"
-                          >
-                            {{ item.nome }}
-                          </v-stepper-step>
-
-                          <v-divider v-if="i !== steps" :key="i"></v-divider>
-                        </template>
-                      </v-stepper-header>
-                    </v-stepper>
-                  </v-stepper>
-
+                <v-col lg="12" v-else>
+                  <step :e1="e1" :steps="steps" />
                   <div class="centraliza mt-5">
                     <v-btn
                       class="mx-2"
@@ -177,7 +171,6 @@
                       @click="nextStep('sub')"
                       :disabled="desabilita"
                     >
-                      <!-- {{ steps[e1 - 1].nome }} -->
                       Voltar
                     </v-btn>
                     <v-btn
@@ -188,16 +181,7 @@
                       v-if="e1 != steps.length - 1"
                     >
                       ir
-                      <!-- {{ steps[e1 + 1].nome }} -->
                     </v-btn>
-                    <!-- <v-btn
-                      class="mx-2"
-                      color="primary"
-                      @click="nextStep('add')"
-                      v-else
-                    >
-                      Finalizado
-                    </v-btn> -->
                   </div>
                 </v-col>
               </v-row>
@@ -218,6 +202,62 @@
         </v-card>
       </v-dialog>
     </v-row>
+    <v-dialog
+      v-model="modalDeTrocaUnica"
+      persistent
+      max-width="800px"
+      v-if="idSelecionado != null && modalDeTrocaUnica == true"
+    >
+      <v-card>
+        <v-card-title>
+          <v-row>
+            <v-col lg="12" class="espacamentoEntreEl px-5">
+              <span class="text-h5">Troca de status de item </span>
+            </v-col>
+          </v-row>
+        </v-card-title>
+        <v-divider></v-divider>
+        <v-card-text>
+          <v-container>
+            <v-row class="espacamentoEntreEl px-2 mt-2">
+              <v-col lg="12" class="dados"> </v-col>
+              <v-col lg="12">
+                <step :e1="e1" :steps="trocaUnica.steps" />
+                <div class="centraliza mt-5">
+                  <v-btn
+                    class="mx-2"
+                    text
+                    @click="nextStep('sub')"
+                  >
+                    Voltar
+                  </v-btn>
+                  <v-btn
+                    class="mx-2"
+                    color="primary"
+                    @click="nextStep('add')"
+                    v-if="e1 != steps.length - 1"
+                  >
+                    ir
+                  </v-btn>
+                </div>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn text @click="modalDeTrocaUnica = false"> Cancelar </v-btn>
+          <v-btn
+            color="#b38b57"
+            class="btnFilter"
+            @click="salvarTrocaUnica()"
+            text
+          >
+            Salvar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <v-dialog v-model="voltaEstoque" max-width="450">
       <v-card>
         <v-card-title class="text-h5">
@@ -243,7 +283,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="statusTroca" max-width="450">
+    <v-dialog v-model="decisaoModal" max-width="450">
       <v-card>
         <v-card-title class="text-h5"> Qual o status da troca? </v-card-title>
 
@@ -257,41 +297,11 @@
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn color="green darken-1" text @click="statusDaTroca(false)">
+          <v-btn color="green darken-1" text @click="decisao(false)">
             Rejeitar
           </v-btn>
 
-          <v-btn color="green darken-1" text @click="statusDaTroca(true)">
-            Aceitar
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <v-dialog v-model="statusCancelamento" max-width="450">
-      <v-card>
-        <v-card-title class="text-h5">
-          Qual o status da cancelamento?
-        </v-card-title>
-
-        <v-card-text> OBSERVAÇÃO DO USUÁRIO </v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-
-          <v-btn
-            color="green darken-1"
-            text
-            @click="statusDoCancelamento(false)"
-          >
-            Rejeitar
-          </v-btn>
-
-          <v-btn
-            color="green darken-1"
-            text
-            @click="statusDoCancelamento(true)"
-          >
+          <v-btn color="green darken-1" text @click="decisao(true)">
             Aceitar
           </v-btn>
         </v-card-actions>
@@ -301,7 +311,11 @@
 </template>
 <script>
 import { mapMutations } from "vuex";
+import step from "../../ui/step.vue";
 export default {
+  components: {
+    step,
+  },
   data() {
     return {
       situacao: true,
@@ -316,8 +330,7 @@ export default {
       search: "",
       dialog: false,
       voltaEstoque: false,
-      statusTroca: false,
-      statusCancelamento: false,
+      decisaoModal: false,
       estoque: false,
       headers: [
         {
@@ -336,6 +349,8 @@ export default {
       steps: [],
       idSelecionado: null,
       desabilita: false,
+      trocaUnica: {},
+      modalDeTrocaUnica: false,
       stepsTroca: [
         {
           nome: "TROCA AUTORIZADA",
@@ -461,14 +476,17 @@ export default {
           acoes: id,
         });
       });
+
+      console.log(this.desserts);
     });
   },
   watch: {
-    steps(val) {
-      if (this.e1 > val) {
-        this.e1 = val;
-      }
-    },
+    // steps(val) {
+    //   if (this.e1 > val) {
+    //     this.e1 = val;
+    //     console.log(val)
+    //   }
+    // },
   },
   methods: {
     ...mapMutations(["editarPedido"]),
@@ -481,7 +499,6 @@ export default {
         });
       });
     },
-
     salvar(ps) {
       let id = ps.pedido;
       if (this.steps[this.e1].nome == "TROCA EFETUADA") {
@@ -491,22 +508,30 @@ export default {
       if (this.steps[this.e1].nome == "CANCELAMENTO EFETUADO") {
         this.finalizaCancelamento(this.estoque);
       }
-       console.log("sjsj", ps.carrinho[0])
       this.$http
         .put(`/pedido/status/${id}`, {
           status: this.steps[this.e1].nome,
-          id_produto: ps.carrinho[0].id, 
-          fk_produto: ps.carrinho[0].fk_produto,
-        
-        })    
-       
+          id_produto: ps.carrinho[0].id,
+        })
         .then((res) => {
-          console.log("jj", this.steps[this.e1])
           this.editarPedido([id, this.steps[this.e1].nome]);
           let index = this.desserts.findIndex((e) => e.pedido == id);
           this.desserts[index].status = res.data.status;
           this.limpa();
         });
+    },
+    salvarTrocaUnica(){
+      console.log("Vai salvar nessa merda");
+    },
+    editarStatusTroca(idPedido, idTroca, status) {
+      console.log(idPedido, idTroca, status);
+      this.trocaUnica = {
+        idPedido: idPedido,
+        idTroca: idTroca, 
+        status: status,
+        steps: this.getDados(status)
+      }
+      this.modalDeTrocaUnica = true;
     },
     async verMais(id) {
       this.perfilSelecionado = this.desserts.filter(
@@ -514,8 +539,8 @@ export default {
       );
       this.steps = [];
       this.resetConteudoStepsTroca();
+      this.mudanca = parseInt(Math.random() * 255);
       await this.getDados(this.perfilSelecionado[0].status, 0);
-      // await this.getStatus(this.perfilSelecionado[0].status);
       this.idSelecionado = id;
       this.dialog = !this.dialog;
       return this.perfilSelecionado;
@@ -523,7 +548,6 @@ export default {
     getDados(status, e) {
       this.steps = [];
       let fluxo = this.conteudoSteps.filter((val) => val.nome == status);
-      // fluxo = fluxo[0];
       let stepsTroca = this.stepsTroca.filter((val) => val.nome == status);
       let stepsCancelamento = this.stepsCancelamento.filter(
         (val) => val.nome == status
@@ -551,7 +575,6 @@ export default {
             }
           });
         }
-        //fALTA COLOCAR O COD NO PRODUTO A SER TROCADO
         if (stepsCancelamento.length > 0) {
           this.stepsCancelamento.forEach((e) => {
             if (e.status == stepsCancelamento[0].status) {
@@ -562,6 +585,7 @@ export default {
       }
 
       this.e1 = this.steps.findIndex((step) => step.nome == status);
+      return this.steps;
     },
     mudaStatus(val) {
       this.estoque = val;
@@ -658,7 +682,7 @@ export default {
       else if (stepR[0].status == "cancelamento") return true;
       else return false;
     },
-    statusDaTroca(val) {
+    decisao(val) {
       this.conteudoSteps.forEach((item, i) => {
         if (item.nome == "TROCA AUTORIZADA/REJEITADA") {
           let autorizada = {
@@ -681,13 +705,8 @@ export default {
             this.getDados("TROCA AUTORIZADA", 1);
             this.nextStep("add");
           }
-          this.statusTroca = false;
+          
         }
-      });
-    },
-    statusDoCancelamento(val) {
-      //Cancelamento nãoo mostra um trem
-      this.conteudoSteps.forEach((item, i) => {
         if (item.nome == "CANCELAMENTO AUTORIZADO/REJEITADO") {
           let autorizada = {
             nome: "CANCELAMENTO ACEITO",
@@ -707,13 +726,10 @@ export default {
             this.getDados("CANCELAMENTO ACEITO", 1);
             this.nextStep("add");
           }
-          this.statusCancelamento = false;
         }
+        this.decisaoModal = false;
       });
     },
-    // getStatus(status) {
-    //   this.e1 = this.steps.findIndex((step) => step.nome == status);
-    // },
     nextStep(op) {
       if (this.steps[this.e1].nome == "EM TRANSITO" && op == "add") {
         this.voltaEstoque = true;
@@ -724,14 +740,10 @@ export default {
       }
 
       if (
-        this.steps[this.e1].nome == "CANCELAMENTO SOLICITADO" &&
+        (this.steps[this.e1].nome == "CANCELAMENTO SOLICITADO" || this.steps[this.e1].nome == "TROCA SOLICITADA") &&
         op == "add"
       ) {
-        this.statusCancelamento = true;
-      }
-
-      if (this.steps[this.e1].nome == "TROCA SOLICITADA" && op == "add") {
-        this.statusTroca = true;
+        this.decisaoModal = true;
       }
 
       if (
