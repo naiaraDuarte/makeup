@@ -584,7 +584,6 @@ export default {
           } else {
             this.conteudoSteps.splice(i, 1, this.stepsTroca[0]);
             this.getSteps("TROCA AUTORIZADA", 1);
-            // this.controleStep("add");
           }
         }
         if (
@@ -597,8 +596,7 @@ export default {
             this.getSteps("CANCELAMENTO REJEITADO", 1);
           } else {
             this.conteudoSteps.splice(i, 1, this.stepsCancelamento[0]);
-            this.getSteps("CANCELAMENTO ACEITO", 1);
-            //this.controleStep("add");
+            this.getSteps("CANCELAMENTO ACEITO", 1)
           }
         }
         this.decisaoModal = false;
@@ -635,7 +633,7 @@ export default {
     salvarTrocaUnica() {
       if (this.steps[this.e1].nome == "TROCA EFETUADA") {
         let item = this.trocaUnica.pedido.troca.filter(
-          (e) => e.pedido == this.trocaUnica.idTroca
+          (e) => e.id == this.trocaUnica.idTroca
         );
         this.finaliza(this.estoque, item);
       }
@@ -643,11 +641,6 @@ export default {
         status: this.steps[this.e1].nome,
         id_produto: this.trocaUnica.idTroca,
       });
-
-      // let index = this.dados.findIndex(
-      //   (e) => e.pedido == this.trocaUnica.pedido.pedido
-      // );
-      // this.dados[index].troca.status = this.steps[this.e1].nome;
       this.dados = [];
       this.pegaRegistros();
       this.limpa();
