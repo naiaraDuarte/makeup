@@ -97,7 +97,7 @@
                   :counter="10"
                   type="number"
                   label="Custo"
-                  v-mask="['R$#,##', 'R$##,##', 'R$###,##', 'R$####,##']"
+                 
                   required
                 ></v-text-field>
               </v-col>
@@ -299,7 +299,7 @@
     <v-dialog v-model="ativar" persistent max-width="600px">
       <v-card>
         <v-card-title class="text-h5">
-          {{msgn}}
+          {{ msgn }}
         </v-card-title>
         <v-card-text>
           <v-row>
@@ -368,10 +368,10 @@ import { mapMutations } from "vuex";
 export default {
   components: {},
   data() {
-    return { 
+    return {
       ativado: "",
-      ativacaoProduto:"", 
-      msgn: "",    
+      ativacaoProduto: "",
+      msgn: "",
       obsInativacao: "",
       search: "",
       ativar: false,
@@ -436,8 +436,7 @@ export default {
   methods: {
     listarProdutosCadastrados() {
       this.$store.state.produtos = [];
-      this.$http.get(`/produto/`).then((res) => {
-        console.log("produtos", res);
+      this.$http.get(`/produto/adm`).then((res) => {
         res.data.dados.forEach((e) => {
           this.$store.state.produtos.push(e);
         });
@@ -528,7 +527,7 @@ export default {
         this.exibeSnackBar("green", "Produto editado");
       });
     },
-    ...mapMutations(["removeProdutos"]),
+    
     remover(perfil) {
       this.itensInativacao = [];
       this.motivos.forEach((m) => {
@@ -547,7 +546,7 @@ export default {
           (e) => e.nome == "Estoque normalizado"
         );
         this.itensInativacao.splice(index, 1);
-        this.ativar = !this.ativar;        
+        this.ativar = !this.ativar;
       } else {
         this.ativado = perfil.ativo;
         this.mensagem = "Motivo ativação";
@@ -560,11 +559,11 @@ export default {
           (e) => e.nome == "Fora de mercado"
         );
         this.itensInativacao.splice(index, 1);
-        this.ativar = !this.ativar;       
-      }      
+        this.ativar = !this.ativar;
+      }
     },
     removeProduto() {
-      if (this.verificaPreenchimento()) {
+      if (!this.verificaMotivos()) {
         this.snackbarColor = "#b38b57";
         this.mensagem = "Todos os dados devem ser preenchidos";
         this.snackbar = true;
@@ -577,7 +576,7 @@ export default {
         categoriaInativacao: this.ativacaoProduto,
         ativo: !this.ativado,
       };
-      this.$http.put(`/produto/inativacao/${this.id}`, frm).then(() => {       
+      this.$http.put(`/produto/inativacao/${this.id}`, frm).then(() => {
         this.ativar = !this.ativar;
         this.limparProduto();
         this.id = null;
@@ -647,7 +646,6 @@ export default {
       let produto = this.$store.state.produtos.filter(
         (produto) => produto.id == id
       );
-      console.log("noems do store", produto[0]);
       produto = produto[0];
       this.codigoProduto = produto.cod;
       this.custoProduto = produto.custo;
@@ -682,8 +680,7 @@ export default {
       this.marcaProduto = "";
       this.faseCadastro = 0;
       this.obsInativacao = "";
-      this.ativacaoProduto ="";
-      
+      this.ativacaoProduto = "";
     },
     trocaValores() {
       if (this.faseCadastro == 0) {
