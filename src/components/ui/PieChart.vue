@@ -3,33 +3,34 @@ import { Pie } from "vue-chartjs";
 
 export default {
   extends: Pie,
+  props: {
+    troca: Object,
+    altera: Number,
+  },
   mounted() {
-    this.gradient = this.$refs.canvas
-      .getContext("2d")
-      .createLinearGradient(0, 0, 0, 450);
-    this.gradient2 = this.$refs.canvas
-      .getContext("2d")
-      .createLinearGradient(0, 0, 0, 450);
+    this.gerarGrafico();
+  },
+  watch: {
+    altera() {
+      this.gerarGrafico();
+    },
+  },
+  methods: {
+    gerar_cor(opacidade = 1) {
+      let r = parseInt(Math.random() * 255);
 
-    this.gradient.addColorStop(0, "rgba(255, 0,0, 0.5)");
-    this.gradient.addColorStop(0.5, "rgba(255, 0, 0, 0.25)");
-    this.gradient.addColorStop(1, "rgba(255, 0, 0, 0)");
+      let g = parseInt(Math.random() * 255);
 
-    this.gradient2.addColorStop(0, "rgba(0, 231, 255, 0.9)");
-    this.gradient2.addColorStop(0.5, "rgba(0, 231, 255, 0.25)");
-    this.gradient2.addColorStop(1, "rgba(0, 231, 255, 0)");
-    this.renderChart(
-      {
-        labels: ["Books", "Magazines", "Newspapers"],
-        datasets: [
-          {
-            backgroundColor: [this.gradient, this.gradient2, "#00D8FF"],
-            data: [40, 20, 10]
-          }
-        ]
-      },
+      let b = parseInt(Math.random() * 255);
+
+      return `rgba(${r}, ${g}, ${b}, ${opacidade})`;
+    },
+    gerarGrafico() {
+      this.renderChart(
+      this.troca,
       { responsive: true, maintainAspectRatio: false }
     );
-  }
+    },
+  },
 };
 </script>

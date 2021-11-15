@@ -82,7 +82,7 @@
           </v-row>
           <v-row>
             <v-col lg="8">
-              <PieChart />
+              <PieChart :troca="troca" :altera="altera1"/>
             </v-col>
           </v-row>
         </v-col>
@@ -138,16 +138,19 @@ export default {
       datasets: [],
       area: {},
       altera: 0,
+      altera1: 0,
       canvas: "",
       opcao: 1,
       snackbarColor: "",
       mensagem: "",
       snackbar: false,
       produtoMaisVendido: {},
+      troca: {},
     };
   },
   mounted() {
     this.pesquisar();
+    this.graficoPizza();
     this.itensVendidos();
   },
   computed: {
@@ -172,7 +175,42 @@ export default {
   methods: {
     chama() {
       this.pesquisar();
+      this.graficoPizza();
       this.itensVendidos();
+    },
+    graficoPizza() {
+      let frm = {
+        dataInicial: this.dates[0],
+        dataFinal: this.dates[1],
+      };
+      this.$http.post(`/grafico/pizza`, frm).then(async (res) => {
+        console.log("SSDVFDS", res);
+        this.preencheDataTroca(res.data.troca);
+      });
+    },
+    preencheDataTroca(data) {
+      this.datasetsTroca = [];
+      this.statusTroca = [];
+      let dados = [];
+      let cor = [];
+      let labels = [];
+      data.forEach((e) => {
+        dados.push(parseInt(e.total));
+        cor.push(this.gerar_cor());
+        labels.push(e.status);
+      });
+
+      this.troca = {
+        labels: labels,
+        datasets: [
+          {
+            backgroundColor: cor,
+            data: dados,
+          },
+        ],
+      };
+      console.log(this.troca)
+      this.altera1 = parseInt(Math.random() * 255);
     },
     itensVendidos() {
       let frm = {
@@ -183,7 +221,7 @@ export default {
         this.produtoMaisVendido = {
           nome: res.data[0].nome,
           qtd: res.data[0].produtos,
-          total: res.data[1].produtos
+          total: res.data[1].produtos,
         };
       });
     },
