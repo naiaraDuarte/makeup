@@ -11,7 +11,11 @@
           append-icon="mdi-magnify"
           label="Search"
           id="search"
+<<<<<<< HEAD
           single-line
+=======
+          single-line          
+>>>>>>> 052f62f6203d609116e708592ff0f08c48b298f3
           hide-details
         ></v-text-field>
       </v-card-title>

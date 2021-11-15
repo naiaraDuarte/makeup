@@ -28,13 +28,34 @@
         locale="pt-br"
         :search="search"
       >
+        <template v-slot:[`item.ativo`]="{ item }">
+          <v-row align="center" class="mx-0">
+            <v-badge
+              v-if="item.ativo"
+              inline
+              :value="item.ativo"
+              color="green"
+              readonly
+              size="8"
+            ></v-badge>
+            <v-badge
+              v-else
+              inline
+              :value="!item.ativo"
+              color="red"
+              readonly
+              size="10"
+            ></v-badge>
+            <!-- <div class="grey--text ms-4">{{ item.ativo }}</div> -->
+          </v-row>
+        </template>
         <template v-slot:[`item.acoes`]="{ item }">
           <v-row align="center" class="mx-0 mr-4">
             <v-btn id="editarProduto" @click="getProduto(item.id)" icon>
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
-            <v-btn id="deletarProduto" @click="removeProduto(item.id)" icon>
-              <v-icon>mdi-delete</v-icon>
+            <v-btn id="deletarProduto" @click="remover(item)" icon>
+              <v-icon>mdi-restore-alert</v-icon>
             </v-btn>
           </v-row>
         </template>
@@ -74,7 +95,9 @@
                 <v-text-field
                   v-model="custoProduto"
                   :counter="10"
+                  type="number"
                   label="Custo"
+                  v-mask="['R$#,##', 'R$##,##', 'R$###,##', 'R$####,##']"
                   required
                 ></v-text-field>
               </v-col>
@@ -228,9 +251,6 @@
             </v-row>
           </v-card-text>
         </v-card>
-        <!-- </v-col>
-        </v-row> -->
-
         <v-row class="text-right mx-1 mb-3">
           <v-col lg="2" v-if="verificaPreenchimento">
             <v-btn
@@ -241,7 +261,6 @@
               >add produto</v-btn
             >
           </v-col>
-
           <v-col lg="7">
             <v-btn
               elevation="0"
@@ -277,33 +296,60 @@
         </v-row>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="remove" persistent max-width="600px">
+    <v-dialog v-model="ativar" persistent max-width="600px">
       <v-card>
-        <v-row align="center" class="mx-0 mr-4">
-          <v-col>
-            <h2>Deseja remover esse produto?</h2>
-          </v-col>
-        </v-row>
-        <v-row class="mx-0 mr-4 mb-5 alinhamento">
-          <v-col>
-            <v-btn
-              elevation="0"
-              color="white"
-              class="btnSubmit"
-              @click="remove = false"
-              >Cancelar</v-btn
-            >
-            <v-btn
-              elevation="3"
-              color="white"
-              class="btnSubmit"
-              id="deletarProduto"
-              @click="sim = true"
-            >
-              Sim
-            </v-btn>
-          </v-col>
-        </v-row>
+        <v-card-title class="text-h5">
+          {{msgn}}
+        </v-card-title>
+        <v-card-text>
+          <v-row>
+            <v-col lg="6">
+              <v-combobox
+                v-model="ativacaoProduto"
+                :items="itensInativacao"
+                label="Categoria"
+                id="ativacao"
+                item-text="nome"
+                item-value="id"
+                return-object
+                clearable
+                required
+              ></v-combobox>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col class="px-3">
+              <v-textarea
+                v-model="obsInativacao"
+                outlined
+                name="input-7-4"
+                label="Justificativa:"
+                :counter="255"
+                id="observacao"
+              ></v-textarea>
+            </v-col>
+          </v-row>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            elevation="0"
+            color="white"
+            class="btnSubmit"
+            @click="ativar = false"
+            >Cancelar</v-btn
+          >
+          <v-btn
+            elevation="3"
+            color="white"
+            class="btnSubmit"
+            id="deletarProduto"
+            @click="removeProduto"
+          >
+            Confirmar
+          </v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
     <v-snackbar v-model="snackbar" :color="snackbarColor">
@@ -322,10 +368,13 @@ import { mapMutations } from "vuex";
 export default {
   components: {},
   data() {
-    return {
-      sim: false,
+    return { 
+      ativado: "",
+      ativacaoProduto:"", 
+      msgn: "",    
+      obsInativacao: "",
       search: "",
-      remove: false,
+      ativar: false,
       txtDoBotao: "Continuar",
       faseCadastro: 0,
       codigoProduto: "",
@@ -351,10 +400,13 @@ export default {
       snackbarColor: "",
       adicionarProduto: false,
       itensCategoria: [],
+      itensInativacao: [],
+      motivos: [],
       headers: [
         { text: "Produto", value: "nome" },
         { text: "Marca", value: "marca" },
-        { text: "Quantidade", value: "quant" },
+        { text: "Quantidade", value: "quantidade" },
+        { text: "Ativo", value: "ativo" },
         { text: "Ações", value: "acoes" },
       ],
     };
@@ -362,6 +414,8 @@ export default {
   created() {},
   mounted() {
     this.listarProdutosCadastrados();
+    this.getCategoria();
+    this.getMotivoInativacao();
   },
   activated() {
     this.trocaValores();
@@ -383,33 +437,16 @@ export default {
     listarProdutosCadastrados() {
       this.$store.state.produtos = [];
       this.$http.get(`/produto/`).then((res) => {
+        console.log("produtos", res);
         res.data.dados.forEach((e) => {
           this.$store.state.produtos.push(e);
         });
+        console.log(this.$store.state.produtos);
       });
     },
     gerar() {
-      this.getCategoria();
       this.adicionarProduto = !this.adicionarProduto;
       this.limparProduto();
-    },
-    limparCampos() {
-      (this.codigoProduto = ""),
-        (this.custoProduto = ""),
-        (this.nomeProduto = ""),
-        (this.descProduto = ""),
-        (this.categoriaProduto = ""),
-        (this.tipoProduto = ""),
-        (this.pesoProduto = ""),
-        (this.larguraProduto = ""),
-        (this.alturaProduto = ""),
-        (this.comprimentoProduto = ""),
-        (this.quantidadeProduto = ""),
-        (this.diametroProduto = ""),
-        (this.marcaProduto = ""),
-        (this.id = null),
-        (this.image = null);
-      this.faseCadastro = 0;
     },
     PreviewImage() {
       var oFReader = new FileReader();
@@ -444,11 +481,12 @@ export default {
         diametroProduto: this.diametroProduto,
         marcaProduto: this.marcaProduto,
       };
+      console.log(frm.categoriaProduto.id);
       this.$http.post(`/produto/`, frm).then((res) => {
         frm.id = res.data.dados.id;
         this.addProduto(frm);
         this.exibeSnackBar("green", "Produto adicionado");
-        this.limparCampos();
+        this.limparProduto();
       });
     },
     exibeSnackBar(cor, msg) {
@@ -481,36 +519,84 @@ export default {
         diametroProduto: this.diametroProduto,
         marcaProduto: this.marcaProduto,
       };
+      console.log(frm.categoriaProduto);
       this.$http.put(`/produto/${this.id}`, frm).then(() => {
         // this.editarProdutos(frm);
         this.listarProdutosCadastrados();
         this.id = null;
-        this.limparCampos();
+        this.limparProduto();
         this.exibeSnackBar("green", "Produto editado");
       });
     },
     ...mapMutations(["removeProdutos"]),
-    removeProduto(id) {
-      this.remove = !this.remove;
-      console.log("sim", this.sim)
-
-      if (this.sim == true) {
-        this.$http.delete(`/produto/${id}`).then(() => {
-          this.removeProdutos(id);
-          this.exibeSnackBar("green", "Produto removido");
-          this.sim = false;
-          this.remove = !this.remove;
-        });
+    remover(perfil) {
+      this.itensInativacao = [];
+      this.motivos.forEach((m) => {
+        this.itensInativacao.push(m);
+      });
+      this.ativado = perfil.ativo;
+      if (perfil.ativo) {
+        this.ativado = perfil.ativo;
+        this.msgn = "Motivo inativação";
+        this.id = perfil.id;
+        let index = this.itensInativacao.findIndex(
+          (e) => e.nome == "Volta a venda"
+        );
+        this.itensInativacao.splice(index, 1);
+        index = this.itensInativacao.findIndex(
+          (e) => e.nome == "Estoque normalizado"
+        );
+        this.itensInativacao.splice(index, 1);
+        this.ativar = !this.ativar;        
+      } else {
+        this.ativado = perfil.ativo;
+        this.mensagem = "Motivo ativação";
+        this.id = perfil.id;
+        let index = this.itensInativacao.findIndex(
+          (e) => e.nome == "Estoque baixo"
+        );
+        this.itensInativacao.splice(index, 1);
+        index = this.itensInativacao.findIndex(
+          (e) => e.nome == "Fora de mercado"
+        );
+        this.itensInativacao.splice(index, 1);
+        this.ativar = !this.ativar;       
+      }      
+    },
+    removeProduto() {
+      if (this.verificaPreenchimento()) {
+        this.snackbarColor = "#b38b57";
+        this.mensagem = "Todos os dados devem ser preenchidos";
+        this.snackbar = true;
+        return false;
       }
+      this.mensagem = "";
+      let frm = {
+        id: this.id,
+        observacao: this.obsInativacao,
+        categoriaInativacao: this.ativacaoProduto,
+        ativo: !this.ativado,
+      };
+      this.$http.put(`/produto/inativacao/${this.id}`, frm).then(() => {       
+        this.ativar = !this.ativar;
+        this.limparProduto();
+        this.id = null;
+        this.exibeSnackBar("green", "Efetuado com sucesso!");
+      });
     },
     salvarProduto() {
       if (this.id == null) this.addProdutos();
       else this.editarProduto(this.id);
-
       this.limparProduto();
       this.idProduto = null;
       this.adicionarProduto = !this.adicionarProduto;
       // this.$router.push(`/`);
+    },
+    verificaMotivos() {
+      if (this.ativacaoProduto != "" && this.obsInativacao != "") {
+        return true;
+      }
+      return false;
     },
     verificaPreenchimento() {
       if (
@@ -530,6 +616,17 @@ export default {
         return true;
       }
       return false;
+    },
+    getMotivoInativacao() {
+      this.$http.get(`/inativacao/`).then((res) => {
+        console.log("res", res);
+        res.data.dados.forEach((e) => {
+          this.motivos.push({
+            id: e.id,
+            nome: e.nome,
+          });
+        });
+      });
     },
     getCategoria() {
       this.$http.get(`/categoria/`).then((res) => {
@@ -569,20 +666,24 @@ export default {
       this.marcaProduto = produto.marca;
     },
     limparProduto() {
-      (this.codigoProduto = ""),
-        (this.custoProduto = ""),
-        (this.nomeProduto = ""),
-        (this.descProduto = ""),
-        (this.categoriaProduto = ""),
-        (this.tipoProduto = ""),
-        (this.pesoProduto = ""),
-        (this.larguraProduto = ""),
-        (this.alturaProduto = ""),
-        (this.comprimentoProduto = ""),
-        (this.quantidadeProduto = ""),
-        (this.diametroProduto = ""),
-        (this.precoProduto = ""),
-        (this.marcaProduto = "");
+      this.codigoProduto = "";
+      this.custoProduto = "";
+      this.nomeProduto = "";
+      this.descProduto = "";
+      this.categoriaProduto = "";
+      this.tipoProduto = "";
+      this.pesoProduto = "";
+      this.larguraProduto = "";
+      this.alturaProduto = "";
+      this.comprimentoProduto = "";
+      this.quantidadeProduto = "";
+      this.diametroProduto = "";
+      this.precoProduto = "";
+      this.marcaProduto = "";
+      this.faseCadastro = 0;
+      this.obsInativacao = "";
+      this.ativacaoProduto ="";
+      
     },
     trocaValores() {
       if (this.faseCadastro == 0) {
