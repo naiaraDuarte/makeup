@@ -249,7 +249,7 @@
     <v-dialog
       v-model="modalDeTrocaUnica"
       persistent
-      max-width="1200px"
+      max-width="800px"
       v-if="idSelecionado != null && modalDeTrocaUnica == true"
     >
       <v-card>
@@ -266,7 +266,7 @@
             <v-row class="espacamentoEntreEl px-2 mt-2">
               <v-col lg="12" class="dados"> </v-col>
               <v-col lg="12">
-                <step :e1="e1" :steps="trocaUnica.steps" />
+                <step :e1="e1" :steps="steps" />
                 <div class="centraliza mt-5">
                   <v-btn class="mx-2" text @click="controleStep('sub')">
                     Voltar
@@ -275,6 +275,7 @@
                     class="mx-2"
                     color="primary"
                     @click="controleStep('add')"
+                    :disabled="desabilita"
                     v-if="e1 != steps.length - 1"
                   >
                     ir
@@ -334,6 +335,7 @@ export default {
       steps: [],
       idSelecionado: null,
       desabilita: false,
+      trocaUnica: {},
       stepsTroca: [
         {
           nome: "TROCA AUTORIZADA",
@@ -407,7 +409,6 @@ export default {
     };
   },
   mounted() {
-    this.$store.state.conteudoSteps = this.conteudoSteps;
     this.$http.get(`/pedido/`).then((res) => {
       res.data.todosOsPedidos.forEach((ped) => {
         let cliente = ped.pedido.cliente[0];
@@ -473,34 +474,67 @@ export default {
     },
     resetConteudoSteps() {
       this.steps = [];
-      this.conteudoSteps = this.$store.state.conteudoSteps;
+      this.conteudoSteps.forEach((item, i) => {
+        if (item.nome == "TROCA REJEITADA" || item.nome == "TROCA AUTORIZADA") {
+          let reset = {
+            nome: "TROCA AUTORIZADA/REJEITADA",
+            status: "troca",
+          };
+          this.conteudoSteps.splice(i, 1, reset);
+          this.steps = [];
+          this.getSteps("TROCA AUTORIZADA/REJEITADA", 0);
+        }
+        if (
+          item.nome == "CANCELAMENTO ACEITO" ||
+          item.nome == "CANCELAMENTO REJEITADO"
+        ) {
+          let reset = {
+            nome: "CANCELAMENTO AUTORIZADO/REJEITADO",
+            status: "cancelamento",
+          };
+          this.conteudoSteps.splice(i, 1, reset);
+          this.steps = [];
+          this.getSteps("CANCELAMENTO AUTORIZADO/REJEITADO", 0);
+        }
+      });
     },
     getSteps(status, e) {
       this.steps = [];
-      let itemSteps = [];
-      if (e == 0) {
-        itemSteps = this.conteudoSteps;
-      } else {
-        itemSteps = this.conteudoSteps.concat(
-          this.stepsTroca,
-          this.stepsCancelamento
-        );
-      }
+      let fluxo = this.conteudoSteps.filter((val) => val.nome == status);
+      let stepsTroca = this.stepsTroca.filter((val) => val.nome == status);
+      let stepsCancelamento = this.stepsCancelamento.filter(
+        (val) => val.nome == status
+      );
 
-      let fluxo = itemSteps.filter((val) => val.nome == status)[0];
-
-      if (fluxo) {
-        if (fluxo.valor && fluxo.valor == "rejeitada") {
+      if (fluxo.length > 0) {
+        if (fluxo[0].valor && fluxo[0].valor == "rejeitada") {
           this.desabilita = true;
         } else {
           this.desabilita = false;
         }
-        console.log(itemSteps);
-        itemSteps.forEach((e) => {
-          if (e.status == fluxo.status) {
+
+        this.conteudoSteps.forEach((e) => {
+          if (e.status == fluxo[0].status) {
             this.steps.push(e);
           }
         });
+      }
+
+      if (e != 1) {
+        if (stepsTroca.length > 0) {
+          this.stepsTroca.forEach((e) => {
+            if (e.status == stepsTroca[0].status) {
+              this.steps.push(e);
+            }
+          });
+        }
+        if (stepsCancelamento.length > 0) {
+          this.stepsCancelamento.forEach((e) => {
+            if (e.status == stepsCancelamento[0].status) {
+              this.steps.push(e);
+            }
+          });
+        }
       }
 
       this.e1 = this.steps.findIndex((step) => step.nome == status);
@@ -527,12 +561,13 @@ export default {
           step == "CANCELAMENTO REJEITADO" ||
           step == "CANCELAMENTO ACEITO" ||
           step == "TROCA REJEITADA" ||
-          step == "TROCA AUTORIZADA"
+          step == "TROCA AUTORIZADA" ||
+          step == "EM TRANSITO"
         ) {
           this.resetConteudoSteps();
-          if (this.e1 != 0) {
-            this.e1 -= 1;
-          }
+        }
+        if (this.e1 != 0) {
+          this.e1 -= 1;
         }
       }
     },
@@ -575,7 +610,7 @@ export default {
         idPedido: idPedido,
         idTroca: idTroca,
         status: status,
-        steps: this.getSteps(status, 1),
+        steps: this.steps,
       };
       this.modalDeTrocaUnica = true;
     },
