@@ -52,7 +52,7 @@
         <v-col lg="4">
           <v-row>
             <v-col>
-              <v-card elevation="1">
+              <v-card elevation="1" class="mt-2">
                 <v-card-text>
                   <v-row>
                     <v-col lg="12">
@@ -90,6 +90,22 @@
                     <v-col lg="4" class="alinhamento-coluna">
                       <h2>{{ produtoMenosVendido.qtd }}</h2>
                       <h4>produtos</h4>
+                    </v-col>
+                  </v-row>
+                </v-card-text>
+              </v-card>
+              
+              <v-card class="mt-2" elevation="1">
+                <v-card-text>
+                  <v-row>
+                    <v-col lg="8">
+                      Total de pedidos
+                      <h1>{{ pedidos }}</h1>
+                    </v-col>
+                    <v-divider vertical></v-divider>
+                    <v-col lg="4" class="alinhamento-coluna">
+                      <h2>{{ calculaPedidosVenda }}</h2>
+                      <h4>Produtos/Venda</h4>
                     </v-col>
                   </v-row>
                 </v-card-text>
@@ -165,6 +181,7 @@ export default {
       snackbar: false,
       produtoMaisVendido: {},
       produtoMenosVendido: {},
+      pedidos: 0,
       troca: {},
       cancelamento: {},
       total: 0,
@@ -187,6 +204,9 @@ export default {
       return this.dates.map((date) => {
         return this.$moment(date, "YYYY-MM-DD").format("DD-MM-YYYY");
       });
+    },
+    calculaPedidosVenda(){
+      return parseInt(this.total / this.pedidos)
     },
   },
   watch: {
@@ -260,6 +280,7 @@ export default {
           nome: res.data.mais.nome,
           qtd: res.data.mais.produtos,
         };
+        this.pedidos = res.data.pedidos.produtos
         this.total = res.data.total.produtos;
       });
     },
