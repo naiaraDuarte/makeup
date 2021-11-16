@@ -20,7 +20,7 @@
                 <v-col lg="3">
                   <p>
                     Data pedido:
-                    {{ $moment(item.data, "YYYY-MM-DD").format("DD/MM") }}
+                    {{ $moment(item.data, "YYYY-MM-DD").format("DD/MM/YYYY") }}
                   </p>
                 </v-col>
                 <v-col lg="4">
