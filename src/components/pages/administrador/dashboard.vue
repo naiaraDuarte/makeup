@@ -57,7 +57,7 @@
                   <v-row>
                     <v-col lg="12">
                       Produtos vendidos
-                      <h1>{{ produtoMaisVendido.total }}</h1>
+                      <h1>{{ total }}</h1>
                     </v-col>
                   </v-row>
                 </v-card-text>
@@ -78,13 +78,32 @@
                   </v-row>
                 </v-card-text>
               </v-card>
+
+              <v-card class="mt-2" elevation="1">
+                <v-card-text>
+                  <v-row>
+                    <v-col lg="8">
+                      Produto menos vendido
+                      <h3>{{ produtoMenosVendido.nome }}</h3>
+                    </v-col>
+                    <v-divider vertical></v-divider>
+                    <v-col lg="4" class="alinhamento-coluna">
+                      <h2>{{ produtoMenosVendido.qtd }}</h2>
+                      <h4>produtos</h4>
+                    </v-col>
+                  </v-row>
+                </v-card-text>
+              </v-card>
             </v-col>
           </v-row>
-          <v-row>
-            <v-col lg="8">
-              <PieChart :troca="troca" :altera="altera1"/>
-            </v-col>
-          </v-row>
+          <v-row> </v-row>
+        </v-col>
+
+        <v-col lg="6">
+          <PieChart :troca="troca" :altera="altera1" />
+        </v-col>
+        <v-col lg="6">
+          <PieChart :troca="cancelamento" :altera="altera1" />
         </v-col>
         <!-- <v-col lg="12">
           <AreaChart :area="area" :altera="altera" @canva="canvas = $event" />
@@ -145,7 +164,10 @@ export default {
       mensagem: "",
       snackbar: false,
       produtoMaisVendido: {},
+      produtoMenosVendido: {},
       troca: {},
+      cancelamento: {},
+      total: 0,
     };
   },
   mounted() {
@@ -185,12 +207,11 @@ export default {
       };
       this.$http.post(`/grafico/pizza`, frm).then(async (res) => {
         console.log("SSDVFDS", res);
-        this.preencheDataTroca(res.data.troca);
+        this.preencheDataTroca(res.data.troca, 0);
+        this.preencheDataTroca(res.data.cancelamento, 1);
       });
     },
-    preencheDataTroca(data) {
-      this.datasetsTroca = [];
-      this.statusTroca = [];
+    preencheDataTroca(data, tipo) {
       let dados = [];
       let cor = [];
       let labels = [];
@@ -199,17 +220,29 @@ export default {
         cor.push(this.gerar_cor());
         labels.push(e.status);
       });
+      if (tipo == 0) {
+        this.troca = {
+          labels: labels,
+          datasets: [
+            {
+              backgroundColor: cor,
+              data: dados,
+            },
+          ],
+        };
+      } else {
+        this.cancelamento = {
+          labels: labels,
+          datasets: [
+            {
+              backgroundColor: cor,
+              data: dados,
+            },
+          ],
+        };
+      }
 
-      this.troca = {
-        labels: labels,
-        datasets: [
-          {
-            backgroundColor: cor,
-            data: dados,
-          },
-        ],
-      };
-      console.log(this.troca)
+      console.log(this.troca);
       this.altera1 = parseInt(Math.random() * 255);
     },
     itensVendidos() {
@@ -218,11 +251,16 @@ export default {
         dataFinal: this.dates[1],
       };
       this.$http.post(`/grafico/produtoVendido`, frm).then(async (res) => {
+        console.log(res)
+        this.produtoMenosVendido = {
+          nome: res.data.menos.nome,
+          qtd: res.data.menos.produtos,
+        }
         this.produtoMaisVendido = {
-          nome: res.data[0].nome,
-          qtd: res.data[0].produtos,
-          total: res.data[1].produtos,
+          nome: res.data.mais.nome,
+          qtd: res.data.mais.produtos,
         };
+        this.total = res.data.total.produtos;
       });
     },
     organizaDatas() {
