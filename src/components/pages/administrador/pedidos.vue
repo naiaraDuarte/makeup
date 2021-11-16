@@ -10,6 +10,7 @@
           v-model="search"
           append-icon="mdi-magnify"
           label="Search"
+          id= "search"
           single-line
           hide-details
         ></v-text-field>
@@ -217,7 +218,7 @@
         <v-card-title class="text-h5"> Autorizar ou rejeitar?</v-card-title>
 
         <v-card-text v-for="(item, i) in selecionado.carrinho" :key="i">
-          <p>{{ item.observacao }}</p></v-card-text
+          <p>{{ item.observacao}}</p></v-card-text
         >
 
         <v-card-actions>

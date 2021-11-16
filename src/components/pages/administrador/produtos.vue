@@ -532,9 +532,9 @@ export default {
       this.itensInativacao = [];
       this.motivos.forEach((m) => {
         this.itensInativacao.push(m);
-      });
-      this.ativado = perfil.ativo;
-      if (perfil.ativo) {
+      }); 
+          
+      if (perfil.ativo) {       
         this.ativado = perfil.ativo;
         this.msgn = "Motivo inativação";
         this.id = perfil.id;
@@ -548,8 +548,9 @@ export default {
         this.itensInativacao.splice(index, 1);
         this.ativar = !this.ativar;
       } else {
+        console.log("else", this.mensagem)
         this.ativado = perfil.ativo;
-        this.mensagem = "Motivo ativação";
+        this.msgn = "Motivo ativação";
         this.id = perfil.id;
         let index = this.itensInativacao.findIndex(
           (e) => e.nome == "Estoque baixo"
@@ -580,6 +581,7 @@ export default {
         this.ativar = !this.ativar;
         this.limparProduto();
         this.id = null;
+        this.listarProdutosCadastrados();
         this.exibeSnackBar("green", "Efetuado com sucesso!");
       });
     },
