@@ -105,6 +105,7 @@
                         id="editarCartao"
                         ><v-icon>mdi-pencil-outline</v-icon></v-btn
                       >
+                     
                     </v-col>
                     <v-col lg="4">
                       <v-btn
@@ -163,6 +164,7 @@ export default {
       snackbar: false,
       snackbarColor: "",
       mensagem: "",
+    
     };
   },
   mounted() {
@@ -227,7 +229,10 @@ export default {
       if (this.verificaId) {
         this.$http
           .post(`/cartao/${localStorage.getItem("usuarioId")}`, frm)
-          .then(() => {
+          .then((res) => {
+            console.log(res)
+            frm.id = res.data.dados.id
+            console.log("rr",frm.id)
             this.addCartao(frm);
             this.snackbarColor = "green";
             this.mensagem = "Cartão adicionado com sucesso";
@@ -245,7 +250,7 @@ export default {
     editarCartoes(id) {
       let status = this.verificaPreenchimento();
       let frm = {
-        id: this.id,
+        id: this.idCartaoCliente,
         status: status,
         nome: this.nomeCartao,
         numero: this.numeroCartao,
@@ -278,11 +283,11 @@ export default {
         });
       }
     },
-    verificaIdExistente() {
-      let cartao = this.$store.state.cartoes;
-      cartao.filter((cartao) => cartao.id == this.idCartaoCliente);
-      return true;
-    },
+    // verificaIdExistente() {
+    //   let cartao = this.$store.state.cartoes;
+    //   cartao.filter((cartao) => cartao.id == this.idCartaoCliente);
+    //   return true;
+    // },
     salvarCartao() {
       if (this.idCartaoCliente == null) this.addCartoes();
       else this.editarCartoes(this.idCartaoCliente);
@@ -309,15 +314,16 @@ export default {
     },
     getCartao(id) {
       this.idCartaoCliente = id;
+      console.log(id, this.idCartaoCliente)
 
       let cartao = this.$store.state.cartoes.filter(
         (cartao) => cartao.id == id
       );
       cartao = cartao[0];
-      (this.codCartao = cartao.cvv),
-        (this.expCartao = cartao.data_validade),
-        (this.numeroCartao = cartao.numero),
-        (this.nomeCartao = cartao.nome);
+      this.codCartao = cartao.cvv;
+        this.expCartao = cartao.data_validade;
+        this.numeroCartao = cartao.numero;
+        this.nomeCartao = cartao.nome;
     },
   },
 };

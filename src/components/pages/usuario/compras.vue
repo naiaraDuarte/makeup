@@ -297,6 +297,7 @@ import { mapMutations } from "vuex";
 export default {
   data() {
     return {
+      observacao:"",
       troca: false,
       cancelado: false,
       modalMotivoTroca: false,
