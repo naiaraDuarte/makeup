@@ -203,7 +203,7 @@ export default {
       this.snackbar = true;
     },
      removeCategorias(id) {
-      this.$http.delete(`/categoria/${id}`).then(() => {
+      this.$http.patch(`/categoria/${id}`).then(() => {
         this.removeCategoria(id);
         this.exibeSnackBar("green", "Categoria removida");
       });

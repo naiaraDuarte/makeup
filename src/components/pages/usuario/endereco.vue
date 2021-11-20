@@ -337,7 +337,8 @@ export default {
         this.$http
           .post(`/endereco/${localStorage.getItem("usuarioId")}`, frm)
           .then((res) => {
-            frm.id = res.data.endereco.id;
+            console.log("rsa",res)
+            frm.id = res.data.dados.id;
             this.addEnderecos(frm);
           });
       } else {
@@ -382,7 +383,7 @@ export default {
     },
     remove(id) {
       if (this.verificaId) {
-        this.$http.delete(`/endereco/${id}`).then(() => {
+        this.$http.patch(`/endereco/${id}`).then(() => {
           this.removeEnderecos(id);
         });
       } else {

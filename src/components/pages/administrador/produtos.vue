@@ -482,6 +482,7 @@ export default {
       };
       console.log(frm.categoriaProduto.id);
       this.$http.post(`/produto/`, frm).then((res) => {
+        console.log("pdt",res)
         frm.id = res.data.dados.id;
         this.addProduto(frm);
         this.exibeSnackBar("green", "Produto adicionado");
@@ -518,16 +519,16 @@ export default {
         diametroProduto: this.diametroProduto,
         marcaProduto: this.marcaProduto,
       };
-      console.log(frm.categoriaProduto);
+      console.log(frm.categoriaProduto); 
       this.$http.put(`/produto/${this.id}`, frm).then(() => {
-        // this.editarProdutos(frm);
+        console.log("frm", frm);
+        this.editarProdutos(frm);
         this.listarProdutosCadastrados();
         this.id = null;
         this.limparProduto();
         this.exibeSnackBar("green", "Produto editado");
       });
-    },
-    
+    },    
     remover(perfil) {
       this.itensInativacao = [];
       this.motivos.forEach((m) => {
