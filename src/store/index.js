@@ -97,7 +97,6 @@ export default new Vuex.Store({
 
         //Cartão
         addCartao(state, payload) {
-            console.log("add", payload)
             state.cartoes.push(payload);
         },
         editarCartao(state, payload) {

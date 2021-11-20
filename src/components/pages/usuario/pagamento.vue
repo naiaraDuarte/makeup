@@ -105,7 +105,6 @@
                         id="editarCartao"
                         ><v-icon>mdi-pencil-outline</v-icon></v-btn
                       >
-                     
                     </v-col>
                     <v-col lg="4">
                       <v-btn
@@ -164,7 +163,6 @@ export default {
       snackbar: false,
       snackbarColor: "",
       mensagem: "",
-    
     };
   },
   mounted() {
@@ -220,7 +218,7 @@ export default {
       let frm = {
         status: status,
         nome: this.nomeCartao,
-        numero: this.numeroCartao.replace(/\s+/g, ''),
+        numero: this.numeroCartao.replace(/\s+/g, ""),
         cvv: this.codCartao,
         data_validade: this.expCartao,
         bandeira: 2,
@@ -230,9 +228,7 @@ export default {
         this.$http
           .post(`/cartao/${localStorage.getItem("usuarioId")}`, frm)
           .then((res) => {
-            console.log(res)
-            frm.id = res.data.dados.id
-            console.log("rr",frm.id)
+            frm.id = res.data.dados.id;
             this.addCartao(frm);
             this.snackbarColor = "green";
             this.mensagem = "Cartão adicionado com sucesso";
@@ -278,8 +274,11 @@ export default {
     ...mapMutations(["removeCartao"]),
     remove(id) {
       if (this.verificaId) {
-        this.$http.delete(`/cartao/${id}`).then(() => {
+        this.$http.patch(`/cartao/${id}`).then(() => {
           this.removeCartao(id);
+          this.snackbarColor = "green";
+          this.mensagem = "Cartão removido com sucesso";
+          this.snackbar = true;
         });
       }
     },
@@ -314,16 +313,16 @@ export default {
     },
     getCartao(id) {
       this.idCartaoCliente = id;
-      console.log(id, this.idCartaoCliente)
+      console.log(id, this.idCartaoCliente);
 
       let cartao = this.$store.state.cartoes.filter(
         (cartao) => cartao.id == id
       );
       cartao = cartao[0];
       this.codCartao = cartao.cvv;
-        this.expCartao = cartao.data_validade;
-        this.numeroCartao = cartao.numero;
-        this.nomeCartao = cartao.nome;
+      this.expCartao = cartao.data_validade;
+      this.numeroCartao = cartao.numero;
+      this.nomeCartao = cartao.nome;
     },
   },
 };
