@@ -10,7 +10,7 @@
           v-model="search"
           append-icon="mdi-magnify"
           label="Search"
-          id= "search"
+          id="search"
           single-line
           hide-details
         ></v-text-field>
@@ -218,7 +218,7 @@
         <v-card-title class="text-h5"> Autorizar ou rejeitar?</v-card-title>
 
         <v-card-text v-for="(item, i) in selecionado.carrinho" :key="i">
-          <p>{{ item.observacao}}</p></v-card-text
+          <p>{{ item.observacao }}</p></v-card-text
         >
 
         <v-card-actions>
@@ -410,6 +410,8 @@ export default {
     ...mapMutations(["editarPedido"]),
     ...mapMutations(["editaParaTroca"]),
     pegaRegistros() {
+      console.log("MERDAAAAAAAA");
+      this.dados = [];
       this.$http.get(`/pedido/`).then((res) => {
         res.data.todosOsPedidos.forEach((ped) => {
           let cliente = ped.pedido.cliente[0];
@@ -449,6 +451,8 @@ export default {
             alerta: exibeAlerta,
             acoes: id,
           });
+
+          console.log("EXIBE NOVO", this.dados);
         });
       });
     },
@@ -627,9 +631,11 @@ export default {
 
       let index = this.dados.findIndex((e) => e.pedido == id);
       this.dados[index].status = this.steps[this.e1].nome;
-      this.limpa();
       this.dados = [];
-      this.pegaRegistros();
+      setTimeout(() => {
+        this.pegaRegistros();
+      }, 500);
+      this.limpa();
     },
     salvarTrocaUnica() {
       if (this.steps[this.e1].nome == "TROCA EFETUADA") {
@@ -643,7 +649,9 @@ export default {
         id_produto: this.trocaUnica.idTroca,
       });
       this.dados = [];
-      this.pegaRegistros();
+      setTimeout(() => {
+        this.pegaRegistros();
+      }, 500);
       this.limpa();
       this.modalDeTrocaUnica = false;
     },

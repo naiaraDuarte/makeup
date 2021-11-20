@@ -78,6 +78,11 @@
           </v-card>
         </v-col>
       </v-row>
+      <v-row>
+        <v-col class="centraliza">
+          Desculpe, não achamos nada referente a sua busca, tente outro termo, vamos tentar de novo!
+        </v-col>
+      </v-row>
     </v-container>
     <!-- <v-snackbar v-model="snackbar" :color="snackbarColor">
       <h4 style="font-weight: 100">{{ mensagem }}</h4>
