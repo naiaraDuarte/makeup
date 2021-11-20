@@ -60,7 +60,7 @@
             <v-col lg="4">
               <v-btn
                 class="white--text btnLink"
-                @click="$router.push(`/usuario`)"
+                @click="redireciona()"
                 target="_blank"
                 text
               >
@@ -80,7 +80,7 @@
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                     class="white--text btnLink"
-                    @click="$router.push(`/usuario`)"
+                    @click="redireciona()"
                     target="_blank"
                     id="carrinho"
                     v-bind="attrs"
@@ -109,7 +109,7 @@
 
                 <!-- <v-card>
                   <h2>AAAAAAAA</h2> -->
-                    <!-- <carrinho-flutuante></carrinho-flutuante> -->
+                <!-- <carrinho-flutuante></carrinho-flutuante> -->
                 <!-- </v-card> -->
               </v-menu>
             </v-col>
@@ -141,6 +141,15 @@ export default {
   watch: {
     textField(newVal) {
       this.$store.state.busca = newVal;
+    },
+  },
+  methods: {
+    redireciona() {
+      if (localStorage.getItem("usuarioId")) {
+        this.$router.push(`/carrinho`);
+      } else {
+        this.$router.push(`/usuario`);
+      }
     },
   },
 };
