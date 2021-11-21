@@ -479,6 +479,7 @@ export default {
         quantidadeProduto: this.quantidadeProduto,
         diametroProduto: this.diametroProduto,
         marcaProduto: this.marcaProduto,
+        imagem: this.imagem
       };
       console.log(frm.categoriaProduto.id);
       this.$http.post(`/produto/`, frm).then((res) => {
@@ -518,6 +519,7 @@ export default {
         quantidadeProduto: this.quantidadeProduto,
         diametroProduto: this.diametroProduto,
         marcaProduto: this.marcaProduto,
+        imagem: this.imagem
       };
       console.log(frm.categoriaProduto); 
       this.$http.put(`/produto/${this.id}`, frm).then(() => {
@@ -631,6 +633,7 @@ export default {
       });
     },
     getCategoria() {
+    
       this.$http.get(`/categoria/`).then((res) => {
         res.data.dados.forEach((e) => {
           this.itensCategoria.push({
@@ -650,12 +653,11 @@ export default {
         (produto) => produto.id == id
       );
       produto = produto[0];
+      console.log("ese",produto)
       this.codigoProduto = produto.cod;
       this.custoProduto = produto.custo;
       this.nomeProduto = produto.nome;
-      this.descProduto = produto.descricao;
-      this.categoriaProduto =
-        this.itensCategoria[produto.fk_categoria - 1].nome;
+      this.descProduto = produto.descricao;      
       this.tipoProduto = produto.tipo;
       this.pesoProduto = produto.peso;
       this.alturaProduto = produto.altura;
@@ -665,6 +667,10 @@ export default {
       this.diametroProduto = produto.diametro;
       this.precoProduto = produto.preco;
       this.marcaProduto = produto.marca;
+      this.imagem = produto.imagem
+      this.categoriaProduto =
+        this.itensCategoria[produto.fk_categoria-1].nome;
+      console.log("cat", this.itensCategoria)
     },
     limparProduto() {
       this.codigoProduto = "";

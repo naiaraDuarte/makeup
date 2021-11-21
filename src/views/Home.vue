@@ -384,7 +384,7 @@ export default {
         }
       }
     },
-    redireciona() {
+    redireciona(){
       this.$router.push(`/carrinho`);
     },
     exibeSnackBar(cor, msg) {

@@ -69,6 +69,7 @@ export default new Vuex.Store({
             state.usuario[1].senha = payload;
         },
         addEnderecos(state, payload) {
+            console.log("addende");
             if (!localStorage.getItem("usuarioId")) {
                 payload.id = state.countId;
                 state.enderecos.push(payload);
