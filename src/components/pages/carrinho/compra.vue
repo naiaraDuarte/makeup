@@ -222,9 +222,13 @@ export default {
         let preco = parseFloat(prod.preco);
         if (item.cod == prod.cod) {
           if (tipo == "add") {
-            totalProdutos -= preco * prod.qtd;
-            prod.qtd += 1;
-            totalProdutos += preco * prod.qtd;
+            if (item.quantidade >= (item.qtd + 1)) {
+              totalProdutos -= preco * prod.qtd;
+              prod.qtd += 1;
+              totalProdutos += preco * prod.qtd;
+            }else{
+              this.exibeSnackBar("red", "Produto esgotado");
+            }
           } else {
             if (prod.qtd == 0) {
               totalProdutos -= preco;

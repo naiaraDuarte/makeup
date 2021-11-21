@@ -43,7 +43,7 @@
                     size="14"
                   ></v-rating>
 
-                  <p class="titulo-card" >{{ item.nome }}</p>
+                  <p class="titulo-card">{{ item.nome }}</p>
                 </v-col>
               </v-row>
             </v-card-title>
@@ -78,20 +78,21 @@
           </v-card>
         </v-col>
       </v-row>
-      <v-row>
+      <v-row v-else>
         <v-col class="centraliza">
-          Desculpe, não achamos nada referente a sua busca, tente outro termo, vamos tentar de novo!
+          Desculpe, não achamos nada referente a sua busca, tente outro termo,
+          vamos tentar de novo!
         </v-col>
       </v-row>
     </v-container>
-    <!-- <v-snackbar v-model="snackbar" :color="snackbarColor">
+    <v-snackbar v-model="snackbar" :color="snackbarColor">
       <h4 style="font-weight: 100">{{ mensagem }}</h4>
       <template v-slot:action="{ attrs }">
         <v-btn text icon v-bind="attrs" @click="snackbar = false">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </template>
-    </v-snackbar> -->
+    </v-snackbar>
     <v-speed-dial
       id="create"
       width="800"
@@ -122,8 +123,8 @@
     </v-speed-dial>
 
     <v-bottom-sheet v-model="sheet" v-if="sheet">
-      <carrinho-flutuante :total="total"></carrinho-flutuante>
-      <!-- <v-card
+      <!-- <carrinho-flutuante :total="total"></carrinho-flutuante> -->
+      <v-card
         class="carrinho text-center"
         :class="[$store.state.carrinho.length == 0 ? 'centraliza' : '']"
         height="500"
@@ -144,7 +145,7 @@
           aparecerá aqui, viu?
         </p>
 
-        <v-row >
+        <v-row>
           <v-col lg="12" class="mt-3">
             <v-card elevation="0" class="px-2 prod">
               <v-row v-for="(item, i) in $store.state.carrinho" :key="i">
@@ -210,19 +211,17 @@
             </v-btn>
           </v-col>
         </v-row>
-      </v-card> -->
+      </v-card>
     </v-bottom-sheet>
   </div>
 </template>
 
 <script>
 import jsFunctions from "../assets/js/jsFunctions";
-import carrinhoFlutuante from '../components/ui/carrinhoFlutuante.vue';
 import { mapMutations } from "vuex";
 
 export default {
   name: "Home",
-  components:  { carrinhoFlutuante },
   data() {
     return {
       itens: [],
@@ -244,7 +243,14 @@ export default {
       snackbarColor: "",
       mensagem: "",
       transition: "slide-y-reverse-transition",
-      imagens: ["banner5.png", "banner4.png", "banner6.jpg", "banner7.jpg", "banner8.jpg", "banner9.jpg"],
+      imagens: [
+        "banner5.png",
+        "banner4.png",
+        "banner6.jpg",
+        "banner7.jpg",
+        "banner8.jpg",
+        "banner9.jpg",
+      ],
       slides: ["First", "Second", "Third", "Fourth", "Fifth"],
     };
   },
@@ -307,8 +313,10 @@ export default {
           nome: prod.nome,
           preco: prod.preco,
           qtd: prod.quantidade,
+          quantidade: prod.quantidade,
         });
       });
+      console.log("VDVDSFVS", this.itens);
     });
     this.itensBase = this.itens;
     this.$store.state.listaProdutos = this.itens;
@@ -331,9 +339,13 @@ export default {
         let preco = parseFloat(prod.preco);
         if (item.cod == prod.cod) {
           if (tipo == "add") {
-            total -= preco * prod.qtd;
-            prod.qtd += 1;
-            total += preco * prod.qtd;
+            if (item.quantidade >= (item.qtd + 1)) {
+              total -= preco * prod.qtd;
+              prod.qtd += 1;
+              total += preco * prod.qtd;
+            }else{
+              this.exibeSnackBar("red", "Produto esgotado");
+            }
           } else {
             if (prod.qtd == 0) {
               total -= preco;
@@ -350,16 +362,26 @@ export default {
     },
 
     addProduto(item) {
+      console.log(item);
       let index = this.$store.state.carrinho.findIndex(
         (pdt) => pdt.cod == item.cod
       );
+
       if (this.$store.state.carrinho.length == 0 || index == -1) {
-        this.total += parseFloat(item.preco);
-        item.qtd = 1;
-        this.addCarrinho(item);
-        this.exibeSnackBar("#b38b57", "Seu produto foi add ao carrinho");
+        if (item.quantidade > 1) {
+          this.total += parseFloat(item.preco);
+          item.qtd = 1;
+          this.addCarrinho(item);
+          this.exibeSnackBar("#b38b57", "Seu produto foi add ao carrinho");
+        } else {
+          this.exibeSnackBar("red", "Produto esgotado");
+        }
       } else {
-        this.atualizarCarrinho(item, "add");
+        if (item.quantidade > item.qtd) {
+          this.atualizarCarrinho(item, "add");
+        } else {
+          this.exibeSnackBar("red", "Produto esgotado");
+        }
       }
     },
     redireciona() {
@@ -462,7 +484,7 @@ export default {
   position: absolute;
   width: 100%;
 }
-.prod{
+.prod {
   overflow-y: scroll !important;
   overflow-x: hidden;
   height: 25vh !important;
