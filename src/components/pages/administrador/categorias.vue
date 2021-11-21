@@ -69,7 +69,7 @@
               </v-col>
             </v-row>
             <v-row class="text-right alinhamento">
-              <v-col lg="3">
+              <v-col lg="6">
                 <v-btn
                   elevation="0"
                   color="white"
@@ -78,14 +78,12 @@
                 >
                   Cancelar
                 </v-btn>
-              </v-col>
-              <v-col lg="3" v-if="validacaoDePreenchimento">
                 <v-btn
                   elevation="3"
                   color="white"
                   class="btnSubmit mr-5"
                   @click="salvarCategoria()"
-                  >add categoria</v-btn
+                  >Salvar</v-btn
                 >
               </v-col>
             </v-row>
@@ -108,7 +106,7 @@ import { mapMutations } from "vuex";
 export default {
   data() {
     return {
-      search:"",
+      search: "",
       nome: "",
       mgLucro: "",
       snackbar: false,
@@ -193,7 +191,7 @@ export default {
       this.$http.put(`/categoria/${this.id}`, frm).then(() => {
         this.editarCategoria(frm);
         this.exibeSnackBar("green", "Editado com sucesso!!!");
-       
+
         this.limparCategoria();
       });
     },
@@ -202,7 +200,7 @@ export default {
       this.mensagem = msg;
       this.snackbar = true;
     },
-     removeCategorias(id) {
+    removeCategorias(id) {
       this.$http.patch(`/categoria/${id}`).then(() => {
         this.removeCategoria(id);
         this.exibeSnackBar("green", "Categoria removida");

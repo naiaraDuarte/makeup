@@ -258,7 +258,7 @@
               color="white"
               class="btnSubmit"
               @click="salvarProduto()"
-              >add produto</v-btn
+              >Salvar</v-btn
             >
           </v-col>
           <v-col lg="7">
@@ -535,8 +535,7 @@ export default {
       this.itensInativacao = [];
       this.motivos.forEach((m) => {
         this.itensInativacao.push(m);
-      }); 
-          
+      });           
       if (perfil.ativo) {       
         this.ativado = perfil.ativo;
         this.msgn = "Motivo inativação";
@@ -593,8 +592,7 @@ export default {
       else this.editarProduto(this.id);
       this.limparProduto();
       this.idProduto = null;
-      this.adicionarProduto = !this.adicionarProduto;
-      // this.$router.push(`/`);
+      this.adicionarProduto = !this.adicionarProduto;      
     },
     verificaMotivos() {
       if (this.ativacaoProduto != "" && this.obsInativacao != "") {
