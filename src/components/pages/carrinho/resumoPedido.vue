@@ -151,6 +151,7 @@ export default {
         this.$store.state.concluir = false;
         return null;
       }
+      this.$emit("vaimudar", parseInt(Math.random() * 255));
       this.$store.state.concluir = true;
     },
     editaCashback(val) {

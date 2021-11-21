@@ -214,6 +214,7 @@
             :tipoDesconto="$store.state.cupomUtilizado.tipo"
             :habilitaBotao="habilitaBotao"
             @total="total = $event"
+            @vaimudar="voltar = $event"
             pag="pagamento"
           ></resumoPedido>
         </v-col>
@@ -254,6 +255,7 @@ export default {
       mensagem: "",
       restante: 0,
       snackbar: false,
+      voltar: 0,
       cashback: {
         valor: 0,
       },
@@ -264,7 +266,9 @@ export default {
       ],
     };
   },
-  activated() {},
+  activated() {
+    console.log("ATIVOSU")
+  },
   mounted() {
     if (this.$store.state.carrinho.length > 0) {
       this.restante = this.$n(this.totalProdutos, "currency");
@@ -280,6 +284,9 @@ export default {
     }
   },
   watch: {
+    voltar(){
+      this.totalProdutos = 0;
+    },
     total(newVal, oldVal) {
       let val = newVal - oldVal;
       //Add frete
@@ -418,9 +425,9 @@ export default {
 
       this.$store.state.cartoesEscolhidos.filter((item) => {
         if (item.id == id) {
-          if (this.totalProdutos != item.valor) {
-            this.totalProdutos += item.valor;
-          }
+          // if (this.totalProdutos != item.valor) {
+          //   this.totalProdutos += item.valor;
+          // }
           item.valor = val;
           this.$store.state.cartoesEscolhidos[index] = item;
         }

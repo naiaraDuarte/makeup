@@ -204,7 +204,9 @@ export default new Vuex.Store({
         },
         removeItemCarrinho(state, payload) {
             let index = state.carrinho.findIndex(pdt => pdt.cod == payload.cod);
+            console.log("VFDVFDVF", state.produtos)
             state.produtos.splice(index, 1);
+            console.log(state.produtos)
         },
     },
     getters: {},
