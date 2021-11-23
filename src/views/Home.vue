@@ -146,7 +146,7 @@
         </p>
 
         <v-row>
-          <v-col lg="12" class="mt-3">
+          <v-col lg="12" class="mt-3" style="height: 56vh;">
             <v-card elevation="0" class="px-2 prod">
               <v-row v-for="(item, i) in $store.state.carrinho" :key="i">
                 <v-col>
@@ -487,7 +487,7 @@ export default {
 .prod {
   overflow-y: scroll !important;
   overflow-x: hidden;
-  height: 25vh !important;
+  height: 54vh !important;
 }
 .prod::-webkit-scrollbar {
   width: 3px;

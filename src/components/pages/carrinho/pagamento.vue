@@ -5,7 +5,7 @@
         <v-col lg="6">
           <p class="mb-3 tituloModalCarrinho">
             <v-icon class="pb-1" large>mdi-chevron-double-right</v-icon
-            >Pagamento
+            >Pagamento 
           </p>
           <v-divider class="mb-8"></v-divider>
           <v-card elevation="0" class="mt-3">
@@ -206,7 +206,6 @@
         <v-col lg="1"></v-col>
         <v-divider vertical></v-divider>
         <v-col lg="5" class="pl-5">
-         
           <resumoPedido
             :frete="frete"
             :cashback="cashback.valor"
@@ -214,7 +213,6 @@
             :tipoDesconto="$store.state.cupomUtilizado.tipo"
             :habilitaBotao="habilitaBotao"
             @total="total = $event"
-            @vaimudar="voltar = $event"
             pag="pagamento"
           ></resumoPedido>
         </v-col>
@@ -255,7 +253,8 @@ export default {
       mensagem: "",
       restante: 0,
       snackbar: false,
-      voltar: 0,
+      shit: 0,
+      teste: false,
       cashback: {
         valor: 0,
       },
@@ -266,9 +265,7 @@ export default {
       ],
     };
   },
-  activated() {
-    console.log("ATIVOSU")
-  },
+  activated() {},
   mounted() {
     if (this.$store.state.carrinho.length > 0) {
       this.restante = this.$n(this.totalProdutos, "currency");
@@ -284,9 +281,17 @@ export default {
     }
   },
   watch: {
-    voltar(){
-      this.totalProdutos = 0;
+    "$store.state.concluir": function () {
+      if (this.$store.state.concluir == false) {
+        this.teste = true;
+        console.log(this.teste);
+      }
+      console.log("FROA");
     },
+    // shit(newVal) {
+    //   this.teste = true;
+    //   console.log(newVal)
+    // },
     total(newVal, oldVal) {
       let val = newVal - oldVal;
       //Add frete
@@ -352,6 +357,7 @@ export default {
     ...mapMutations(["removeCupons"]),
     ...mapMutations(["editarCartao"]),
     selecionaCartao(id) {
+      console.log(this.$store.state.cartoesEscolhidos, id);
       let index = this.$store.state.cartoesEscolhidos.findIndex(
         (item) => item.id == id
       );
@@ -385,19 +391,32 @@ export default {
           }
         });
       } else {
-        this.$store.state.cartoes.filter((cartao) => {
-          if (cartao.id == id) {
-            cartao.selecionado = false;
-            this.$store.state.cartoesEscolhidos.splice(index, 1);
-            let teste =
-              this.$store.state.cartoesEscolhidos[
-                this.$store.state.cartoesEscolhidos.length - 1
-              ].valor;
-            restante = cartao.valor + teste;
-            cartao.valor = 0;
-            this.editarCartao(cartao);
-          }
-        });
+        let teste =
+          this.$store.state.cartoesEscolhidos[
+            this.$store.state.cartoesEscolhidos.length - 1
+          ].valor;
+        if (teste == this.totalProdutos) {
+          this.$store.state.cartoes.filter((cartao) => {
+            if (cartao.id == id) {
+              cartao.selecionado = false;
+              this.$store.state.cartoesEscolhidos.splice(index, 1);
+              cartao.valor = 0;
+              this.editarCartao(cartao);
+            }
+          });
+        } else {
+          this.$store.state.cartoes.filter((cartao) => {
+            if (cartao.id == id) {
+              cartao.selecionado = false;
+              this.$store.state.cartoesEscolhidos.splice(index, 1);
+
+              restante = cartao.valor + teste;
+              cartao.valor = 0;
+              this.editarCartao(cartao);
+            }
+          });
+        }
+
         this.totalProdutos = restante;
       }
     },
@@ -425,9 +444,12 @@ export default {
 
       this.$store.state.cartoesEscolhidos.filter((item) => {
         if (item.id == id) {
+          //if (this.teste != true) {
           // if (this.totalProdutos != item.valor) {
           //   this.totalProdutos += item.valor;
           // }
+          //}
+
           item.valor = val;
           this.$store.state.cartoesEscolhidos[index] = item;
         }

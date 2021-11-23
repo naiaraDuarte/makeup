@@ -57,7 +57,7 @@
               v-if="pag == 'confirmacao'"
               class="btnFilter ampliarBtn"
               elevation="0"
-              @click="prox()"
+              @click="teste(), prox()"
               >Tem algo errado, desejo voltar e arrumar</v-btn
             >
             <v-btn
@@ -146,13 +146,18 @@ export default {
     getImgUrl(pic) {
       return require("../../../assets/images/" + pic);
     },
+    teste(){
+      console.log("AAAAAAAAAAA")
+      this.$emit("clicou", 1)
+      console.log("Era pra retornar")
+    },
     prox() {
+      // this.$emit("merda", this.total);
       if (this.pag == "confirmacao") {
         this.$store.state.concluir = false;
-        return null;
+      } else {
+        this.$store.state.concluir = true;
       }
-      this.$emit("vaimudar", parseInt(Math.random() * 255));
-      this.$store.state.concluir = true;
     },
     editaCashback(val) {
       this.$http.put(`/cashback/${localStorage.getItem("usuarioId")}`, {
@@ -365,9 +370,9 @@ export default {
       };
       this.$http.post(`/pedido/`, frmB).then(() => {
         this.$store.state.cartoes.filter((cartao) => {
-            cartao.selecionado = false;
-            cartao.valor = 0;
-            this.editarCartao(cartao);
+          cartao.selecionado = false;
+          cartao.valor = 0;
+          this.editarCartao(cartao);
         });
       });
       let frm = {
