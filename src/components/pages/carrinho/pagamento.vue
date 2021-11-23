@@ -426,7 +426,7 @@ export default {
       this.$store.state.cartoesEscolhidos.filter((item) => {
         if (item.id == id) {
           // if (this.totalProdutos != item.valor) {
-          //   this.totalProdutos += item.valor;
+            this.totalProdutos += item.valor;
           // }
           item.valor = val;
           this.$store.state.cartoesEscolhidos[index] = item;
