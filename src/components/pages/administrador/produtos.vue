@@ -81,6 +81,7 @@
                   type="number"
                   label="Código"
                   required
+                  id="codigo"
                 ></v-text-field>
               </v-col>
               <v-col lg="5">
@@ -88,16 +89,17 @@
                   v-model="nomeProduto"
                   :counter="50"
                   label="Nome"
+                  id="nome"
                   required
                 ></v-text-field>
               </v-col>
               <v-col lg="4">
                 <v-text-field
-                  v-model="custoProduto"
-                  :counter="10"
-                  type="number"
+                  v-model="custoProduto"                                  
+                  :counter="10" 
+                  v-mask="['R$#,##', 'R$##,##', 'R$###,##', 'R$####,##']"                 
                   label="Custo"
-                 
+                  id="custo"
                   required
                 ></v-text-field>
               </v-col>
@@ -110,6 +112,7 @@
                   v-model="marcaProduto"
                   label="Marca"
                   required
+                  id="marca"
                 ></v-text-field>
               </v-col>
               <v-col lg="4">
@@ -120,8 +123,7 @@
                   id="categoria"
                   item-text="nome"
                   item-value="id"
-                  return-object
-                  clearable
+                  return-object                                 
                   required
                 ></v-combobox>
               </v-col>
@@ -130,6 +132,7 @@
                   v-model="tipoProduto"
                   :counter="10"
                   label="Tipo"
+                  id="tipo"
                   required
                 ></v-text-field>
               </v-col>
@@ -142,6 +145,7 @@
                   name="input-7-4"
                   label="Descrição do Produto"
                   :counter="255"
+                  id="descricao"
                 ></v-textarea>
               </v-col>
             </v-row>
@@ -194,6 +198,7 @@
                       type="number"
                       label="Peso do produto"
                       required
+                      id="peso"
                     ></v-text-field>
                   </v-col>
                   <v-col lg="6">
@@ -203,6 +208,7 @@
                       type="number"
                       label="Altura do produto"
                       required
+                      id="altura"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -214,6 +220,7 @@
                       type="number"
                       label="Comprimento do produto"
                       required
+                      id="comprimento"
                     ></v-text-field>
                   </v-col>
                   <v-col lg="6">
@@ -224,6 +231,7 @@
                       label="Quantidade do produto a cadastrar"
                       type="number"
                       required
+                      id="quantidade"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -235,6 +243,7 @@
                       label="Diametro do produto"
                       type="number"
                       required
+                      id="diametro"
                     ></v-text-field>
                   </v-col>
                   <v-col lg="6">
@@ -244,6 +253,7 @@
                       type="number"
                       label="Largura do produto"
                       required
+                      id="largura"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -257,6 +267,7 @@
               elevation="3"
               color="white"
               class="btnSubmit"
+              id="salvar"
               @click="salvarProduto()"
               >Salvar</v-btn
             >
@@ -281,6 +292,7 @@
                   icon
                   @click="faseCadastro = 0"
                   :disabled="faseCadastro == 0"
+                  id="left"
                   ><v-icon>mdi-chevron-left</v-icon></v-btn
                 >
                 <v-btn
@@ -467,7 +479,7 @@ export default {
       let frm = {
         id: 0,
         codigoProduto: this.codigoProduto,
-        custoProduto: this.custoProduto,
+        custoProduto: parseFloat(this.custoProduto.replace("R$", "")),
         nomeProduto: this.nomeProduto,
         descProduto: this.descProduto,
         categoriaProduto: this.categoriaProduto,
@@ -630,8 +642,7 @@ export default {
         });
       });
     },
-    getCategoria() {
-    
+    getCategoria() {    
       this.$http.get(`/categoria/`).then((res) => {
         res.data.dados.forEach((e) => {
           this.itensCategoria.push({

@@ -211,7 +211,8 @@ export default {
         quant: this.quant,
       };
       this.$http.post(`/cupom/`, frm).then((res) => {
-        this.frm.id = res.data.cupom.id;
+        console.log(res)
+        frm.id = res.data.id;
         this.addCupons(frm);
         this.exibeSnackBar("green", "Cupom adicionado");
         this.limparCampos();

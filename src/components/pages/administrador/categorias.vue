@@ -56,11 +56,14 @@
                   :counter="10"
                   type="text"
                   label="Nome"
+                  id="nome"
                   required
                 ></v-text-field>
               </v-col>
               <v-col lg="6">
                 <v-text-field
+                  id="mgLucro"
+                  v-mask="['#%', '##%', '##,#%', '##,##%']"
                   v-model="mgLucro"
                   :counter="50"
                   label="Margem de lucro"
@@ -173,7 +176,7 @@ export default {
     addCategorias() {
       let frm = {
         nome: this.nome,
-        mgLucro: this.mgLucro,
+        mgLucro: parseInt(this.mgLucro.replace("%", "")),
       };
       this.$http.post(`/categoria/`, frm).then((res) => {
         frm.id = res.data.dados.id;
