@@ -9,16 +9,16 @@
           <v-row>
               <v-col lg="8" class="centraliza flex-column">
                 <span>
-                  <b>{{ item.cod }}</b>
+                  <b>{{ item.cup_cod }}</b>
                 </span>
                 <span
-                  >{{ item.tipo }}</span
+                  >{{ item.cup_tipo }}</span
                 >
               </v-col>
               <v-divider vertical></v-divider>
               <v-col lg="4" class="centraliza">
                 <span class="valor-cupom"
-                  >{{ item.porcen }} %</span
+                  >{{ item.cup_porcen }} %</span
                 >
               </v-col>
           </v-row>
@@ -65,11 +65,12 @@ export default {
       this.$http
         .get(`/cashback/${localStorage.getItem("usuarioId")}`)
         .then((res) => {
-          this.cashback += res.data.cashback[0].valor;
+          this.cashback += res.data.cashback[0].cash_valor;
         });
     },
     getCupom() {
       this.$http.get(`/cupom/`).then((res) => {
+        console.log(res)
         this.$store.state.cupons = res.data.dados;
       });
     },

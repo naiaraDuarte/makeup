@@ -66,18 +66,18 @@
                   <v-img
                     height="80"
                     width="80"
-                    :src="getImgUrl(prod.imagem)"
+                    :src="getImgUrl(prod.pdt_imagem)"
                   ></v-img>
                 </v-col>
 
                 <v-col lg="3" class="centraliza">
-                  <span>{{ prod.nome }}</span>
+                  <span>{{ prod.pdt_nome }}</span>
                 </v-col>
                 <v-col lg="2">
                   <p>Quant: {{ prod.quantity }}</p>
                 </v-col>
                 <v-col lg="2">
-                  <p>{{ $n(prod.preco, "currency") }}</p>
+                  <p>{{ $n(prod.pdt_preco, "currency") }}</p>
                 </v-col>
                 <v-col lg="2">
                   <!-- <v-row class="centraliza p-0">
@@ -134,6 +134,7 @@
         </p>
       </v-col>
     </v-row>
+    
     <v-dialog v-model="cancelarPedido" persistent max-width="550px">
       <v-card>
         <v-card-title class="alinhamentoEntre">
@@ -197,20 +198,20 @@
                       <v-img
                         height="80"
                         width="80"
-                        :src="getImgUrl(prod.imagem)"
+                        :src="getImgUrl(prod.pdt_imagem)"
                       ></v-img>
                     </v-col>
                     <v-col lg="5" class="centraliza">
-                      <p>{{ prod.nome }}</p>
+                      <p>{{ prod.pdt_nome }}</p>
                     </v-col>
                     <v-col lg="3" class="centraliza">
                       <p>
-                        {{ $n(prod.preco, "currency") }}
+                        {{ $n(prod.pdt_preco, "currency") }}
                       </p>
                     </v-col>
                     <v-col lg="2" class="centraliza">
                       <v-btn
-                        v-if="getStatusProduto(prod.status) == true"
+                        v-if="getStatusProduto(prod.ppd_status) == true"
                         elevation="0"
                         icon
                         @click="efetuarTroca(pedidoSelecionado, prod)"
@@ -390,15 +391,15 @@ export default {
       .get(`/pedido/${localStorage.getItem("usuarioId")}`)
       .then((res) => {
         console.log(res)
-        res.data.todosOsPedidos.forEach((ped) => {
+        res.data.todosOsPedidos.forEach((ped) => {         
           let carrinho = ped.pedido.produtos;
           let cartao = ped.pedido.cartoes;
           let cupom = ped.pedido.cupom;
           let endereco = ped.pedido.endereco[0];
-          let frete = ped.pedido.frete;
-          let status = ped.pedido.status;
-          let id = ped.pedido.id;
-          let data = ped.pedido.data_cadastro;
+          let frete = ped.pedido.ped_frete;
+          let status = ped.pedido.ped_status;
+          let id = ped.pedido.ped_id;
+          let data = ped.pedido.ped_data_cadastro;
 
           this.$store.state.pedidos.push({
             id: id,
@@ -417,6 +418,7 @@ export default {
           });
         });
       });
+       console.log("hshs",this.$store.state.pedidos)
     // this.getDados("normal", "EM TRANSPORTE");
   },
   methods: {
@@ -430,6 +432,7 @@ export default {
       return this.pedidoSelecionado;
     },
     getStatusProduto(status) {
+      console.log(status)
       let fluxo = this.conteudoSteps.filter((val) => val.nome == status);
       fluxo = fluxo[0].status;
       if (fluxo == "troca") {
@@ -534,17 +537,19 @@ export default {
       return this.pedidoSelecionado;
     },
     trocaComId(item) {
+      console.log("uiii",item)
       let prod = this.prod;
-
+console.log("rsrs",this.prod)
       let frm = {
         produto: {
-          id: prod.id,
+          id: prod.ppd_id,
           observacao: this.observacao,
         },
         status: "TROCA SOLICITADA",
       };
       this.$http.put(`/pedido/troca/${item.id}`, frm).then(() => {
-        prod.status = "TROCA SOLICITADA";
+        
+        prod.ppd_status = "TROCA SOLICITADA";
         this.editaStatus([item.id, "TROCA SOLICITADA", prod.id]);
         this.exibeSnackBar("green", "Sua troca foi para análise");
         this.observacao = "";
