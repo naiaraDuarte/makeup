@@ -307,16 +307,15 @@ export default {
     this.$http.get(`/produto/`).then((res) => {
       res.data.dados.forEach((prod) => {
         this.itens.push({
-          id: prod.id,
-          cod: prod.cod,
-          src: prod.imagem,
-          nome: prod.nome,
-          preco: prod.preco,
-          qtd: prod.quantidade,
-          quantidade: prod.quantidade,
+          id: prod.pdt_id,
+          cod: prod.pdt_cod,
+          src: prod.pdt_imagem,
+          nome: prod.pdt_nome,
+          preco: prod.pdt_preco,
+          qtd: prod.pdt_quantidade,
+          quantidade: prod.pdt_quantidade,
         });
       });
-      console.log("VDVDSFVS", this.itens);
     });
     this.itensBase = this.itens;
     this.$store.state.listaProdutos = this.itens;

@@ -646,18 +646,19 @@ export default {
     async listarDadosCadastrados() {
       this.$store.state.cadastro = true;
       let usuario = await this.$store.state.usuario[1];
-      this.nome = usuario.nome;
-      this.cpf = usuario.cpf;
-      this.apelido = usuario.apelido;
-      this.telefone = usuario.telefone;
-      this.sexo = usuario.sexo;
-      this.email = usuario.email;
-      this.senha = usuario.senha;
-      this.confirmacaoSenha = usuario.senha;
+      console.log(usuario)
+      this.nome = usuario.cli_nome;
+      this.cpf = usuario.cli_cpf;
+      this.apelido = usuario.cli_apelido;
+      this.telefone = usuario.cli_telefone;
+      this.sexo = usuario.cli_sexo;
+      this.email = usuario.cli_email;
+      this.senha = usuario.cli_senha;
+      this.confirmacaoSenha = usuario.cli_senha;
       this.forca = 85;
-      this.tipoTelefone = usuario.tipo_telefone;
+      this.tipoTelefone = usuario.cli_tip_tel_id;
       this.date = this.$moment(
-        usuario.data_nasc.split("T")[0],
+        usuario.cli_data_nasc.split("T")[0],
         "YYYY-MM-DD"
       ).format("DD/MM/YYYY");
     },

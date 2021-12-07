@@ -74,11 +74,11 @@ export default {
 
       data.forEach((cart) => {
         this.addCartao({
-          id: cart.id,
-          nome: cart.nome,
-          numero: cart.numero,
-          cvv: cart.cvv,
-          data_validade: cart.data_validade,
+          id: cart.cart_id,
+          nome: cart.cart_nome,
+          numero: cart.cart_numero,
+          cvv: cart.cart_cvv,
+          data_validade: cart.cart_data_validade,
           bandeira: 2,
         });
       });

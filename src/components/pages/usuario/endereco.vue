@@ -392,22 +392,22 @@ export default {
     },
     listarEnderecosCadastrados(end) {
       this.addEnderecos({
-        id: end.id,
+        id: end.end_id,
         status: true,
         tipo_endereco: this.itensTipoEndereco[parseInt(end.tipo_endereco) - 1],
-        nome: end.nome,
-        cep: end.cep,
-        logradouro: end.logradouro,
-        complemento: end.complemento,
-        numero: end.numero,
-        bairro: end.bairro,
-        cidade: end.cidade,
-        uf: this.itensUf[parseInt(end.uf) - 1],
-        pais: end.pais,
+        nome: end.end_nome,
+        cep: end.end_cep,
+        logradouro: end.end_logradouro,
+        complemento: end.end_complemento,
+        numero: end.end_numero,
+        bairro: end.end_bairro,
+        cidade: end.end_cidade,
+        uf: this.itensUf[parseInt(end.end_uf) - 1],
+        pais: end.end_pais,
         tipo_logradouro:
-          this.itensTipoLogradouro[parseInt(end.tipo_logradouro) - 1],
+          this.itensTipoLogradouro[parseInt(end.end_tip_log_id) - 1],
         tipo_residencia:
-          this.itensTipoResidencia[parseInt(end.tipo_residencia) - 1],
+          this.itensTipoResidencia[parseInt(end.end_tip_res_id) - 1],
       });
       
     },
